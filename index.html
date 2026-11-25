@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>스콧 카터: 낡은 아파트</title>
+<style>
+:root{--bg:#1c1c1c;--panel:#161616;--line:#3a3a3a;--text:#e6e6e6;--dim:#8a8a8a;--blue:#3d9be9;--story-size:16px;--choice-size:14px;--ui-size:14px;}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif}
+#app{position:relative;min-height:100%}
+#mini-bar{position:fixed;top:0;left:0;bottom:0;width:46px;background:#141414;border-right:1px solid var(--line);z-index:25;display:flex;flex-direction:column;align-items:center;padding-top:52px;gap:4px;transition:transform .25s}
+body.po #mini-bar{transform:translateX(-100%)}
+.mb-time{width:38px;border:1px solid #444;background:#1c1c1c;text-align:center;font-size:13px;font-weight:700;line-height:1.15;padding:4px 0;color:#e6e6e6;margin-bottom:4px}
+.mb-time span{display:block;font-size:10px;color:#8a8a8a;letter-spacing:2px}
+.mb-stat{width:38px;border:1px solid #3a3a3a;background:#191919;text-align:center;padding:3px 2px 4px;cursor:pointer}
+.mb-stat b{display:block;font-size:13px;font-weight:700;line-height:1.2}
+.mb-stat i{display:block;height:3px;background:#333;margin-top:3px;overflow:hidden}
+.mb-stat i em{display:block;height:100%;font-style:normal}
+#panel{position:fixed;top:0;left:0;bottom:0;width:300px;background:var(--panel);border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .25s;z-index:28;overflow-y:auto;padding:52px 14px 28px}
+#panel.open{transform:none}
+#tog{position:fixed;top:10px;left:4px;z-index:35;width:38px;height:38px;background:#242424;color:#fff;border:1px solid #666;font-size:20px;cursor:pointer;transition:left .25s;line-height:1}
+#tog.open{left:256px}
+.dol-info{text-align:center;font-size:14px;line-height:1.65;color:#e0e0e0;margin-bottom:14px}
+.dol-info p{margin:0 0 10px}
+.dol-wear{font-size:13px;color:#cfcfcf;line-height:1.6;margin:10px 0 14px;text-align:center;word-break:keep-all}
+.dol-stat{margin:8px 0;text-align:center}
+.dol-stat-lbl{font-size:14px;margin-bottom:3px;color:#e6e6e6}
+.dol-bar{height:5px;background:#444;overflow:hidden}
+.dol-bar i{display:block;height:100%;transition:width .35s,background .35s}
+.dol-tip{margin:16px 0;font-size:13px;line-height:1.6;color:#dcdcdc;text-align:center;word-break:keep-all}
+.dol-tip b{color:#e0c040}
+.dol-grid{border:1px solid #4a4a4a;margin-bottom:12px}
+.dol-grid-row{display:grid;grid-template-columns:1fr 1fr}
+.dol-grid-row+.dol-grid-row,.dol-grid>.pbtn+.pbtn,.dol-grid>.pbtn+.dol-grid-row{border-top:1px solid #4a4a4a}
+.dol-grid-row .pbtn+.pbtn{border-left:1px solid #4a4a4a}
+.pbtn{display:block;width:100%;padding:11px 6px;background:transparent;color:#eaeaea;border:none;font-size:var(--ui-size);font-weight:600;letter-spacing:.04em;cursor:pointer;text-align:center}
+.pbtn:hover{background:#242424}
+.optrow{margin:14px 0}.optrow label{display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-bottom:7px;color:#bbb}.optrow input[type=range]{width:100%;accent-color:#8ea9df}.optreset{background:#292929;color:#bbb;border:1px solid #444;padding:7px 11px;border-radius:4px;font-size:13px;cursor:pointer}
+main{max-width:740px;margin:0 auto;padding:54px 22px 60px 62px;transition:padding .25s}
+@media(min-width:1000px){body.po main{padding-left:328px;max-width:1050px}}
+#loc{color:var(--dim);font-size:13px;letter-spacing:.1em;margin-bottom:14px;text-align:center}
+#story p{line-height:1.8;margin:0 0 14px;font-size:var(--story-size);word-break:keep-all}
+#story .note{display:block;color:#c9b26b;font-size:14px;margin:6px 0}
+#story .imp{color:#e46a6a;font-style:italic}
+#story .sys{color:var(--dim);font-size:14px}
+.fx{font-size:13px;color:var(--dim);margin:4px 0 6px}
+.fx span{margin-right:10px}.fx .up{color:#7fc97f}.fx .dn{color:#e46a6a}
+hr{border:none;border-top:1px solid var(--line);margin:22px 0}
+#choices{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:2px 0}
+.ch-sec{color:#e6e6e6;font-size:15px;font-weight:600;margin:14px 0 4px}
+.ch-sec:first-child{margin-top:2px}
+#choices button{display:block;width:auto;max-width:100%;margin:0;padding:0;border:0;border-radius:0;background:none;color:#6ea8fe;font-size:var(--choice-size);font-weight:600;line-height:1.65;cursor:pointer;text-align:left;word-break:keep-all}
+#choices button:hover{background:none;color:#a9cbff;text-decoration:underline}
+#choices button.off{color:#666;opacity:.75}
+#choices button.risk{color:#e08a5a}
+#choices button.risk:hover{color:#f2ad83}
+.lp-box{font-size:14px;line-height:1.65;color:#e6e6e6}
+.lp-bar{display:flex;justify-content:space-between;align-items:center;background:#141414;border:1px solid #3a3a3a;border-radius:5px;padding:7px 11px;margin-bottom:12px;font-size:12px;color:#9a9a9a}
+.lp-tabs{display:flex;gap:6px;margin-bottom:12px;border-bottom:1px solid #3a3a3a;padding-bottom:8px}
+.lp-tab{background:#1a1a1a;color:#9a9a9a;border:1px solid #3a3a3a;border-radius:4px;padding:6px 11px;font-size:13px;cursor:pointer;margin:0}
+.lp-tab.active{background:#263244;color:#8eb8ff;border-color:#537bb8;font-weight:700}
+.lp-card{background:#181818;border:1px solid #333;border-radius:6px;padding:10px 12px;margin-bottom:9px}
+.lp-card h4{margin:0 0 4px;font-size:14px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lp-card p{margin:0 0 8px;font-size:13px;color:#b8b8b8;line-height:1.55}
+.lp-badge{font-size:11px;padding:2px 6px;border-radius:3px;background:#262626;color:#c9b26b;border:1px solid #444;white-space:nowrap}
+.lp-badge.ok{color:#7fc97f;border-color:#3d6b3d}
+.lp-badge.warn{color:#e08a5a;border-color:#6b4433}
+.lp-actions{display:flex;flex-wrap:wrap;gap:6px}
+.lp-actions button{margin:0;font-size:12px;padding:5px 10px}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+#modal[hidden]{display:none}
+.box{background:#1f1f1f;border:1px solid #444;border-radius:8px;max-width:540px;width:100%;max-height:88vh;overflow:auto;padding:20px}
+.box h3{margin:0 0 12px;font-size:18px}
+.box p,.box li{line-height:1.7;font-size:14px}
+.box table{width:100%;border-collapse:collapse;font-size:14px}
+.box td{padding:6px 4px;border-bottom:1px solid #2e2e2e;vertical-align:top}
+.box td:first-child{color:var(--dim);width:36%}
+.box button{background:#2a2a2a;color:var(--text);border:1px solid #555;border-radius:4px;padding:8px 12px;cursor:pointer;margin:4px 4px 0 0;font-size:14px}
+.box button:hover{background:#343434}
+.box textarea{width:100%;height:80px;background:#111;color:#ccc;border:1px solid #444;font-size:12px}
+.bar{height:5px;background:#444;overflow:hidden}.bar i{display:block;height:100%}
+.relc{margin:10px 0 16px}.relc .t{display:flex;justify-content:space-between;font-size:15px}.relc .d{color:var(--dim);font-size:13px;margin-top:4px}
+.end h2{text-align:center;margin:10px 0 20px;font-size:24px}
+.shop-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.shop-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#252525;border:1px solid #353535;border-radius:6px}
+.shop-item div{max-width:72%}
+.shop-item b{font-size:14px;display:block;margin-bottom:2px}
+.shop-item span{font-size:12px;color:var(--dim);display:block;line-height:1.4}
+.wd-box{font-size:14px;line-height:1.7;color:#ddd}
+.wd-title{font-size:16px;font-weight:700;text-decoration:underline;margin:10px 0 6px;color:#fff}
+.wd-links{margin:6px 0 10px;line-height:1.8}
+.wd-link{color:#6ea8fe;cursor:pointer;text-decoration:none;font-weight:600}
+.wd-link:hover{text-decoration:underline;color:#9ec5fe}
+.wd-link.active{color:#e0c040;text-decoration:underline}
+.wd-sep{color:#666;margin:0 5px}
+.wd-radios{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0 12px;font-size:13px}
+.wd-radios label{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.wd-sets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}
+.wd-setbtn{background:#181818;color:#6ea8fe;border:1px solid #444;padding:10px 8px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;border-radius:2px}
+.wd-setbtn:hover{background:#242424;border-color:#6ea8fe}
+.wd-hr{border:none;border-top:1px solid #3a3a3a;margin:14px 0}
+.wd-item{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border:1px solid #2e2e2e;background:#191919;margin-bottom:6px;border-radius:3px}
+.wd-item.worn{border-color:#e0c040;background:#222018}
+.wd-item-info b{font-size:13px;color:#eee;display:block}
+.wd-item-info span{font-size:12px;color:#999}
+.wd-actbtn{background:#252525;color:#8ea9df;border:1px solid #4a4a4a;padding:4px 10px;font-size:12px;cursor:pointer;border-radius:2px}
+.wd-actbtn:hover{background:#333;color:#fff}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="mini-bar" title="사이드바 열기"></div>
+  <aside id="panel">
+    <div id="dol-top"></div>
+    <div id="stats"></div>
+    <div id="dol-tip"></div>
+    <div class="dol-grid">
+      <button class="pbtn" data-m="status">캐릭터 특성</button>
+      <button class="pbtn" data-m="rel">사회관계</button>
+      <div class="dol-grid-row">
+        <button class="pbtn" data-m="traits">성향·병력</button>
+        <button class="pbtn" data-m="journal">일지·가계</button>
+      </div>
+      <div class="dol-grid-row">
+        <button class="pbtn" data-m="tech">기술·지식</button>
+        <button class="pbtn" data-m="wardrobe">옷장·소지품</button>
+      </div>
+    </div>
+    <div class="dol-grid">
+      <div class="dol-grid-row">
+        <button class="pbtn" data-m="options">화면 옵션</button>
+        <button class="pbtn" data-m="save">저장</button>
+      </div>
+    </div>
+  </aside>
+  <button id="tog" aria-label="패널 열기">›</button>
+  <main>
+    <div id="loc"></div>
+    <div id="story"></div>
+    <hr>
+    <div id="choices"></div>
+  </main>
+  <div id="modal" hidden><div class="box" id="mbox"></div></div>
+</div>
+<script>
+"use strict";
+/* ============ 기본 설정 ============ */
+const DAYS=['월요일','화요일','수요일','목요일','금요일','토요일','일요일'];
+const RENT=450, WIFE_PAY=300;
+const STATN={fat:'피로',str:'스트레스',tra:'트라우마',ctl:'통제',cha:'매력'};
+const STATC={fat:'#e0a03a',str:'#e05555',tra:'#6a7fe0',ctl:'#e0c040',cha:'#d77ad0'};
+const SKILLN={mech:'정비 기술',street:'거리의 요령',know:'생활 지식',craft:'손재주'};
+const SKILLD={
+  mech:'엔진과 기계 구조를 이해하고 수리하는 능력. (시립 도서관 기술 자료 코너·정비소에서 습득)',
+  street:'사람들 사이에서 눈치채지 않고 움직이고 분위기를 읽는 감각. (주민센터 민원실·해변·뒷골목에서 체득)',
+  know:'구직·생활·시사·사람에 관한 실용적 지식. (시립 도서관 열람실·카페·병원 자료실에서 습득)',
+  craft:'작은 물건을 고치고 도구를 섬세하게 다루는 능력. (주민센터 시민 공방·로사의 집·공원에서 수련)'
+};
+const DEFAULT_SKILLS={mech:28,street:12,know:18,craft:22};
+const ATTRN={strg:'근력',stam:'지구력',dex:'손놀림',calm:'침착성'};
+const ATTRD={
+  strg:'육체적 완력과 타격력. 공원 철봉, 교도소 운동장, 육체노동을 통해 단련되며 몸싸움·탈옥·군/경찰 업무에 영향을 줍니다.',
+  stam:'장시간 버티는 체력과 회복력. 조깅과 규칙적인 운동으로 오르며 피로 누적 속도를 줄이고 도주 성공률을 높입니다.',
+  dex:'정교한 손놀림과 반사 신경. 공방 작업이나 정비, 철사 따기 등을 통해 오르며 소매치기·자물쇠 해제·수리 효율을 높입니다.',
+  calm:'위기 상황에서도 흔들리지 않는 평정심. 명상, 상담, 독서를 통해 오르며 스트레스 저항과 심문·탈옥 은신에 유리합니다.'
+};
+const DEFAULT_ATTRS={strg:34,stam:30,dex:26,calm:24};
+const GANG_RANKS=['없음','조직 행동대원','구역 관리자 (간부)','조직 보스 (뒷골목의 왕)'];
+
+const NPC={
+  maria:{n:'마리아 (아내)',d:'25세. 식당 서빙과 계산대 일을 하며 가족을 먹여 살리고 있다. 지쳐 있지만 아직 당신을 믿고 싶어 한다.'},
+  emily:{n:'에밀리 (딸)',d:'4살. 토끼 인형 "버니"를 어디든 들고 다닌다. 아빠의 의안을 "해적 눈"이라고 부른다.'},
+  hanna:{n:'한나 웰스 박사',d:'세인트 메리 병원의 상담사. 법원 명령으로 시작된 분노 조절 카운슬링 담당.'},
+  walter:{n:'월터',d:'공원 벤치의 노인. 베트남 참전 용사. 말수는 적지만 사람을 잘 본다.'},
+  sophie:{n:'소피',d:'카페 "모닝 글로리"의 바리스타. 수다스럽고 동네 소식에 밝다.'},
+  frank:{n:'프랭크',d:'주유소 옆 정비소 사장. 깐깐하지만 일 잘하는 사람을 알아본다.'},
+  tony:{n:'토니 레예스',d:'10대 시절 패거리 친구. 당신이 눈을 잃던 밤에도 그 자리에 있었다. 지금은 빅 살바토레 조직의 중간책이다.'},
+  jess:{n:'제시카',d:'해변 비치 바의 단골. 위험할 만큼 매력적인 웃음을 가졌다.'},
+  rosa:{n:'로사 곤잘레스',d:'같은 아파트 3층에 사는 62세 이웃. 오래된 라디오와 화분을 아끼며, 남의 사정을 함부로 캐묻지 않는다.'},
+  vince:{n:'빈스',d:'웨스트게이트 쇼핑몰 안쪽 타투샵 「블랙 앵커」의 타투이스트. 묵묵히 바늘을 놀리며 손님들의 흉터와 사연을 새긴다.'},
+  don:{n:'빅 살바토레',d:'항구와 뒷골목을 장악한 범죄 조직의 노회한 보스. 냉혹하지만 능력과 충성심을 보인 자에겐 조직을 물려줄 생각을 품고 있다.'}
+};
+
+const JOBS={
+  mech:{n:'정비공 (프랭크의 정비소)',loc:'gas',days:[0,1,2,3,4],start:8,hours:8,pay:95},
+  guard:{n:'쇼핑몰 경비원',loc:'mall',days:[2,3,4,5,6],start:14,hours:8,pay:75},
+  cafe:{n:'카페 아르바이트',loc:'cafe',days:[0,2,4,5],start:7,hours:6,pay:55},
+  clean:{n:'병원 저녁 청소부',loc:'hospital',days:[0,1,2,3,4],start:16,hours:7,pay:65},
+  police:{n:'순찰 경관 (제4지구 경찰서)',loc:'precinct',days:[0,1,2,3,4],start:8,hours:8,pay:145,pro:true},
+  army:{n:'주방위군 차량·병기 정비병',loc:'base',days:[0,1,2,3,4],start:7,hours:9,pay:155,pro:true}
+};
+
+const PL={
+  home:{n:'집 · 낡은 아파트 4층'},
+  street:{n:'윌로우 크릭 드라이브'},
+  westbrook:{n:'웨스트 브룩 에비뉴'},
+  seabreeze:{n:'시브리즈 블러바드'},
+  civic:{n:'시빅 센터 드라이브'},
+  park:{n:'시립 공원'},
+  hospital:{n:'세인트 메리 병원'},
+  cafe:{n:'카페 「모닝 글로리」',open:[7,21]},
+  beach:{n:'해변'},
+  mall:{n:'웨스트게이트 쇼핑몰',open:[10,22]},
+  gas:{n:'주유소 & 정비소'},
+  library:{n:'시립 도서관',open:[9,21]},
+  community:{n:'동부 지구 주민센터',open:[9,18]},
+  precinct:{n:'제4지구 경찰서',open:[8,22]},
+  base:{n:'포트 밀러 주방위군 기지',open:[7,20]},
+  prison:{n:'블랙우드 시립 교도소'},
+  alley:{n:'어두운 뒷골목'},
+  club:{n:'클럽 「벨벳 스모크」',open:[18,4]},
+  dealer:{n:'뒷골목 마약상'},
+  hideout:{n:'살바토레 조직 본거지'},
+  site:{n:'일용직 작업 현장'}
+};
+
+const TATTOOS=[
+  {id:'anchor',n:'낡은 닻 (왼팔 전완)',cost:75,cha:3,ctl:2,tra:0,desc:'거친 파도 속에서도 휩쓸리지 않겠다는 다짐을 왼팔에 새깁니다.'},
+  {id:'compass',n:'북극성 나침반 (오른쪽 어깨)',cost:110,cha:4,ctl:3,tra:-1,desc:'길을 잃지 않기 위한 나침반 도안. 빈스의 정교한 명암 작업이 돋보입니다.'},
+  {id:'eye',n:'감은 눈과 월계수 (목덜미)',cost:140,cha:6,ctl:0,tra:-2,desc:'잃어버린 왼쪽 눈을 애도하고 받아들이는 상징. 거울을 볼 때마다 묘한 해방감이 듭니다.'},
+  {id:'coverup',n:'흉터 커버업 (가슴·옆구리)',cost:180,cha:5,ctl:4,tra:-4,desc:'어린 시절의 상처와 흉터 위로 짙은 먹색 문양을 덮어 과거의 흔적을 지워냅니다.'}
+];
+
+const FURNITURE=[
+  {id:'lamp',n:'따뜻한 원목 플로어 스탠드',p:45,str:-2,desc:'어두운 거실 구석을 은은하게 밝혀주는 조명. 밤에 집에 있을 때 마음이 차분해집니다.'},
+  {id:'bookshelf',n:'원목 책장과 동화책 코너',p:85,relE:4,desc:'에밀리의 그림책과 스콧의 정비 교본을 깔끔하게 꽂아둘 수 있는 3단 책장입니다.'},
+  {id:'table',n:'4인용 접이식 원목 식탁 세트',p:130,relM:6,desc:'삐걱거리던 낡은 상 대신 세 식구가 마주 앉아 저녁을 먹을 수 있는 단정한 식탁입니다.'},
+  {id:'sofa',n:'포근한 패브릭 2인용 소파',p:190,fat:-4,str:-3,desc:'낡고 꺼진 의자 대신 거실에 놓는 푹신한 소파. 휴식과 수면의 질이 높아집니다.'},
+  {id:'bunk',n:'에밀리 전용 별빛 침대 프레임',p:160,relE:8,relM:4,desc:'에밀리가 버니 인형과 함께 푹 잘 수 있는 아담한 어린이 침대입니다.'}
+];
+
+const CLOTH_SLOTS=[
+  {k:'head',n:'머리'},{k:'face',n:'얼굴'},{k:'neck',n:'목'},
+  {k:'upper',n:'상의'},{k:'lower',n:'하의'},
+  {k:'underUpper',n:'속옷 상의'},{k:'underLower',n:'속옷 하의'},
+  {k:'hands',n:'손'},{k:'handheld',n:'소지품'},
+  {k:'legs',n:'다리'},{k:'feet',n:'신발'}
+];
+
+const CLOTH_CATALOG=[
+  {id:'cap_worn',slot:'head',n:'낡은 야구 모자',col:'남색',warmth:2,cha:0,integ:75,desc:'챙이 조금 바랜 면 모자.'},
+  {id:'beanie_wool',slot:'head',n:'두꺼운 니트 비니',col:'회색',warmth:5,cha:1,integ:95,desc:'찬 바람을 막아주는 털모자.'},
+  {id:'patch_black',slot:'face',n:'검은 가죽 안대',col:'검정',warmth:1,cha:1,integ:100,desc:'의안 대신 왼쪽 눈을 가릴 때 쓰는 단정한 안대.'},
+  {id:'scarf_knit',slot:'neck',n:'체크무늬 목도리',col:'갈색',warmth:4,cha:2,integ:90,desc:'목덜미를 따뜻하게 감싸주는 목도리.'},
+  {id:'dogtag',slot:'neck',n:'오래된 금속 인식표',col:'은색',warmth:0,cha:1,integ:100,desc:'젊은 시절부터 지니고 있던 낡은 군번줄.'},
+  {id:'tee_grey',slot:'upper',n:'물 빠진 회색 티셔츠',col:'회색',warmth:2,cha:0,integ:70,desc:'집에서 편하게 입는 면 티셔츠.'},
+  {id:'flannel_shirt',slot:'upper',n:'체크 플란넬 셔츠',col:'붉은색',warmth:4,cha:2,integ:85,desc:'소매를 걷어 입기 좋은 작업용 셔츠.'},
+  {id:'jacket_grey',slot:'upper',n:'짙은 회색 울 재킷',col:'차콜',warmth:6,cha:5,integ:100,desc:'단정하고 믿음직한 인상을 주는 외출용 재킷.'},
+  {id:'hoodie_navy',slot:'upper',n:'기모 후드 집업',col:'남색',warmth:5,cha:1,integ:90,desc:'가볍게 걸치기 좋은 두꺼운 후드.'},
+  {id:'jeans_old',slot:'lower',n:'기름때 묻은 청바지',col:'청색',warmth:3,cha:0,integ:75,desc:'무릎 부분이 살짝 닳은 작업용 청바지.'},
+  {id:'pants_chino',slot:'lower',n:'단정한 면 치노 팬츠',col:'베이지',warmth:3,cha:3,integ:95,desc:'면접이나 외출에 어울리는 깔끔한 바지.'},
+  {id:'sweats_home',slot:'lower',n:'편안한 트레이닝 바지',col:'검정',warmth:3,cha:-1,integ:85,desc:'잠잘 때나 집에서 쉴 때 입는 바지.'},
+  {id:'undershirt_w',slot:'underUpper',n:'흰색 면 런닝셔츠',col:'흰색',warmth:2,cha:0,integ:85,desc:'기본 면 속옷 상의.'},
+  {id:'boxer_dark',slot:'underLower',n:'면 트렁크 팬티',col:'남색',warmth:1,cha:0,integ:90,desc:'평범한 남성용 속옷.'},
+  {id:'gloves_work',slot:'hands',n:'가죽 작업 장갑',col:'갈색',warmth:3,cha:1,integ:90,desc:'정비나 힘든 일을 할 때 손을 보호하는 장갑.'},
+  {id:'umbrella_blk',slot:'handheld',n:'튼튼한 검은 장우산',col:'검정',warmth:1,cha:1,integ:100,desc:'비와 폭풍우로부터 몸이 젖는 것을 막아주는 우산.'},
+  {id:'socks_thick',slot:'legs',n:'두꺼운 면 양말',col:'흰색',warmth:2,cha:0,integ:85,desc:'발을 보호해 주는 기본 양말.'},
+  {id:'boots_work',slot:'feet',n:'낡은 가죽 작업화',col:'갈색',warmth:4,cha:1,integ:80,desc:'밑창이 튼튼한 정비공용 부츠.'},
+  {id:'sneakers_clean',slot:'feet',n:'깔끔한 검은 스니커즈',col:'검정',warmth:3,cha:2,integ:95,desc:'가볍고 단정한 외출용 운동화.'}
+];
+
+/* ============ 상태 ============ */
+let S, buf=[], choices=[], fx={}, isMenu=false, pageTitle='';
+const R=Math.random;
+const clamp=(v,a=0,b=100)=>Math.max(a,Math.min(b,Math.round(v)));
+const pick=a=>a[Math.floor(R()*a.length)];
+const hh=()=>Math.floor(S.t/60);
+const wd=()=>(S.day-1)%7;
+const weekend=()=>wd()>=5;
+const tstr=()=>String(hh()).padStart(2,'0')+':'+String(S.t%60).padStart(2,'0');
+const effCtl=()=>S.alc>0?clamp(S.st.ctl-Math.round(S.alc*0.45)):S.st.ctl;
+
+function newState(){
+  const startClothes=['tee_grey','jeans_old','undershirt_w','boxer_dark','socks_thick','boots_work'];
+  return {
+    money:180,t:7*60,day:1,weather:'맑음',temp:16,wet:0,
+    st:{fat:25,str:40,tra:45,ctl:100,cha:30},
+    alc:0,
+    skills:Object.assign({},DEFAULT_SKILLS),
+    attrs:Object.assign({},DEFAULT_ATTRS),
+    rel:{maria:50,emily:75},met:{maria:1,emily:1},
+    loc:'home',
+    inv:{beer:2,flower:0,toy:0,watch:0,cologne:0,bookset:0,vitamin:0,notebook:0,umbrella:0},
+    furniture:[],
+    wardrobe:startClothes.slice(),
+    worn:{head:null,face:null,neck:null,upper:'tee_grey',lower:'jeans_old',underUpper:'undershirt_w',underLower:'boxer_dark',hands:null,handheld:null,legs:'socks_thick',feet:'boots_work'},
+    outfitSets:[
+      {name:'잠옷',items:{upper:'tee_grey',lower:'sweats_home',underUpper:'undershirt_w',underLower:'boxer_dark'}},
+      {name:'일상복',items:{upper:'tee_grey',lower:'jeans_old',underUpper:'undershirt_w',underLower:'boxer_dark',legs:'socks_thick',feet:'boots_work'}},
+      {name:'외출복',items:{upper:'flannel_shirt',lower:'pants_chino',underUpper:'undershirt_w',underLower:'boxer_dark',legs:'socks_thick',feet:'sneakers_clean'}},
+      {name:'작업복',items:{head:'cap_worn',upper:'flannel_shirt',lower:'jeans_old',hands:'gloves_work',legs:'socks_thick',feet:'boots_work'}}
+    ],
+    tattoos:[],
+    crave:35,heat:0,job:null,
+    gangRank:0,gangRep:0,
+    prison:null,
+    missedRent:0,rentPaid:0,leads:{},interviews:{},flags:{},daily:{},sober:0,drank:false,
+    crimes:0,crimeMoney:0,ended:false,injured:false,pendingTony:null,
+    rent:RENT,shift:null,pendingLife:null
+  };
+}
+
+/* ============ 출력 도우미 ============ */
+function say(...t){t.forEach(x=>buf.push('<p>'+x+'</p>'))}
+function note(t){buf.push('<p class="note">'+t+'</p>')}
+function sys(t){buf.push('<p class="sys">'+t+'</p>')}
+function st(k,d){if(!d)return;const o=S.st[k];S.st[k]=clamp(o+d);const r=S.st[k]-o;if(r)fx[k]=(fx[k]||0)+r;}
+function alcMod(d){if(!d)return;const o=S.alc;S.alc=clamp(o+d);const r=S.alc-o;if(r)fx.alc=(fx.alc||0)+r;}
+function rel(k,d){if(!S.met[k]){S.met[k]=1;if(S.rel[k]==null)S.rel[k]=20;}const o=S.rel[k];S.rel[k]=clamp(o+d);const r=S.rel[k]-o;if(r)fx['r_'+k]=(fx['r_'+k]||0)+r;}
+function cash(d){S.money+=d;fx.money=(fx.money||0)+d;}
+function lose(n){const a=Math.max(0,Math.min(S.money,Math.round(n)));if(a)cash(-a);return a;}
+/* 난이도: 기술·능력치는 소폭씩, 높을수록 더 더디게 오른다 */
+function skUp(k,n){const cur=S.skills[k]||0;const g=Math.max(0.2,n*0.45*(1-cur/120));S.skills[k]=Math.min(100,Math.round((cur+g)*10)/10);return g;}
+function atUp(k,n){const cur=S.attrs[k]||0;const g=Math.max(0.2,n*0.45*(1-cur/120));S.attrs[k]=Math.min(100,Math.round((cur+g)*10)/10);return g;}
+const fl=v=>Math.floor(v||0);
+function fmtDur(min){
+  if(!min)return '';
+  const h=Math.floor(min/60),m=min%60;
+  return ` (${h}:${String(m).padStart(2,'0')})`;
+}
+function opt(label,fn,o={}){
+  const sec=o.sec||'poi';
+  const dur=o.min?fmtDur(o.min):'';
+  const tag=o.tag?` (${o.tag})`:'';
+  choices.push(Object.assign({label:label+dur+tag,fn,sec},o));
+}
+
+function flushFx(){
+  const keys=Object.keys(fx).filter(k=>fx[k]);if(!keys.length)return;
+  const good={fat:-1,str:-1,tra:-1,ctl:1,cha:1,alc:-1,money:1};
+  const h=keys.map(k=>{
+    const v=fx[k];let nm,g;
+    if(k==='money'){nm='돈';g=1}
+    else if(k==='alc'){nm='음주';g=-1}
+    else if(k.startsWith('r_')){nm=NPC[k.slice(2)].n.split(' ')[0];g=1}
+    else{nm=STATN[k];g=good[k]}
+    const cls=(v*g>0)?'up':'dn';
+    if(k==='money')return `<span class="${cls}">${nm} ${v>0?'+':''}$${Math.abs(v)}</span>`;
+    const a=Math.abs(v);
+    const sign=v>0?'+':'-';
+    const mark=a<4?sign:a<10?(sign+sign):(sign+sign+sign);
+    return `<span class="${cls}">${nm} ${mark}</span>`;
+  }).join('');
+  buf.push('<div class="fx">'+h+'</div>');fx={};
+}
+
+/* ============ 시간 ============ */
+function pass(min,o={}){
+  let left=min;
+  while(left>0){
+    const step=Math.min(60,left);left-=step;S.t+=step;
+    const stamFactor=Math.max(0.65,1-(S.attrs?.stam||30)*0.003);
+    if(o.sleep) st('fat',-step/60*(o.rest||12));
+    else st('fat',step/60*(o.work?4:2.2)*stamFactor);
+    if(!o.drinking && S.alc>0){
+      const drop=(step/60)*(o.sleep?11:7);
+      S.alc=Math.max(0,Math.round((S.alc-drop)*10)/10);
+      if(S.alc<1)S.alc=0;
+    }
+    if(S.t>=1440){S.t-=1440;newDay();}
+  }
+}
+
+function newDay(){
+  const prevWd=wd();const prevDay=S.day;
+  if(S.prison){
+    S.day++;S.daily={};S.flags.nightOutWarn=0;
+    S.weather=pick(['맑음','맑음','흐림','흐림','비','폭풍우']);
+    const baseTemp={맑음:18,흐림:14,비:11,폭풍우:8}[S.weather]||15;
+    S.temp=baseTemp+Math.floor(R()*5)-2;
+    if(S.drank){S.sober=0}else{S.sober++}
+    S.drank=false;S.crave=Math.max(0,S.crave-4);
+    S.heat=Math.max(0,S.heat-5);
+    if(S.injured&&R()<0.3)S.injured=false;
+    S.prison.daysLeft--;
+    if(S.prison.daysLeft<=0){
+      const crimeLabel=S.prison.reason;
+      S.prison=null;
+      S.loc='street';
+      S.heat=Math.max(0,S.heat-25);
+      st('str',-10);
+      note(`형기(${crimeLabel})를 모두 마치고 블랙우드 교도소 정문 밖으로 출소했습니다. 윌로우 크릭 드라이브로 돌아왔습니다.`);
+    }else{
+      rel('maria',-1);
+      note(`수감 ${S.prison.totalDays-S.prison.daysLeft}일째. 출소까지 ${S.prison.daysLeft}일 남았습니다.`);
+    }
+    return;
+  }
+  if(S.job){
+    const J=JOBS[S.job.id];
+    if(J.days.includes(prevWd)&&S.job.lastDay!==prevDay&&S.job.hired<prevDay){
+      note(`어제 「${J.n}」에 무단결근했습니다.`);
+      addStrike('무단결근',2);
+    }
+  }
+  if(S.loc!=='home'&&!S.flags.nightOutWarn){rel('maria',-4);S.flags.nightOutWarn=1;}
+  S.day++;S.daily={};S.flags.nightOutWarn=0;
+  S.weather=pick(['맑음','맑음','맑음','흐림','흐림','비','비','폭풍우']);
+  const baseTemp={맑음:18,흐림:14,비:11,폭풍우:8}[S.weather]||15;
+  S.temp=baseTemp+Math.floor(R()*5)-2;
+  if(S.drank){S.sober=0}else{S.sober++}
+  S.drank=false;S.crave=clamp(S.crave+7);
+  if(S.crave>=60){st('str',5);}
+  if(S.st.str>=90)st('ctl',-6);else if(S.st.str>=70)st('ctl',-3);
+  if(S.st.tra>=60)st('ctl',-1);
+  S.heat=Math.max(0,S.heat-3);
+  if(S.injured&&R()<0.25)S.injured=false;
+  if(S.job)rel('maria',1);else if(S.day>=6)rel('maria',-1);
+  if(S.gangRank>=2){
+    const passive=S.gangRank===3?220:90;
+    cash(passive);
+    note(S.gangRank===3?`조직 보스 상납금 $${passive}가 들어왔습니다.`:`구역 관리 몫으로 조직에서 $${passive}를 보내왔습니다.`);
+  }
+  const w=wd();
+  if(w===4){const wp=WIFE_PAY-(S.flags.wifeCut?120:0);S.flags.wifeCut=0;cash(wp);note(`금요일. 마리아의 주급 $${wp}가 생활비 통장에 들어왔습니다.`);}
+  if(w===2){const bill=38+Math.floor(R()*25);const p=lose(bill);note(`수요일. 전기·수도·가스 공과금 $${p}가 빠져나갔습니다.`);if(p<bill){st('str',6);rel('maria',-3);S.flags.rentExtra=(S.flags.rentExtra||0)+(bill-p)+10;note(`잔액 부족으로 공과금 $${bill-p}가 연체되었습니다. 연체료 $10와 함께 다음 집세에 합산됩니다.`);}}
+  if(w===3&&S.flags.medDebt){const p=lose(S.flags.medDebt);S.flags.medDebt-=p;if(p)note(`병원 미납 진료비 $${p}가 청구되었습니다.${S.flags.medDebt?` (남은 미납금 $${S.flags.medDebt})`:''}`);}
+  if(S.flags.tooth){st('str',4);st('fat',2);note('어금니가 밤새 욱신거렸습니다. (병원에서 치과 진료 가능)');}
+  if(S.flags.fineDue&&S.day>=S.flags.fineDue){S.flags.fineDue=0;const p=lose(100);st('str',6);note(`미납 과태료가 가산금과 함께 $${p} 강제 징수되었습니다.`);}
+  if(S.flags.loanBack&&S.day>=S.flags.loanBack.day){const lb=S.flags.loanBack;S.flags.loanBack=null;if(lb.amt){cash(lb.amt);note(`동료가 빌려 간 $${lb.amt}를 약속대로 갚았습니다.`);}else{st('str',5);note('돈을 빌려 간 동료가 당신을 피해 다닙니다. 40달러는 떼인 모양입니다.');}}
+  if(S.flags.luciaBack&&S.day>=S.flags.luciaBack.day){const lb=S.flags.luciaBack;S.flags.luciaBack=null;if(lb.amt){cash(lb.amt);note('루시아가 빌려 간 $100를 갚았습니다. 마리아가 안도의 한숨을 쉽니다.');}else{st('str',4);note('루시아에게선 소식이 없습니다. 마리아는 그 이야기를 꺼내지 않습니다.');}}
+  if(w===0){
+    const due=S.rent+(S.flags.rentExtra||0);
+    if(S.money>=due){cash(-due);S.rentPaid++;S.flags.rentExtra=0;note(`월요일. 집세 $${due}${due>S.rent?` (추가 청구분 포함)`:''}가 빠져나갔습니다. (남은 돈 $${S.money})`);}
+    else{S.missedRent++;st('str',20);rel('maria',-15);
+      note(S.missedRent>=2?`집세를 또 내지 못했습니다...`:`집세 $${due}를 내지 못했습니다! 집주인 고든 씨가 문에 최후통첩을 붙였습니다. 다음 주에도 못 내면 쫓겨납니다.`);}
+  }
+  if(S.flags.emilyWorse&&S.day>=S.flags.emilyWorse){S.flags.emilyWorse=0;S.pendingLife='emilyWorse';}
+  else if(!S.pendingLife&&S.day>=3&&R()<0.38)S.pendingLife=pickLife();
+}
+
+function isOpen(l){const o=PL[l].open;if(!o)return true;const h=hh();return h>=o[0]&&h<o[1];}
+const mariaHome=()=>{const h=hh();if(h>=23||h<6)return false;return weekend()?true:(h>=18||(h<7&&h>=6)||S.daily.mariaOff);};
+const emilyHome=()=>{const h=hh();if(h>=21||h<7)return false;return weekend()?true:(h>=18||(S.daily.picked&&h>=17));};
+
+/* ============ 메인 루프 ============ */
+function choose(i){
+  const c=choices[i];if(!c)return;
+  buf=[];fx={};choices=[];isMenu=false;pageTitle='';
+  let fn=c.fn;
+  if(c.imp){
+    const p=Math.max(0,100-effCtl())/110;
+    if(R()<p){
+      buf.push(`<p class="imp">당신은 「${c.label.replace(/<[^>]+>/g,'')}」을(를) 택하려 했습니다. 하지만 ${S.alc>0?'술기운에 휩싸인 ':'스콧의 '}몸이 먼저 움직였습니다.</p>`);
+      fn=c.imp;
+    }
+  }
+  fn();
+  after();
+}
+function after(){
+  if(!S.ended)checks();
+  flushFx();
+  if(!S.ended&&choices.length===0)menu();
+  render();
+}
+function checks(){
+  if(choices.length)return;
+  if(S.prison)return;
+  if(S.missedRent>=2)return endGame('evict');
+  if(S.rel.maria<=0)return endGame('leave');
+  if(S.st.ctl<=0)return endGame('lost');
+  if(S.day>=29&&S.job&&S.missedRent===0&&!S.flags.goodEnd){S.flags.goodEnd=1;return endGame('good');}
+  if(S.st.fat>=100){collapse();return;}
+  if(S.st.str>=100){breakdown();return;}
+  if(S.pendingLife&&!S.shift){
+    const L=LIFE[S.pendingLife];
+    if(!L){S.pendingLife=null;return;}
+    if(!L.home||S.loc==='home'){S.pendingLife=null;L.run();return;}
+  }
+}
+function menu(){
+  isMenu=true;
+  if(!buf.length)say(desc());
+  LOC[S.loc]();
+}
+function hasUmbrella(){
+  return (S.inv&&S.inv.umbrella>0)||(S.worn&&S.worn.handheld==='umbrella_blk')||(S.wardrobe&&S.wardrobe.includes('umbrella_blk'));
+}
+function weatherExposure(l){
+  const outdoor=['street','westbrook','seabreeze','civic','park','beach','gas'];
+  if(!outdoor.includes(l))return;
+  const w=S.weather;
+  if(w==='비'||w==='폭풍우'){
+    if(hasUmbrella()){
+      if(S.worn.handheld!=='umbrella_blk'&&S.wardrobe.includes('umbrella_blk'))S.worn.handheld='umbrella_blk';
+      sys(w==='폭풍우'?'강한 비바람이 몰아치지만 검은 우산을 단단히 쥐어 몸이 젖는 것을 막았습니다.':'우산 위로 빗방울이 톡톡 떨어집니다. 우산 덕분에 옷이 젖지 않았습니다.');
+    }else{
+      const strAdd=w==='폭풍우'?8:4;
+      const fatAdd=w==='폭풍우'?5:2;
+      st('str',strAdd);st('fat',fatAdd);
+      say(w==='폭풍우'
+        ?'<b>우산이 없어 폭풍우를 온몸으로 맞았습니다!</b> 차가운 빗물이 셔츠와 바지 속까지 스며들어 온몸이 젖어 듭니다. 불쾌한 한기에 신경이 날카로워집니다.'
+        :'<b>우산이 없어 비를 그대로 맞았습니다.</b> 축축하게 젖은 옷이 몸에 들러붙어 찝찝하고 스트레스가 쌓입니다.');
+      if(R()<0.35){st('cha',-1);note('빗물에 젖어 행색이 초라해졌습니다. (매력 -)');}
+    }
+  }else if(w==='맑음'&&hh()>=10&&hh()<=16&&R()<0.25){
+    st('str',-1);
+    sys('따스한 햇살이 얼굴을 비춥니다. 잠시나마 기분이 한결 가벼워집니다.');
+  }
+}
+function go(l,min){
+  pass(min||15);S.loc=l;say(arrive(l));
+  weatherExposure(l);
+  if(S.st.tra>=50 && S.st.str>=55 && !S.daily.ptsd && R()<0.28){
+    S.daily.ptsd=1;
+    ptsdEpisode();
+    return;
+  }
+  if((l==='street'||l==='westbrook'||l==='seabreeze'||l==='civic')&&R()<0.3)streetEncounter();
+  else if(l==='beach'&&!S.met.tony&&hh()>=16&&hh()<23&&S.day>=2)meetTony();
+}
+
+/* ============ 정신질환 심화 이벤트 (플래시백·과각성·해리) ============ */
+function ptsdEpisode(){
+  const mode=pick(['flashback','hyper','dissoc']);
+  if(mode==='flashback'){
+    say('<b>갑자기 주변 소리가 멎습니다.</b> 지나가던 행인의 구두 소리가 어두운 골목의 발소리로 겹쳐 들리고, 깨진 맥주병의 날카로운 섬광이 왼쪽 눈구멍을 찌릅니다.');
+    say('스콧은 벽에 등을 기댄 채 거칠게 숨을 몰아쉽니다. 심장이 갈비뼈를 부술 듯 두드립니다.');
+    opt('벽을 짚고 호흡을 가다듬는다 (5-4-3-2-1 감각 집중)',()=>{
+      pass(20);st('str',-4);st('tra',-1);st('ctl',2);
+      say('발바닥이 닿은 아스팔트의 감각, 차가운 공기 냄새에 억지로 집중합니다. 몇 분 뒤, 현실의 소음이 천천히 돌아옵니다.');
+    });
+    opt('공황 속에서 아무 골목으로 뛰쳐나간다',()=>{
+      pass(25);st('fat',10);st('str',8);st('tra',2);st('ctl',-3);
+      say('누군가 뒤에서 쫓아온다는 착각에 휩싸여 무작정 달립니다. 막다른 골목에서 무릎을 꿇고 나서야 아무도 없음을 깨닫습니다.');
+    },{cls:'risk'});
+  }else if(mode==='hyper'){
+    say('<b>과각성 상태.</b> 사각지대인 왼쪽 방향에서 누군가 스쳐 지나가는 순간, 온몸의 근육이 돌처럼 굳습니다. 스콧의 손이 저도 모르게 주먹을 쥐고 상대를 노려봅니다.');
+    opt('시선을 내리고 주먹을 편다',()=>{
+      pass(10);st('str',4);st('ctl',1);
+      say('한나 박사의 말을 떠올리며 억지로 손가락을 폅니다. 상대는 영문도 모른 채 발걸음을 재촉합니다.');
+    },{imp:()=>{
+      st('str',8);st('ctl',-4);S.heat+=2;
+      say('“뭘 꼬라봐?!” 목에서 거친 고함이 튀어나옵니다. 주변 사람들이 놀라 걸음을 멈춥니다.');
+    }});
+  }else{
+    say('<b>해리 증상.</b> 발밑의 땅이 물렁하게 꺼지는 기분이 듭니다. 유리벽 너머에서 남의 몸을 조종하는 것처럼 손끝에 감각이 없습니다.');
+    pass(30);st('str',5);st('tra',1);
+    say('30분이나 그 자리에 멍하니 서 있었다는 걸 시계를 보고서야 알아차립니다.');
+  }
+}
+
+/* ============ 묘사 ============ */
+function homeFurnitureDesc(){
+  if(!S.furniture||!S.furniture.length)return '';
+  const lines=[];
+  if(S.furniture.includes('sofa'))lines.push('거실 한쪽에는 새로 들인 패브릭 2인용 소파가 놓여 있어 예전보다 아늑합니다.');
+  if(S.furniture.includes('table'))lines.push('부엌 옆에는 4인용 원목 식탁 세트가 단정하게 자리 잡고 있습니다.');
+  if(S.furniture.includes('bookshelf'))lines.push('벽면의 원목 책장에는 에밀리의 그림책과 당신의 정비 교본이 가지런히 꽂혀 있습니다.');
+  if(S.furniture.includes('lamp'))lines.push('원목 플로어 스탠드가 집 안 구석을 따뜻한 불빛으로 비춥니다.');
+  if(S.furniture.includes('bunk'))lines.push('작은 방에는 에밀리 전용 별빛 침대가 놓여 있습니다.');
+  return lines.length?' '+lines.join(' '):'';
+}
+function weatherAtmosphere(){
+  const w=S.weather;
+  if(w==='맑음')return `창밖은 맑게 개어 있고 바깥 온도계는 ${S.temp}°C를 가리킵니다.`;
+  if(w==='흐림')return `잿빛 구름이 낮게 깔려 있으며 기온은 ${S.temp}°C입니다.`;
+  if(w==='비')return `유리창을 타고 빗줄기가 흘러내립니다. 기온은 ${S.temp}°C입니다.${hasUmbrella()?'':' (우산이 없어 외출하면 옷이 젖을 것입니다.)'}`;
+  return `세찬 비바람이 창문을 흔드는 폭풍우 날씨입니다. 기온은 ${S.temp}°C입니다.${hasUmbrella()?'':' (우산 없이 나가면 온몸이 흠뻑 젖을 것입니다!)'}`;
+}
+function desc(){
+  const h=hh(),w=S.weather;
+  switch(S.loc){
+    case 'home': {
+      const base=h<6||h>=22?'불 꺼진 아파트. 냉장고 모터 소리와 옆집 TV 소리만 웅웅거립니다.':
+        (mariaHome()?'좁은 거실. 마리아가 부엌에서 무언가를 하고 있습니다.':'텅 빈 아파트. 벽지 곰팡이 자국이 오늘따라 눈에 띕니다.');
+      return base+homeFurnitureDesc()+' '+weatherAtmosphere()+' 한쪽 구석에는 삐걱거리는 나무 옷장과 작은 거울이 놓여 있습니다.';
+    }
+    case 'street': return w==='비'||w==='폭풍우'?'빗물이 고인 윌로우 크릭 드라이브. 우산을 쓴 행인들이 발걸음을 재촉합니다.':'매연 냄새 나는 윌로우 크릭 드라이브. 병원과 시립 공원이 자리한 메인 도로입니다.';
+    case 'westbrook': return w==='비'||w==='폭풍우'?'젖은 아스팔트 위로 상점가 간판 불빛이 번집니다. 웨스트 브룩 에비뉴입니다.':'상점가와 주유소, 주류 판매점이 늘어선 웨스트 브룩 에비뉴입니다.';
+    case 'seabreeze': return w==='비'||w==='폭풍우'?'바닷바람과 비가 몰아치는 시브리즈 블러바드입니다.':'짠 바람이 불어오는 해안 도로, 시브리즈 블러바드입니다. 해변과 카페, 군 기지로 이어집니다.';
+    case 'civic': return w==='비'||w==='폭풍우'?'빗방울이 떨어지는 시빅 센터 드라이브. 도서관과 주민센터, 경찰서 건물이 나란히 서 있습니다.':'공공기관 건물들이 단정히 늘어선 시빅 센터 드라이브입니다. 시립 도서관, 주민센터, 경찰서가 이곳에 있습니다.';
+    case 'alley': return w==='비'||w==='폭풍우'?'기름때와 빗물이 고인 뒷골목입니다. 쓰레기통 뒤편으로 네온 불빛이 희미하게 번집니다.':'어둡고 좁은 뒷골목입니다. 축축한 벽돌 담장과 쇠창살 너머로 위험한 기운이 감돕니다.';
+    case 'club': return '낮은 베이스 진동과 붉은 조명이 감도는 지하 클럽 「벨벳 스모크」입니다.';
+    case 'dealer': return '낡은 벽돌 창고 골목 구석. 후드를 눌러쓴 마약상이 그림자 속에 서 있습니다.';
+    case 'hideout': return `항구 근처 폐창고를 개조한 살바토레 조직 본거지입니다. (현재 계급: ${GANG_RANKS[S.gangRank]} · 공헌도: ${S.gangRep})`;
+    case 'prison': return `차갑고 눅눅한 콘크리트 독방과 철창. 블랙우드 시립 교도소입니다. (혐의: ${S.prison?.reason||'경범죄'} · 남은 형기: ${S.prison?.daysLeft||1}일 · 탈옥 준비도: ${S.prison?.escapePrep||0}%)`;
+    default: return PL[S.loc].n+'.';
+  }
+}
+
+function arrive(l){
+  const h=hh(),w=S.weather,night=h>=21||h<5;
+  const A={
+    home:'삐걱거리는 계단을 올라 4층 집 문을 엽니다.',
+    street:night?'가로등 불빛이 깜빡이는 윌로우 크릭 드라이브로 나왔습니다. 밤공기가 차갑습니다.':'메인 도로인 윌로우 크릭 드라이브로 나왔습니다. 경적 소리와 사람들의 발걸음이 뒤섞여 있습니다.',
+    westbrook:night?'네온사인이 깜빡이는 웨스트 브룩 에비뉴입니다. 상점가와 주유소 불빛이 보입니다.':'상점가와 주유소가 늘어선 웨스트 브룩 에비뉴로 들어섰습니다.',
+    seabreeze:night?'어두운 파도 소리가 들리는 시브리즈 블러바드입니다.':'바닷바람이 스치는 시브리즈 블러바드로 나왔습니다. 해변과 카페, 주방위군 기지 표지판이 보입니다.',
+    civic:night?'가로등 아래 조용한 시빅 센터 드라이브입니다. 공공기관 일대의 공기가 차분합니다.':'공공기관이 모여 있는 시빅 센터 드라이브로 들어섰습니다. 도서관, 주민센터, 경찰서가 보입니다.',
+    alley:'낡은 철문과 쓰레기통 사이를 지나 어두운 뒷골목으로 들어섰습니다.',
+    club:'무거운 방음문을 밀고 열자 음악 소리와 짙은 향수·담배 냄새가 밀려옵니다.',
+    dealer:'발소리를 죽여 뒷골목 구석으로 다가가자 마약상이 경계 어린 눈으로 스콧을 훑어봅니다.',
+    hideout:'경비원의 확인을 거쳐 두꺼운 철문이 열립니다. 조직 본거지 안쪽에는 시가 연기와 묵직한 긴장감이 감돕니다.',
+    park:night?'어두운 공원. 산책로 가로등 몇 개만 켜져 있습니다.':(w==='비'?'비 내리는 공원. 벤치가 모두 젖어 있습니다.':'잔디 냄새가 나는 공원. 아이들 웃음소리와 비둘기들.'),
+    hospital:'소독약 냄새가 코를 찌르는 세인트 메리 병원 로비입니다.',
+    cafe:'원두 볶는 냄새. 카페 「모닝 글로리」의 문에 달린 종이 딸랑 울립니다.',
+    beach:w==='폭풍우'?'성난 파도가 방파제를 때리고 있습니다. 해변엔 아무도 없습니다.':(night?'검은 바다 위로 비치 바의 네온사인이 번집니다.':'짠 바람이 불어오는 해변. 갈매기들이 머리 위를 맴돕니다.'),
+    mall:'형광등 불빛 아래 웨스트게이트 쇼핑몰. 의류 매장과 푸드코트, 안쪽 구석의 타투샵 네온사인이 보입니다.',
+    gas:night?'밤의 주유소. 편의점 불빛과 정비소 창고의 작업등만 켜져 있습니다.':'주유소와 그 옆 정비소. 익숙한 엔진오일 냄새에 가슴 한쪽이 묵직해집니다.',
+    library:'조용한 책장 사이로 햇살이 비치는 시립 도서관입니다. 종이 넘기는 소리만 사각거립니다.',
+    community:'게시판에 각종 생활 지원 안내문과 프로그램 전단지가 빼곡히 붙어 있는 주민센터 로비입니다.',
+    precinct:'파란 방패 문장이 걸린 제4지구 경찰서 로비입니다. 무전기 교신음과 타자기 소리가 분주합니다.',
+    base:'철조망과 위병소가 보이는 포트 밀러 주방위군 기지 정문 앞입니다. 군용 트럭들이 오가고 있습니다.',
+    prison:'무거운 철문이 쾅 하고 닫힙니다. 수인번호가 적힌 회색 수감복을 입고 차가운 감방 안으로 밀려납니다.'
+  };return A[l];
+}
+
+/* ============ 장소별 메뉴 ============ */
+const LOC={};
+LOC.home=()=>{
+  const h=hh(),mh=mariaHome(),eh=emilyHome(),d=S.daily;
+  if(S.day>=2&&!S.met.rosa&&h>=8&&h<20&&!d.rosaMeet)opt('복도에서 곤란해하는 이웃을 돕는다',()=>{
+    d.rosaMeet=1;pass(15);rel('rosa',8);
+    say('현관 앞에서 장바구니가 바닥에 쏟아집니다. 3층에 사는 로사 곤잘레스가 난처한 얼굴로 사과합니다. 당신이 사과와 통조림을 주워 건네자 그녀는 손등으로 이마의 땀을 닦습니다. “고마워요. 요즘 허리가 영 말을 안 듣네요.”');
+    say('로사는 당신의 의안을 잠깐 바라보지만 아무것도 묻지 않습니다. 대신 작은 종이봉투에 든 귤 두 개를 내밉니다.');
+  },{min:15});
+  if(S.met.rosa&&h>=9&&h<19&&!d.rosaVisit)opt('로사의 집에 들른다',()=>{
+    d.rosaVisit=1;pass(25);
+    if(!S.flags.rosaRadio){
+      say('문을 열자 오래된 라디오에서 재즈가 작게 흘러나옵니다. 로사는 주파수가 자꾸 맞지 않는다며 뒷면을 보여줍니다. 당신은 느슨해진 접점을 찾아 고정합니다.');
+      rel('rosa',8);st('cha',1);skUp('craft',2);S.flags.rosaRadio=1;
+      say('“손재주가 좋네요. 예전엔 무슨 일을 했어요?” “정비공이요.” “그럼 아직 할 수 있는 일이 남아 있겠네요.” 로사는 그 말을 별일 아니라는 듯 건넵니다.');
+    }else if(!S.flags.rosaStory){
+      S.flags.rosaStory=1;rel('rosa',6);st('str',-4);skUp('craft',1);
+      say('로사는 젊은 시절 남편과 작은 세탁소를 운영했던 이야기를 들려줍니다. 가게는 문을 닫았지만, 그녀는 아직도 매주 목요일이면 남편이 좋아하던 노래를 라디오에서 찾아 듣습니다.');
+      say('“사람이 망가졌다고 생각하는 날이 있죠. 그래도 고칠 수 있는 부분은 남아 있어요.” 그녀는 라디오 다이얼을 천천히 돌립니다.');
+    }else{
+      rel('rosa',2);st('str',-2);say('로사는 차를 한 잔 내어줍니다. 창밖으로 낡은 아파트의 맞은편 벽이 보입니다. 특별한 이야기는 없지만, 잠시 누군가와 같은 방에 앉아 있는 것만으로도 마음이 가라앉습니다.');
+    }
+  },{min:25});
+  if(mh&&!d.talkM)opt('마리아와 이야기한다',talkMaria,{imp:argue,min:30});
+  if(mh&&h>=21&&h<23&&!d.nightTogether&&S.rel.maria>=30)opt('마리아와 둘만의 밤을 보낸다',()=>{
+    d.nightTogether=1;pass(180,{sleep:true,rest:8});
+    if(S.drank||S.alc>0){rel('maria',-4);say('마리아는 술 냄새를 느끼고 조용히 고개를 젓습니다. “오늘은 그냥 자자, 스콧.” 당신은 같은 침대에 누웠지만 한동안 잠들지 못합니다.');st('str',3);}
+    else{
+      rel('maria',8);st('str',-8);st('tra',-1);
+      say(pick([
+        '에밀리가 잠든 뒤, 마리아가 당신 옆에 앉습니다. 두 사람은 오래된 농담과 처음 만났던 날의 이야기를 나눕니다. 조심스러운 입맞춤 뒤, 방문 너머에서 에밀이의 고른 숨소리가 들립니다. 그날 밤만큼은 서로의 곁을 지킵니다.',
+        '마리아가 먼저 당신의 손을 잡습니다. “요즘 우리, 이렇게 앉아 있는 시간도 없었지.” 말없이 어깨를 기대온 그녀를 당신은 꼭 안아줍니다. 밤은 천천히 깊어집니다.',
+        '두 사람은 작은 침대에 나란히 누워 천장을 바라봅니다. 내일 걱정은 여전하지만, 마리아가 당신의 손가락을 만지작거리는 동안만큼은 아무 말도 필요하지 않습니다.'
+      ]));
+    }
+  },{min:180});
+  if(mh&&eh&&S.rel.maria>=55&&S.rel.emily>=70&&!S.flags.familyPhoto&&h>=18&&h<21)opt('세 사람이 함께 사진을 찍는다',()=>{S.flags.familyPhoto=1;pass(20);rel('maria',5);rel('emily',5);st('str',-4);say('에밀리가 버니를 가운데에 앉히고 당신과 마리아를 양옆으로 끌어당깁니다. 휴대폰 타이머가 깜빡이는 동안 당신은 어색하게 웃습니다. 사진 속 세 사람은 조금 지쳐 보이지만, 분명 같은 방향을 보고 있습니다.');note('사진 한 장이 냉장고 문에 붙었습니다.');},{min:20});
+  if(mh&&!d.chores)opt('집안일을 돕는다',()=>{d.chores=1;pass(60);rel('maria',5);st('str',-3);say(pick(['설거지를 하고 쓰레기를 내다 버립니다. 마리아가 등 뒤에서 작게 "고마워" 하고 말합니다.','빨래를 개다가 에밀리의 작은 양말 한 짝이 손에 걸립니다. 이상하게 마음이 편해집니다.']));},{min:60});
+  if(eh&&!d.play)opt('에밀리와 놀아준다',playEmily,{imp:S.st.str>=60?snapEmily:null,min:60});
+  if(eh&&h>=19&&h<21&&!d.book)opt('에밀리에게 동화책을 읽어준다',()=>{d.book=1;pass(30);rel('emily',5);st('ctl',2);st('str',-5);say('“아기 곰이 집으로 돌아가는 이야기”를 세 번째 읽어줍니다. 에밀리는 마지막 장에서 늘 그렇듯 잠들어 있습니다.');},{min:30});
+
+  if(S.inv.flower&&mh)opt('마리아에게 꽃을 건넨다',()=>{S.inv.flower--;rel('maria',8);st('str',-4);say('마리아가 놀란 눈으로 꽃다발을 받아 듭니다. “무슨 날이야?” 그녀가 웃습니다. 오랜만에 보는 웃음입니다.');});
+  if(S.inv.watch&&mh)opt('마리아에게 손목시계를 선물한다',()=>{S.inv.watch--;rel('maria',14);st('str',-5);say('작은 상자를 열어본 마리아가 말을 잇지 못합니다. “스콧, 이거 비싼 거잖아…” 그녀는 몇 번이나 손목을 매만지며 눈시울을 붉힙니다.');});
+  if(S.inv.toy&&eh)opt('에밀리에게 곰 인형을 준다',()=>{S.inv.toy--;rel('emily',12);rel('maria',2);say('“아빠 최고!” 에밀리가 포장지를 찢으며 소리칩니다. 버니에게 새 친구가 생겼다고 한참을 떠듭니다.');});
+  if(S.inv.bookset&&eh)opt('에밀리에게 그림책 세트를 준다',()=>{S.inv.bookset--;rel('emily',10);rel('maria',3);st('ctl',1);say('알록달록한 그림책 세 권을 받아 든 에밀리가 무릎 위에 책을 펼칩니다. “아빠, 이거 다 읽어줘!”');});
+  if(S.inv.cologne&&!d.cologne)opt('애프터셰이브를 바른다',()=>{S.inv.cologne--;d.cologne=1;st('cha',3);st('str',-2);say('면도한 턱선에 은은한 우디 향 애프터셰이브를 톡톡 두드립니다. 기분까지 한결 정돈됩니다.');});
+  if(S.inv.vitamin&&!d.vitamin)opt('종합 비타민을 챙겨 먹는다',()=>{S.inv.vitamin--;d.vitamin=1;st('fat',-8);st('str',-2);say('물 한 잔과 함께 종합 비타민을 삼킵니다. 며칠째 쌓인 묵직한 피로가 조금 덜어지는 느낌입니다.');});
+  if(S.inv.notebook&&!d.journal)opt('가죽 노트에 오늘의 감정을 기록한다',()=>{
+    d.journal=1;pass(30);st('str',-6);st('tra',-2);st('ctl',2);
+    say('한나 박사의 조언대로 머릿속을 맴도는 분노와 악몽의 조각들을 종이 위에 적어 내려갑니다. 글자로 옮기고 나니 조금 객관적으로 바라볼 수 있습니다.');
+  },{min:30});
+
+  if(!d.shave)opt('샤워하고 면도한다',()=>{d.shave=1;pass(30);st('fat',-6);st('cha',1);say('미지근한 물줄기 아래 섭니다. 거울 속 의안이 당신을 마주봅니다. 면도를 마치니 그럭저럭 사람 꼴이 납니다.');},{min:30});
+  opt('노트북을 켠다',()=>laptopPage('portal'));
+  if(S.furniture.includes('sofa')&&!d.sofaRest)opt('새 패브릭 소파에 기대어 휴식한다',()=>{
+    d.sofaRest=1;pass(60);st('fat',-12);st('str',-8);
+    say('푹신한 소파에 깊숙이 몸을 묻고 눈을 감습니다. 허리의 뻐근함과 머릿속 긴장이 한결 풀립니다.');
+  },{min:60});
+  if(S.furniture.includes('bookshelf')&&!d.shelfRead)opt('책장에서 정비 교본과 책을 꺼내 읽는다',()=>{
+    d.shelfRead=1;pass(60);skUp('mech',3);skUp('know',3);st('str',-3);
+    say('잘 정돈된 책장에서 교본과 생활 지침서를 꺼내 차분히 읽습니다. 집에서도 집중이 잘 됩니다.');
+    note('정비 기술과 생활 지식이 향상되었습니다.');
+  },{min:60});
+
+  opt('옷장을 연다',()=>wardrobePage());
+  opt('거울을 본다',()=>mirrorPage());
+  opt('TV를 본다',()=>{pass(60);st('str',-5);say(pick(['재방송 시트콤의 웃음소리가 빈 거실을 채웁니다.','뉴스에서 이 동네 편의점 강도 사건을 보도합니다. 범인은 아직 잡히지 않았다고 합니다.','스포츠 채널을 틀어놓고 멍하니 앉아 있습니다. 시간이 흘러갑니다.']));},{imp:S.inv.beer>0?drinkBeer:null,min:60});
+  if(S.inv.beer>0)opt(`냉장고에서 맥주를 꺼낸다 (남은 캔 ${S.inv.beer})`,drinkBeer,{cls:'risk',min:30});
+  if(S.crimeMoney>=2500&&S.money>=3000)opt('가방을 싸서 이 도시를 떠난다',()=>endGame(S.rel.maria>=50?'escape':'alone'),{cls:'risk'});
+  if(h>=21||h<5)opt('잠자리에 든다',sleepNight);
+  else opt('잠깐 눈을 붙인다',()=>doSleep(120),{min:120});
+  opt('밖으로 나간다',()=>go('street',5),{sec:'travel',min:5,tag:'윌로우 크릭'});
+};
+
+function roadLinks(L,sec='poi'){
+  L.forEach(([k,n,tag])=>{
+    const op=isOpen(k);
+    opt(n+(op?'':' (영업 종료)'),()=>{
+      if(!isOpen(k)){say(`${PL[k].n}의 문이 닫혀 있습니다. 운영시간: ${PL[k].open[0]}:00~${PL[k].open[1]}:00`);return;}
+      go(k,15);
+    },{cls:op?'':'off',sec,min:15,tag});
+  });
+}
+
+LOC.street=()=>{
+  const h=hh();
+  opt('집으로 돌아간다',()=>go('home',5),{imp:S.crave>=50?buyBeerImpulse:null,sec:'poi',min:5});
+  if(!weekend()&&h>=16&&h<18&&!S.daily.picked)opt('어린이집에서 에밀리를 데려온다',pickEmily,{sec:'poi',min:30});
+  roadLinks([
+    ['hospital','세인트 메리 병원'],
+    ['park','시립 공원']
+  ],'poi');
+  opt('시빅 센터 드라이브',()=>go('civic',10),{sec:'travel',min:10,tag:'도서관·주민센터·경찰서'});
+  opt('웨스트 브룩 에비뉴',()=>go('westbrook',10),{sec:'travel',min:10,tag:'상점가·주유소'});
+  opt('시브리즈 블러바드',()=>go('seabreeze',10),{sec:'travel',min:10,tag:'해변·카페·군 기지'});
+  opt('거리를 배회한다',()=>{pass(30);if(R()<0.6)streetEncounter();else say(pick(['버스 정류장 광고판의 구인 광고를 들여다봅니다. 「경력자 우대」.','목적 없이 걷습니다. 쇼윈도에 비친 당신은 생각보다 지쳐 보입니다.']));},{sec:'travel',min:30});
+  if(h>=8&&h<22)opt('뒷골목 인파에서 소매치기를 시도한다',pickpocket,{cls:'risk',sec:'alt',min:20});
+};
+
+LOC.site=()=>{
+  opt('버스를 타고 집으로 돌아간다',()=>go('home',30),{sec:'travel',min:30});
+};
+
+LOC.civic=()=>{
+  const h=hh();
+  roadLinks([
+    ['library','시립 도서관'],
+    ['community','동부 지구 주민센터'],
+    ['precinct','제4지구 경찰서']
+  ],'poi');
+  opt('돌아가기',()=>go('street',10),{sec:'travel',min:10,tag:'윌로우 크릭'});
+  opt('공공기관 거리를 걷는다',()=>{pass(30);weatherExposure('civic');if(R()<0.55)streetEncounter();else say(pick(['경찰서 앞을 지나는 순찰차와 도서관으로 향하는 시민들이 오갑니다.','주민센터 화단과 정돈된 보도블록이 눈에 들어옵니다.']));},{sec:'travel',min:30});
+  if(h>=8&&h<22)opt('인파가 잦은 골목에서 소매치기를 시도한다',pickpocket,{cls:'risk',sec:'alt',min:20});
+};
+
+LOC.westbrook=()=>{
+  const h=hh();
+  roadLinks([
+    ['mall','웨스트게이트 쇼핑몰'],
+    ['gas','주유소 & 정비소']
+  ],'poi');
+  if(h>=8&&h<24)opt('주류 판매점에서 맥주를 산다 ($8, 3캔)',buyBeer,{cls:'risk',sec:'poi',min:10});
+  opt('돌아가기',()=>go('street',10),{sec:'travel',min:10,tag:'윌로우 크릭'});
+  opt('상점가 거리를 배회한다',()=>{pass(30);weatherExposure('westbrook');if(R()<0.6)streetEncounter();else say(pick(['상점가 쇼윈도에 진열된 물건들을 물끄러미 바라봅니다.','주유소 앞을 지나는 트럭들의 엔진 소리에 귀를 기울입니다.']));},{sec:'travel',min:30});
+  if(h>=8&&h<22)opt('상점가 뒷길에서 소매치기를 시도한다',pickpocket,{cls:'risk',sec:'alt',min:20});
+};
+
+LOC.seabreeze=()=>{
+  roadLinks([
+    ['beach','해변'],
+    ['cafe','카페 「모닝 글로리」'],
+    ['base','포트 밀러 주방위군 기지']
+  ],'poi');
+  opt('돌아가기',()=>go('street',10),{sec:'travel',min:10,tag:'윌로우 크릭'});
+  opt('해안 도로를 걷는다',()=>{pass(30);weatherExposure('seabreeze');if(R()<0.55)streetEncounter();else say(pick(['방파제 너머로 갈매기 떼가 날아오릅니다.','군 기지 담장 너머로 훈련 구호 소리가 희미하게 들려옵니다.']));},{sec:'travel',min:30});
+};
+
+LOC.park=()=>{
+  const h=hh(),w=S.weather,night=h>=21||h<5,d=S.daily;
+  if(night&&!d.mug&&R()<0.35){d.mug=1;mugging();return;}
+  if(w!=='폭풍우')opt('산책로를 걷는다',()=>{pass(60);weatherExposure('park');st('str',w==='비'?-3:-10);atUp('calm',1);say(pick(['낙엽을 밟으며 천천히 걷습니다. 머릿속 소음이 조금 잦아듭니다.','연못가를 한 바퀴 돕니다. 오리들이 무심하게 떠 있습니다.']));},{min:60});
+  if(!night&&w!=='폭풍우'&&!d.jog)opt('조깅을 한다',()=>{d.jog=1;pass(60);st('fat',12);st('str',-8);st('cha',1);atUp('stam',4);if(R()<0.3)st('ctl',1);say('숨이 턱까지 차오를 때까지 달립니다. 폐가 타들어 가는 느낌이 오히려 개운합니다.');note('지구력이 향상되었습니다.');},{min:60});
+  if(!night&&w!=='폭풍우'&&!d.workout)opt('야외 철봉과 평행봉에서 근력 운동을 한다',()=>{
+    d.workout=1;pass(60);st('fat',14);st('str',-6);st('cha',1);
+    atUp('strg',4);atUp('stam',2);
+    say('녹슨 철봉을 쥐고 턱걸이와 딥스를 반복합니다. 팔과 어깨 근육이 뻐근하게 당기며 단단해집니다.');
+    note('근력과 지구력이 향상되었습니다.');
+  },{min:60});
+  if(h>=8&&h<18&&w!=='비'&&w!=='폭풍우')opt(S.met.walter?'월터 할아버지 옆에 앉는다':'벤치의 노인에게 다가간다',walterTalk,{min:45});
+  if(h>=10&&h<17&&!d.dogSeen&&S.day>=3)opt('공원에서 길 잃은 강아지를 살핀다',()=>{d.dogSeen=1;pass(20);st('str',-3);say('벤치 아래에 작은 갈색 개가 웅크리고 있습니다. 목줄에는 전화번호가 적혀 있습니다. 전화를 받은 주인은 헐레벌떡 달려와 개를 안아 듭니다. “정말 감사합니다.” 짧은 인사지만, 당신은 한동안 그 자리에 서 있습니다.');if(S.st.ctl>=50)st('ctl',1);},{min:20});
+  if(S.pendingTony==='pkg'&&(h>=20||h<3))opt('공중화장실 뒤편에서 토니의 꾸러미를 전달한다',()=>crime('pkg'),{cls:'risk',sec:'alt',min:90});
+  opt('돌아가기',()=>go('street',15),{sec:'travel',min:15});
+};
+
+LOC.hospital=()=>{
+  const h=hh(),d=S.daily,w=wd();
+  const counsel=(w===1||w===3)&&h>=10&&h<16;
+  opt('상담실을 찾아간다'+(counsel?' ($30)':' (화·목 10~16시)'),counsel?counseling:()=>{say('상담실 문에 「화·목 10:00~16:00 예약 진료」라는 안내문이 붙어 있습니다.');},{cls:counsel?'':'off',min:counsel?60:0});
+  if(h>=9&&h<17&&!d.plasma&&S.daily.plasmaOk!==false)opt('혈장 기부를 한다 (+$35, 피로↑)',()=>{d.plasma=1;pass(90);st('fat',18);cash(35);say('팔에 바늘이 꽂히는 동안 천장의 얼룩을 셉니다. 간호사가 주스 한 팩과 $35를 건넵니다.');},{min:90});
+  if(S.injured)opt('응급실에서 상처를 치료받는다 ($80)',()=>{if(S.money<80){say('접수 직원이 보험 여부를 묻습니다. 돈이 모자라 그냥 돌아섭니다.');return;}cash(-80);pass(120);S.injured=false;st('str',-5);say('간호사가 상처를 꿰매며 무슨 일이냐고 묻습니다. 넘어졌다고 대답합니다.');},{min:120});
+  if(S.flags.tooth)opt('치과 진료를 받는다 ($140)',()=>{if(!pay(140))return;pass(90);S.flags.tooth=0;S.flags.toothDone=1;st('str',-6);say('신경 치료를 받았습니다. 마취가 풀리자 욱신거리지만, 매일 아침의 날카로운 통증은 이제 끝입니다.');},{min:90});
+  if(!d.board)opt('로비 게시판을 살핀다',()=>{d.board=1;pass(10);if(!S.leads.clean){S.leads.clean=1;say('「저녁 청소 인력 구함 · 월~금 16:00~23:00 · 시급 지급 · 원무과 문의」 메모를 머릿속에 새깁니다.');}else say('헌혈 캠페인 포스터와 금연 안내문뿐입니다.');},{min:10});
+  if(!d.medRead)opt('대기실의 보건·심리 안내 책자를 정독한다',()=>{
+    d.medRead=1;pass(45);skUp('know',2);st('tra',-1);
+    say('트라우마 반응과 스트레스 관리, 지역 복지 지원 제도에 관한 팸플릿을 꼼꼼히 읽습니다.');
+    note('생활 지식이 조금 향상되었습니다.');
+  },{min:45});
+  jobOptions('hospital','clean');
+  opt('돌아가기',()=>go('street',15),{sec:'travel',min:15});
+};
+
+LOC.cafe=()=>{
+  const d=S.daily;
+  if(S.st.cha>=45&&!S.met.jess&&R()<0.3){meetJess();return;}
+  opt('커피를 주문한다 ($4)',()=>{if(S.money<4){say('주머니를 뒤지지만 동전 몇 개뿐입니다.');return;}cash(-4);pass(20);st('fat',-10);st('str',-2);rel('sophie',1);say('따뜻한 블랙커피. 쓴맛이 정신을 깨웁니다.');},{min:20});
+  if(!d.sophie)opt(S.met.sophie?'소피와 수다를 떤다':'바리스타에게 말을 건다',sophieTalk,{min:30});
+  if(!d.paper)opt('신문과 시사 잡지를 정독한다',()=>{
+    d.paper=1;pass(60);st('str',-2);skUp('know',3);
+    const news=[
+      '지역 공장 추가 감원 소식이 1면입니다. 당신을 해고한 정비 업체 이름도 보입니다.',
+      '웨스트게이트 쇼핑몰이 연말 경비 인력을 모집한다는 광고가 실려 있습니다.',
+      '해변가 창고 지역에서 차량 도난이 잇따른다는 기사가 있습니다.'
+    ];
+    const n=pick(news);say(n);
+    note('생활 지식이 향상되었습니다.');
+    if(n.includes('경비')&&!S.leads.guard){S.leads.guard=1;note('새 구인 정보: 쇼핑몰 경비원');}
+  },{min:60});
+  jobOptions('cafe','cafe');
+  opt('돌아가기',()=>go('seabreeze',15),{sec:'travel',min:15});
+};
+
+LOC.beach=()=>{
+  const h=hh(),w=S.weather,night=h>=21||h<5,d=S.daily;
+  if(w!=='폭풍우')opt('모래사장에 앉아 바다를 본다',()=>{pass(60);weatherExposure('beach');st('str',-12);if(R()<0.4)st('tra',-1);say(pick(['파도가 밀려왔다 밀려갑니다. 당신의 숨도 그 박자를 따라갑니다.','멀리 화물선 한 척이 수평선을 넘어갑니다. 어딘가로 떠나는 사람들.']));},{min:60});
+  if(!night&&w!=='폭풍우'&&w!=='비'&&!d.fish)opt('방파제에서 낚시를 한다 (장비 대여 $5)',fishing,{min:180});
+  if(!d.observe)opt('부둣가와 비치 바 주변의 인파를 관찰한다',()=>{
+    d.observe=1;pass(60);skUp('street',3);st('fat',3);
+    say('항구 노동자들과 관광객, 뒷골목 패거리가 뒤섞이는 부둣가에서 사람들의 시선 처리와 동선을 유심히 익힙니다.');
+    note('거리의 요령이 향상되었습니다.');
+  },{min:60});
+  if(h>=17||h<2)opt('비치 바에서 한잔한다 ($10)',beachBar,{cls:'risk',sec:'alt',min:30});
+  if(S.met.tony&&h>=16&&h<23)opt('부둣가 난간에서 토니와 이야기한다',tonyTalk,{cls:'risk',sec:'alt',min:20});
+  opt('돌아가기',()=>go('seabreeze',15),{sec:'travel',min:15});
+};
+
+LOC.mall=()=>{
+  const d=S.daily;
+  opt('잡화 매장을 둘러보며 물건을 산다',()=>mallShopPage());
+  opt('의류 매장에서 옷과 우산을 산다',()=>clothesShopPage());
+  opt('가구 상점 「홈 & 하스」에 들른다',()=>furniturePage());
+  opt('타투샵 「블랙 앵커」에 들른다',()=>tattooPage());
+  if(S.flags.familyPhoto&&!S.flags.photoPrinted)opt('사진관에서 가족사진을 인화한다 ($8)',()=>{if(!pay(8))return;S.flags.photoPrinted=1;rel('maria',3);rel('emily',3);say('사진관 직원이 작은 봉투에 사진을 넣어 건넵니다. 마리아는 사진을 한참 바라보다 지갑 안쪽에 조심스럽게 끼워 넣습니다.');});
+  if(!d.hair)opt('이발소에 들른다 ($20)',()=>{if(!pay(20))return;d.hair=1;pass(40);st('cha',3);st('str',-3);say('이발사가 말없이 가위를 놀립니다. 목덜미가 시원해집니다.');},{min:40});
+  opt('진열대의 물건을 슬쩍한다',shoplift,{cls:'risk',sec:'alt',min:15});
+  jobOptions('mall','guard');
+  opt('돌아가기',()=>go('westbrook',15),{sec:'travel',min:15});
+};
+
+LOC.gas=()=>{
+  const h=hh(),d=S.daily,w=wd();
+  opt('편의점에서 커피와 샌드위치를 산다 ($6)',()=>{if(!pay(6))return;pass(15);st('fat',-8);say('식은 샌드위치를 커피로 넘깁니다.');},{min:15});
+  opt('편의점에서 맥주를 산다 ($8, 3캔)',buyBeer,{cls:'risk'});
+  if(!hasUmbrella())opt('편의점에서 비상용 검은 장우산을 산다 ($14)',()=>{
+    if(!pay(14))return;
+    S.inv.umbrella++;
+    if(!S.wardrobe.includes('umbrella_blk'))S.wardrobe.push('umbrella_blk');
+    S.worn.handheld='umbrella_blk';
+    say('편의점 우산꽂이에서 튼튼한 검은 장우산 하나를 골라 계산합니다. 이제 비가 와도 젖지 않을 것입니다.');
+    note('소지품 획득: 튼튼한 검은 장우산');
+  });
+  const garage=w<5&&h>=8&&h<17;
+  if(garage&&!d.frank)opt(S.met.frank?'정비소의 프랭크에게 간다':'정비소를 기웃거린다',frankTalk,{min:40});
+  if(!d.scrap)opt('정비소 뒤편 폐부품 더미를 분해·조립해 본다',()=>{
+    d.scrap=1;pass(60);skUp('mech',3);st('fat',5);
+    say('버려진 알터네이터와 기화기를 분해했다가 다시 조립합니다. 기름때 묻은 손끝이 부품의 맞물림을 기억합니다.');
+    note('정비 기술이 조금 향상되었습니다.');
+  },{min:60});
+  jobOptions('gas','mech');
+  if(h<5&&!d.robTried)opt('야간 편의점 카운터를 턴다',()=>{d.robTried=1;robPrompt();},{cls:'risk',sec:'alt'});
+  opt('돌아가기',()=>go('westbrook',15),{sec:'travel',min:15});
+};
+
+/* ============ 시립 도서관 & 주민센터 (기술 향상 편입) ============ */
+LOC.library=()=>{
+  const d=S.daily;
+  if(!d.libKnow)opt('종합 열람실에서 생활·법률·시사 서적을 공부한다',()=>{
+    d.libKnow=1;pass(60);skUp('know',6);atUp('calm',2);st('str',-2);
+    say('조용한 열람실 구석 자리에서 노동법 안내서, 구직 가이드, 경제 주간지를 차례로 읽어 나갑니다. 머릿속의 안개가 조금씩 걷히는 기분입니다.');
+    note('생활 지식과 침착성이 향상되었습니다.');
+  },{min:60});
+  if(!d.libMech)opt('기술 자료 코너에서 자동차·기계 정비 매뉴얼을 독학한다',()=>{
+    d.libMech=1;pass(60);skUp('mech',6);skUp('know',1);st('fat',3);
+    say('최신 차량의 전자제어 계통과 디젤 엔진 구조 도면을 노트에 옮겨 그립니다. 현장 경험에 이론이 더해집니다.');
+    note('정비 기술이 조금 향상되었습니다.');
+  },{min:60});
+  if(!d.libRest)opt('창가 자리에서 조용히 책을 읽으며 마음을 가라앉힌다',()=>{
+    d.libRest=1;pass(60);st('str',-7);st('tra',-1);atUp('calm',3);
+    say('누구도 당신의 의안을 쳐다보지 않는 고요한 공간. 오래된 소설 한 권을 넘기며 숨을 고릅니다.');
+    note('침착성이 향상되었습니다.');
+  },{min:60});
+  opt('돌아가기',()=>go('civic',15),{sec:'travel',min:15});
+};
+
+LOC.community=()=>{
+  const d=S.daily;
+  if(!d.comCraft)opt('2층 시민 공방에서 소형 가전 수리와 목공 기초를 배운다',()=>{
+    d.comCraft=1;pass(60);skUp('craft',6);skUp('mech',1);atUp('dex',4);st('fat',4);
+    say('자원봉사 강사의 안내에 따라 납땜 인두와 목공 도구를 다룹니다. 망가진 토스터의 열선을 고치고 나무 선반의 이음새를 다듬습니다.');
+    note('손재주와 손놀림이 향상되었습니다.');
+  },{min:60});
+  if(!d.comStreet)opt('민원실과 휴게실에서 주민들과 어울리며 동네 사정을 익힌다',()=>{
+    d.comStreet=1;pass(60);skUp('street',6);skUp('know',1);atUp('calm',2);st('cha',1);
+    say('복지 상담을 기다리는 일용직 노동자들, 동네 상인들과 대화를 나눕니다. 누가 믿을 만한 사람인지, 어떤 골목을 피해야 하는지 자연스럽게 귀에 들어옵니다.');
+    note('거리의 요령과 침착성이 향상되었습니다.');
+  },{min:60});
+  if(!d.comBoard)opt('취업·복지 지원 게시판과 공공 일자리 공고를 살핀다',()=>{
+    d.comBoard=1;pass(20);
+    if(!S.leads.police){S.leads.police=1;note('새 구인 정보: 제4지구 경찰서 순찰 경관 모집 공고');}
+    if(!S.leads.army){S.leads.army=1;note('새 구인 정보: 포트 밀러 주방위군 기지 차량·병기 정비병 모집');}
+    say('게시판에서 시 경찰서 순찰 경관 채용 공고와 주방위군 기지 기술병 모집 포스터를 발견했습니다.');
+  },{min:20});
+  opt('돌아가기',()=>go('civic',15),{sec:'travel',min:15});
+};
+
+/* ============ 뒷골목 (클럽 · 마약상 · 조직 본거지) ============ */
+LOC.alley=()=>{
+  const d=S.daily;
+  roadLinks([
+    ['club','클럽 「벨벳 스모크」','18:00~04:00'],
+    ['dealer','마약상 구역','위험'],
+    ['hideout','살바토레 조직 본거지','조직']
+  ],'poi');
+  if(!d.alleyScout)opt('뒷골목 담벼락과 골목 동선을 익힌다',()=>{
+    d.alleyScout=1;pass(40);skUp('street',3);atUp('dex',2);st('str',2);
+    say('어두운 골목의 사각지대와 비상계단, 쓰레기장 뒤편 통로를 머릿속에 그려 둡니다.');
+    note('거리의 요령과 손놀림이 향상되었습니다.');
+  },{sec:'alt',min:40});
+  opt('돌아가기',()=>go('westbrook',10),{sec:'travel',min:10,tag:'웨스트 브룩'});
+};
+
+LOC.club=()=>{
+  const d=S.daily;
+  opt('바에서 독한 술을 한 잔 마신다 ($12)',()=>{
+    if(!pay(12))return;
+    drinkEffect();
+    say('붉은 조명 아래 바텐더가 건넨 독주를 단숨에 털어 넣습니다. 시끄러운 음악 소리가 조금 멀게 느껴집니다.');
+  },{cls:'risk',min:30});
+  if(!d.clubDance)opt('춤과 인파 속에서 스트레스를 털어낸다',()=>{
+    d.clubDance=1;pass(60);st('fat',10);st('str',-11);st('cha',2);
+    say('어두운 플로어에서 몸을 움직이며 쌓였던 분노와 긴장을 땀으로 흘려보냅니다.');
+  },{min:60});
+  if(S.st.cha>=45&&!S.met.jess&&R()<0.45)opt('부스 쪽에서 낯익은 여자와 눈이 마주친다',meetJess,{min:30});
+  opt('돌아가기',()=>go('alley',10),{sec:'travel',min:10,tag:'뒷골목'});
+};
+
+LOC.dealer=()=>{
+  const d=S.daily;
+  say('마약상이 낮은 목소리로 묻습니다. “오늘 필요한 물건이 있나, 외눈박이? 아니면 심부름이라도 할 텐가?”');
+  opt('각성제 앰풀을 구매한다 ($45 · 피로·스트레스 급감, 통제↓)',()=>{
+    if(!pay(45))return;
+    pass(15);st('fat',-22);st('str',-16);st('ctl',-6);st('tra',2);S.heat+=8;
+    say('숨을 고르자 심장이 빠르게 뛰며 피로가 씻겨 나가지만, 손끝이 미세하게 떨리고 신경이 거칠어집니다.');
+    note('약물 사용으로 수배도가 조금 올랐습니다.');
+  },{cls:'risk',min:15});
+  if(!d.drugRun)opt('마약상의 위험한 심부름을 대신 뛴다 (+$220)',()=>{
+    d.drugRun=1;pass(120);S.heat+=16;S.crimes++;S.crimeMoney+=220;
+    const caughtProb=Math.max(10,Math.min(75,28+S.heat*0.35-(S.skills.street*0.25)));
+    if(R()*100<caughtProb){
+      say('골목 어귀에서 잠복 중이던 형사들의 손전등이 당신을 비춥니다!');
+      sendToPrison('pkg');return;
+    }
+    cash(220);st('str',8);st('tra',2);
+    say('물건을 은밀히 전달하고 현금 $220를 챙겨 어둠 속으로 빠져나옵니다.');
+  },{cls:'risk',min:120});
+  opt('돌아가기',()=>go('alley',10),{sec:'travel',min:10,tag:'뒷골목'});
+};
+
+LOC.hideout=()=>{
+  if(S.gangRank===0){
+    if(S.crimes>=3&&(S.rel.tony||0)>=45){
+      say('문지기가 토니의 연락을 확인한 뒤 안쪽으로 들여보냅니다. 빅 살바토레가 당신을 내려다봅니다.');
+      opt('살바토레 조직 행동대원으로 입단한다',()=>{
+        S.gangRank=1;S.gangRep=15;rel('tony',10);rel('don',25);st('tra',3);
+        if(S.job&&(S.job.id==='police'||S.job.id==='army')){
+          note(`조직 합류 사실이 적발되어 「${JOBS[S.job.id].n}」에서 즉시 파면되었습니다.`);
+          S.job=null;
+        }
+        say('“오늘부터 넌 우리 식구다, 카터.” 빅 살바토레가 고개를 끄덕입니다.');
+        note('조직 계급: 조직 행동대원');
+      },{cls:'risk'});
+    }else{
+      say('입구 경비원이 팔짱을 끼고 가로막습니다. “여긴 아무나 들어오는 곳이 아니야. 토니 레예스와 먼저 실적을 쌓고 와.”');
+      opt('돌아가기',()=>go('alley',10),{sec:'travel',min:10,tag:'뒷골목'});
+      return;
+    }
+  }
+  if(S.gangRank===1&&S.gangRep>=55&&(S.rel.don||0)>=45){
+    opt('구역 관리자(간부) 승급을 보고받는다',()=>{
+      S.gangRank=2;rel('don',15);rel('tony',8);
+      say('빅 살바토레가 당신의 어깨를 두드립니다. “이제 웨스트 브룩과 부두 일대는 네가 책임진다. 매일 $90의 몫을 챙겨라.”');
+      note('조직 승급: 구역 관리자 (간부)');
+    },{cls:'risk'});
+  }
+  if(S.gangRank===2&&S.gangRep>=115&&(S.rel.don||0)>=75){
+    opt('조직 보스 자리 계승을 수락한다',()=>{
+      S.gangRank=3;rel('don',20);
+      say('빅 살바토레가 금반지를 내밀며 뒷선으로 물러납니다. “이제 이 조직의 보스는 스콧 카터다.”');
+      note('최종 승급: 조직 보스 (뒷골목의 왕)');
+    },{cls:'risk'});
+    opt('보스 엔딩으로 마무리한다',()=>endGame('boss'),{cls:'risk'});
+  }
+  opt('조직 작전 수행 · 경쟁 조직 밀수선 습격 (+$1800, 공헌도 +28)',()=>crime('syndicate'),{cls:'risk',min:240});
+  if(S.gangRank>=2)opt('조직 작전 수행 · 시의원 협박 및 이권 장악 (+$3200, 공헌도 +35)',()=>crime('takeover'),{cls:'risk',min:300});
+  if(!S.daily.hideTrain)opt('본거지 지하 훈련장에서 근력과 사격·격투 감각을 연마한다',()=>{
+    S.daily.hideTrain=1;pass(60);st('fat',10);atUp('strg',3);skUp('street',2);
+    say('조직 행동대원들과 스파링을 벌이며 거친 몸싸움 요령을 익힙니다.');
+  },{min:60});
+  opt('돌아가기',()=>go('alley',10),{sec:'travel',min:10,tag:'뒷골목'});
+};
+
+/* ============ 전문직: 경찰서 & 주방위군 기지 ============ */
+LOC.precinct=()=>{
+  const d=S.daily;
+  if(!d.polInfo)opt('채용 안내 창구에서 순찰 경관 지원 요건을 확인한다',()=>{
+    d.polInfo=1;pass(20);S.leads.police=1;
+    say('채용 담당 경사가 안내문을 건넵니다. “범죄 경력이 전혀 없어야 하고, 기본적인 생활 법률 지식(32 이상)과 현장 감각(거리의 요령 22 이상)을 봅니다. 일당은 $145입니다.”');
+    if(S.crimes>0||S.gangRank>0)note('경고: 현재 범죄 이력이나 조직 연루 기록 때문에 임용이 거부될 수 있습니다.');
+  },{min:20});
+  if(S.job&&S.job.id==='police'&&!d.polPatrol)opt('사격장과 체력 단련실에서 훈련한다',()=>{
+    d.polPatrol=1;pass(60);st('fat',10);st('ctl',2);skUp('street',2);
+    say('표적지를 향해 호흡을 고르며 방아쇠를 당깁니다. 제복의 무게가 어깨를 누릅니다.');
+  },{min:60});
+  jobOptions('precinct','police');
+  opt('돌아가기',()=>go('civic',15),{sec:'travel',min:15});
+};
+
+LOC.base=()=>{
+  const d=S.daily;
+  if(!d.armyInfo)opt('모병관 사무실에서 주방위군 정비병 지원 요건을 확인한다',()=>{
+    d.armyInfo=1;pass(20);S.leads.army=1;
+    say('모병관이 서류를 훑어봅니다. “군용 트럭과 장갑차 정비를 맡을 숙련공을 찾고 있소. 정비 기술 45 이상에 심리 평가(트라우마 55 이하)를 통과해야 하오. 일당은 $155요.”');
+    if(S.flags.walterRec)say('“월터 상사님 추천서가 있다면 면접에서 큰 가산점이 붙을 거요.”');
+  },{min:20});
+  if(S.job&&S.job.id==='army'&&!d.armyDrill)opt('기지 정비창에서 군용 디젤 엔진을 점검한다',()=>{
+    d.armyDrill=1;pass(60);st('fat',8);skUp('mech',3);
+    say('거대한 군용 수송 트럭의 엔진룸에 매달려 연료 분사 장치를 조율합니다.');
+  },{min:60});
+  jobOptions('base','army');
+  opt('돌아가기',()=>go('seabreeze',15),{sec:'travel',min:15});
+};
+
+/* ============ 블랙우드 시립 교도소 (수감 생활 및 탈옥) ============ */
+LOC.prison=()=>{
+  const P=S.prison;
+  if(!P){S.loc='street';menu();return;}
+  const h=hh(),d=S.daily;
+  say(`교도소 일과 시간입니다. 남은 복역 일수: <b>${P.daysLeft}일</b> (총 ${P.totalDays}일 형기 · 혐의: ${P.reason}) · 탈옥 준비도: <b>${P.escapePrep}%</b>`);
+
+  if(h>=7&&h<21&&!d.pWork)opt('교도소 세탁실·작업장 노역에 참여한다 (4시간, +$12)',()=>{
+    d.pWork=1;pass(240,{work:true});cash(12);
+    atUp('strg',2);atUp('dex',2);
+    if(R()<0.45){
+      P.escapePrep=clamp(P.escapePrep+12);
+      say('작업장 구석에서 녹슨 철사 조각과 낡은 드라이버 끝부분을 몰래 챙겨 수감복 안쪽에 숨겼습니다.');
+      note('탈옥 준비도 +12%');
+    }else{
+      say('증기가 자욱한 세탁실에서 무거운 빨래 자루를 나르며 시간을 보냅니다.');
+    }
+  });
+
+  if(h>=8&&h<19&&!d.pYard)opt('야외 운동장에서 턱걸이와 달리기로 몸을 단련한다 (2시간)',()=>{
+    d.pYard=1;pass(120);st('fat',14);st('str',-6);
+    atUp('strg',4);atUp('stam',4);
+    say('철조망 아래 운동장에서 땀이 비 오듯 쏟아질 때까지 근력과 지구력을 단련합니다. 다른 수감자들도 함부로 건드리지 못합니다.');
+    note('근력과 지구력이 향상되었습니다.');
+  });
+
+  if(h>=9&&h<20&&!d.pScout)opt('간수들의 교대 시간과 환풍구·배수로 구조를 살핀다 (2시간)',()=>{
+    d.pScout=1;pass(120);skUp('street',2);atUp('calm',2);
+    P.escapePrep=clamp(P.escapePrep+18);
+    say('야간 순찰 간수가 복도 끝을 도는 데 걸리는 시간과 세탁실 뒤편 배수로 철창의 부식 상태를 머릿속에 정확히 그려 넣습니다.');
+    note('탈옥 준비도 +18%');
+  });
+
+  if(h>=10&&h<18&&!d.pBrawl)opt('시비를 걸어오는 수감자와 맞붙는다',()=>{
+    d.pBrawl=1;pass(45);
+    const winProb=35+(S.attrs.strg*0.45)+(S.attrs.stam*0.2);
+    if(R()*100<winProb){
+      st('str',-8);atUp('strg',2);P.escapePrep=clamp(P.escapePrep+8);
+      say('상대의 주먹을 피하고 묵직한 정타를 꽂아 넣습니다. 쓰러진 수감자의 주머니에서 담배와 철사 묶음을 챙깁니다.');
+      note('싸움에서 승리했습니다. (탈옥 준비도 +8%)');
+    }else{
+      S.injured=true;st('fat',20);st('str',12);P.daysLeft+=1;
+      say('난투 끝에 간수들의 진압봉에 얻어맞고 독방에 갇혔습니다. 징벌로 형기가 1일 추가되었습니다.');
+    }
+  },{cls:'risk'});
+
+  if(!d.pEscapeTry)opt(`탈옥을 시도한다 (성공 예상률 ${calcEscapeChance()}%)`,()=>{
+    d.pEscapeTry=1;pass(90);
+    const chance=calcEscapeChance();
+    if(R()*100<chance){
+      const reason=P.reason;
+      S.prison=null;S.loc='seabreeze';S.heat=clamp(S.heat+45);st('str',12);st('tra',2);
+      say('<b>탈옥 성공!</b> 자물쇠를 따고 배수로 철창을 뜯어낸 뒤, 차가운 밤바다 안개를 뚫고 시브리즈 블러바드 해안가로 빠져나왔습니다! 이제 경찰의 추적을 각오해야 합니다.');
+      note(`탈옥에 성공했습니다! (${reason} 잔여 형기 도주 · 수배도 급상승)`);
+    }else{
+      P.daysLeft+=3;P.escapePrep=Math.max(0,P.escapePrep-35);
+      st('str',18);st('fat',20);st('tra',3);S.injured=true;
+      say('<b>경보음이 울립니다!</b> 담장을 넘기 직전 탐조등이 당신을 비추고 진압대가 들이닥칩니다. 독방 징벌과 함께 형기가 3일 추가되었습니다.');
+    }
+  },{cls:'risk'});
+
+  opt('감방 침대에 누워 시간을 보낸다 (4시간)',()=>doSleep(240));
+  if(h>=21||h<5)opt('소등 후 잠자리에 든다',sleepNight);
+};
+
+function calcEscapeChance(){
+  const prep=S.prison?.escapePrep||0;
+  const statBonus=(S.attrs.strg*0.18)+(S.attrs.stam*0.15)+(S.attrs.dex*0.25)+(S.attrs.calm*0.18)+(S.skills.street*0.15);
+  return Math.max(8,Math.min(88,Math.round(10+prep*0.45+statBonus-(S.st.fat*0.2))));
+}
+/* ============ 쇼핑몰 상점, 가구점, 옷장, 거울 & 타투샵 (텍스트 페이지) ============ */
+const MALL_ITEMS=[
+  {id:'flower',n:'노란 프리지아 꽃다발',p:15,d:'마리아가 가장 좋아하는 꽃. 선물하면 마리아의 호감도가 오릅니다.',buy:()=>{S.inv.flower++;}},
+  {id:'toy',n:'작은 곰 인형',p:25,d:'에밀리의 토끼 인형 버니의 새 친구. 에밀리가 무척 기뻐합니다.',buy:()=>{S.inv.toy++;}},
+  {id:'bookset',n:'어린이 그림책 세트',p:22,d:'에밀리에게 선물할 수 있는 동화책 3권 세트. 밤마다 읽어줄 수 있습니다.',buy:()=>{S.inv.bookset++;}},
+  {id:'vitamin',n:'종합 비타민 (3회분)',p:18,d:'집에서 복용하면 피로와 스트레스를 덜어줍니다.',buy:()=>{S.inv.vitamin+=3;}},
+  {id:'notebook',n:'가죽 표지 노트와 만년필',p:24,d:'집에서 감정을 기록해 스트레스와 트라우마를 다스릴 수 있습니다.',buy:()=>{S.inv.notebook++;}},
+  {id:'cologne',n:'우디 향 애프터셰이브 (5회분)',p:30,d:'집에서 사용하면 매력이 일시적으로 상승합니다.',buy:()=>{S.inv.cologne+=5;}},
+  {id:'watch',n:'클래식 여성용 손목시계',p:95,d:'마리아를 위한 특별한 선물. 집에서 건네줄 수 있습니다.',buy:()=>{S.inv.watch++;}}
+];
+const CLOTH_SHOP=[
+  {id:'umbrella_blk',p:14},{id:'cap_worn',p:18},{id:'beanie_wool',p:22},{id:'patch_black',p:20},
+  {id:'scarf_knit',p:26},{id:'flannel_shirt',p:38},{id:'hoodie_navy',p:42},{id:'jacket_grey',p:60},
+  {id:'pants_chino',p:45},{id:'sweats_home',p:25},{id:'gloves_work',p:20},{id:'sneakers_clean',p:48}
+];
+const clothOf=id=>CLOTH_CATALOG.find(c=>c.id===id);
+function pageHead(title,intro,msg){
+  pageTitle=title;
+  if(msg)note(msg);
+  if(intro)say(intro);
+  sys(`보유 현금: $${S.money}`);
+}
+function leaveShop(txt){opt(txt||'매장을 나온다',()=>{say('매장을 나와 쇼핑몰 통로로 돌아옵니다. 형광등 불빛 아래로 사람들이 오갑니다.');},{grp:'나가기'});}
+
+function mallShopPage(msg){
+  pageHead('웨스트게이트 쇼핑몰 · 잡화 매장','선물 코너와 생활용품 매대가 나란히 놓인 잡화 매장입니다. 점원이 계산대 너머에서 무심하게 고개를 끄덕입니다.',msg);
+  say(MALL_ITEMS.map(it=>`<b>${it.n}</b> · $${it.p}<br><span class="sys">${it.d}</span>`).join('<br>'));
+  MALL_ITEMS.forEach(it=>opt(`${it.n}을(를) 산다 ($${it.p})`,()=>{
+    if(S.money<it.p){mallShopPage('현금이 부족합니다.');return;}
+    cash(-it.p);pass(5);it.buy();flushFx();
+    mallShopPage(`「${it.n}」을(를) 구매했습니다.`);
+  },{grp:'구매'}));
+  leaveShop();
+}
+
+function clothesShopPage(msg){
+  pageHead('웨스트게이트 쇼핑몰 · 의류 & 잡화 매장','옷걸이가 빽빽하게 늘어선 의류 매장입니다. 구매한 의류는 집 옷장에 자동으로 보관됩니다.',msg);
+  say(CLOTH_SHOP.map(e=>{const it=clothOf(e.id);const own=S.wardrobe.includes(e.id);
+    return `<b>${it.n}</b> · $${e.p}${own?' <span class="sys">[보유 중]</span>':''}<br><span class="sys">${it.desc} (보온 ${it.warmth} / 매력 ${it.cha>=0?'+':''}${it.cha})</span>`;}).join('<br>'));
+  CLOTH_SHOP.forEach(e=>{
+    const it=clothOf(e.id);if(S.wardrobe.includes(e.id))return;
+    opt(`${it.n}을(를) 산다 ($${e.p})`,()=>{
+      if(S.money<e.p){clothesShopPage('현금이 부족합니다.');return;}
+      cash(-e.p);pass(5);S.wardrobe.push(e.id);
+      if(e.id==='umbrella_blk')S.inv.umbrella++;
+      if(it.cha>0&&!S.flags['chaBuy_'+e.id]){S.flags['chaBuy_'+e.id]=1;st('cha',Math.min(2,it.cha));}
+      flushFx();
+      clothesShopPage(`「${it.n}」을(를) 구매해 옷장에 넣었습니다.`);
+    },{grp:'구매'});
+  });
+  leaveShop();
+}
+
+function furniturePage(msg){
+  pageHead('웨스트게이트 쇼핑몰 · 가구 상점 「홈 & 하스」','원목 냄새가 나는 가구 상점입니다. 구매한 가구는 즉시 아파트로 배달되어 집 풍경에 반영됩니다.',msg);
+  say(FURNITURE.map(f=>`<b>${f.n}</b> · $${f.p}${S.furniture.includes(f.id)?' <span class="sys">[배치 완료]</span>':''}<br><span class="sys">${f.desc}</span>`).join('<br>'));
+  FURNITURE.forEach(f=>{
+    if(S.furniture.includes(f.id))return;
+    opt(`${f.n}을(를) 산다 ($${f.p})`,()=>{
+      if(S.money<f.p){furniturePage('현금이 부족합니다.');return;}
+      cash(-f.p);pass(10);S.furniture.push(f.id);
+      if(f.str)st('str',f.str);if(f.fat)st('fat',f.fat);
+      if(f.relM)rel('maria',f.relM);if(f.relE)rel('emily',f.relE);
+      flushFx();
+      furniturePage(`「${f.n}」을(를) 구매했습니다. 집에 돌아가면 배치된 모습을 볼 수 있습니다.`);
+    },{grp:'구매'});
+  });
+  leaveShop('가구 상점을 나온다');
+}
+
+function tattooPage(msg){
+  if(!S.met.vince){S.met.vince=1;S.rel.vince=25;}
+  pageHead('타투샵 「블랙 앵커」','소독약과 잉크 냄새가 감도는 작은 작업실. 타투이스트 <b>빈스</b>가 고개를 끄덕입니다. “원하는 도안이 있으면 고르게. 바늘은 거짓말을 안 하니까.”',msg);
+  say(TATTOOS.map(t=>`<b>${t.n}</b> · $${t.cost}${S.tattoos.includes(t.id)?' <span class="sys">[시술 완료]</span>':''}<br><span class="sys">${t.desc}</span>`).join('<br>'));
+  TATTOOS.forEach(t=>{
+    if(S.tattoos.includes(t.id))return;
+    opt(`「${t.n}」 시술을 받는다 ($${t.cost})`,()=>{
+      if(S.money<t.cost){tattooPage('시술 비용이 부족합니다.');return;}
+      cash(-t.cost);pass(90);S.tattoos.push(t.id);
+      st('cha',t.cha);st('ctl',t.ctl);st('tra',t.tra);st('fat',6);rel('vince',10);
+      flushFx();
+      tattooPage(`윙윙거리던 타투 머신 소리가 멎었습니다. 「${t.n}」 시술을 마쳤습니다.`);
+    },{grp:'시술',min:90});
+  });
+  if(!S.daily.vince)opt('빈스와 이야기를 나눈다',()=>{
+    S.daily.vince=1;pass(30);rel('vince',5);st('str',-4);flushFx();
+    tattooPage('빈스가 커피를 건넵니다. “몸에 새긴 자국은 지워지지 않지. 그래서 오히려 과거를 똑바로 보게 되는 법이야.”');
+  },{grp:'대화',min:30});
+  opt('타투샵을 나온다',()=>{say('작업실 문에 달린 종이 딸랑 울립니다. 쇼핑몰 통로로 돌아옵니다.');},{grp:'나가기'});
+}
+
+/* ----- 옷장 ----- */
+let wdState={order:'name',inv:false};
+const ORDER_N={name:'이름',colour:'색상',integrity:'내구도',warmth:'보온성'};
+function wornLines(){
+  const L=CLOTH_SLOTS.map(s=>{const c=clothOf(S.worn[s.k]);return c?`${s.n}: ${c.n}`:null;}).filter(Boolean);
+  return L.length?L.join(' · '):'아무것도 걸치지 않은 상태입니다.';
+}
+function wardrobePage(msg){
+  pageTitle='옷장';
+  if(msg)note(msg);
+  say('삐걱거리는 나무 옷장 문을 엽니다. 좀약 냄새와 함께 몇 벌 안 되는 옷이 걸려 있습니다.');
+  sys('현재 복장 — '+wornLines());
+  S.outfitSets.forEach(set=>opt(`「${set.name}」 세트로 갈아입는다`,()=>{
+    Object.keys(S.worn).forEach(k=>S.worn[k]=null);
+    Object.keys(set.items).forEach(k=>{const cid=set.items[k];if(cid&&S.wardrobe.includes(cid))S.worn[k]=cid;});
+    pass(5);wardrobePage(`「${set.name}」 의상 세트를 착용했습니다.`);
+  },{grp:'의상 세트'}));
+  opt('현재 복장을 새 세트로 저장한다',()=>{
+    const name=`맞춤 세트 ${S.outfitSets.length+1}`;
+    S.outfitSets.push({name,items:Object.assign({},S.worn)});
+    wardrobePage(`현재 차림을 「${name}」 세트로 저장했습니다.`);
+  },{grp:'의상 세트'});
+  if(S.outfitSets.length)opt('의상 세트를 정리한다 (덮어쓰기 · 삭제)',()=>setManagePage(),{grp:'의상 세트'});
+  CLOTH_SLOTS.forEach(s=>{
+    const cnt=S.wardrobe.filter(id=>{const c=clothOf(id);return c&&c.slot===s.k;}).length;
+    opt(`${s.n} 칸을 연다 (${cnt}벌${S.worn[s.k]?' · 착용 중':''})`,()=>slotPage(s.k),{grp:'의류'});
+  });
+  opt('전부 벗는다',()=>{Object.keys(S.worn).forEach(k=>S.worn[k]=null);wardrobePage('착용 중인 모든 의류를 벗어 옷장에 넣었습니다.');},{grp:'기타'});
+  opt('거울을 본다',()=>mirrorPage(),{grp:'기타'});
+  opt('옷장 문을 닫는다',()=>{say('옷장 문을 닫습니다. 경첩이 삐걱 소리를 냅니다.');},{grp:'기타'});
+}
+function slotPage(k,msg){
+  const sl=CLOTH_SLOTS.find(s=>s.k===k);
+  pageTitle='옷장 · '+sl.n;
+  if(msg)note(msg);
+  const items=S.wardrobe.map(clothOf).filter(c=>c&&c.slot===k);
+  items.sort((a,b)=>{
+    let cmp=0;
+    if(wdState.order==='name')cmp=a.n.localeCompare(b.n,'ko');
+    else if(wdState.order==='colour')cmp=a.col.localeCompare(b.col,'ko');
+    else if(wdState.order==='integrity')cmp=a.integ-b.integ;
+    else cmp=a.warmth-b.warmth;
+    return wdState.inv?-cmp:cmp;
+  });
+  say(`<b>${sl.n}</b> 칸에 보관된 의류 ${items.length}/20벌 · 정렬: ${ORDER_N[wdState.order]}${wdState.inv?' (역순)':''}`);
+  if(!items.length)sys('이 부위에 보관된 의류가 없습니다.');
+  else say(items.map(it=>`${S.worn[k]===it.id?'<b style="color:#e0c040">[착용 중]</b> ':''}<b>${it.n}</b><br><span class="sys">색상 ${it.col} · 보온 ${it.warmth} · 내구도 ${it.integ}% · 매력 ${it.cha>=0?'+':''}${it.cha} — ${it.desc}</span>`).join('<br>'));
+  items.forEach(it=>{
+    if(S.worn[k]===it.id)opt(`${it.n}을(를) 벗는다`,()=>{S.worn[k]=null;slotPage(k,`「${it.n}」을(를) 벗었습니다.`);},{grp:'입기 / 벗기'});
+    else opt(`${it.n}을(를) 입는다`,()=>{S.worn[k]=it.id;pass(2);slotPage(k,`「${it.n}」을(를) 착용했습니다.`);},{grp:'입기 / 벗기'});
+  });
+  items.forEach(it=>opt(`${it.n}을(를) 버린다`,()=>{
+    if(S.worn[k]===it.id)S.worn[k]=null;
+    S.wardrobe=S.wardrobe.filter(x=>x!==it.id);
+    if(it.id==='umbrella_blk')S.inv.umbrella=Math.max(0,S.inv.umbrella-1);
+    slotPage(k,`「${it.n}」을(를) 처분했습니다.`);
+  },{grp:'버리기',cls:'risk'}));
+  if(items.length>1){
+    const keys=Object.keys(ORDER_N);const nx=keys[(keys.indexOf(wdState.order)+1)%keys.length];
+    opt(`정렬 기준을 「${ORDER_N[nx]}」(으)로 바꾼다`,()=>{wdState.order=nx;slotPage(k);},{grp:'정렬'});
+    opt(wdState.inv?'정순으로 되돌린다':'역순으로 뒤집는다',()=>{wdState.inv=!wdState.inv;slotPage(k);},{grp:'정렬'});
+  }
+  opt('옷장 첫 화면으로 돌아간다',()=>wardrobePage(),{grp:'나가기'});
+}
+function setManagePage(msg){
+  pageTitle='옷장 · 의상 세트 정리';
+  if(msg)note(msg);
+  say('저장된 의상 세트 목록입니다.');
+  say(S.outfitSets.map(set=>`<b>${set.name}</b><br><span class="sys">${Object.keys(set.items).map(k=>clothOf(set.items[k])?.n).filter(Boolean).join(', ')||'비어 있음'}</span>`).join('<br>')||'저장된 세트가 없습니다.');
+  S.outfitSets.forEach(set=>opt(`「${set.name}」을(를) 현재 복장으로 덮어쓴다`,()=>{set.items=Object.assign({},S.worn);setManagePage(`「${set.name}」 세트를 현재 복장으로 덮어썼습니다.`);},{grp:'덮어쓰기'}));
+  S.outfitSets.forEach(set=>opt(`「${set.name}」을(를) 삭제한다`,()=>{S.outfitSets.splice(S.outfitSets.indexOf(set),1);setManagePage(`「${set.name}」 세트를 삭제했습니다.`);},{grp:'삭제',cls:'risk'}));
+  opt('옷장 첫 화면으로 돌아간다',()=>wardrobePage(),{grp:'나가기'});
+}
+function mirrorPage(){
+  pageTitle='낡은 거울';
+  const totalWarmth=CLOTH_SLOTS.reduce((a,s)=>{const it=clothOf(S.worn[s.k]);return a+(it?it.warmth:0);},0);
+  say(`거울 속에는 왼쪽 눈에 의안을 낀 스물세 살의 스콧 카터가 서 있습니다. 바깥 기온은 <b>${S.temp}°C</b> (${S.weather})이며, 복장의 총 보온성은 <b>${totalWarmth}</b>입니다.`);
+  const look=[];
+  look.push(S.st.cha>=60?'단정하게 정돈된 얼굴이 제법 믿음직해 보입니다.':S.st.cha>=35?'평범하지만 그럭저럭 봐줄 만한 얼굴입니다.':'푸석한 피부와 헝클어진 머리. 지친 기색이 역력합니다.');
+  if(S.st.fat>=60)look.push('눈 밑이 거뭇하게 꺼져 있습니다.');
+  if(S.injured)look.push('상처 자국이 아직 벌겋게 남아 있습니다.');
+  if(S.tattoos.length)look.push(`몸 곳곳에 새긴 문신(${S.tattoos.length}개)이 보입니다.`);
+  say(look.join(' '));
+  const wl=CLOTH_SLOTS.map(s=>{const it=clothOf(S.worn[s.k]);return it?`${s.n}: ${it.n} (${it.col})`:null;}).filter(Boolean);
+  say('<b>현재 착용 중인 복장</b><br>'+(wl.length?wl.join('<br>'):'<span class="sys">아무것도 걸치지 않은 상태입니다.</span>'));
+  if(S.loc==='home')opt('옷장을 연다',()=>wardrobePage());
+  opt('거울 앞을 떠난다',()=>{say('거울에서 시선을 거둡니다.');});
+}
+
+function pay(n){if(S.money<n){say('돈이 부족합니다.');return false;}cash(-n);return true;}
+
+/* ============ 가족 ============ */
+function talkMaria(){
+  S.daily.talkM=1;pass(30);
+  if(S.drank||S.alc>0){rel('maria',-6);say('마리아가 당신 숨결에서 술 냄새를 맡고 표정이 굳습니다. “또 마셨어?” 그녀는 대답을 기다리지 않고 돌아섭니다.');return;}
+  if(S.crimes>0&&!S.flags.mariaAsked&&R()<0.45){S.flags.mariaAsked=1;mariaSuspicion();return;}
+  const lines=S.job?['마리아가 오늘 일은 어땠냐고 묻습니다. 당신이 일 얘기를 늘어놓자 그녀가 턱을 괴고 웃습니다.','“요즘 당신, 좀 달라 보여.” 마리아가 당신의 손을 잡습니다.']:
+    ['마리아가 식당 손님 이야기를 합니다. 당신은 끝까지 들어줍니다. 그거면 충분할 때도 있습니다.','“일자리는 좀 알아봤어?” 마리아의 목소리엔 비난보다 피곤이 묻어 있습니다.','둘이서 식탁에 앉아 다음 달 공과금 고지서를 들여다봅니다. 마리아가 한숨을 쉽니다.'];
+  say(pick(lines));rel('maria',4);st('str',-4);
+  if(S.missedRent>0){say('“고든 씨가 또 왔었어. 이번 주는 꼭 내야 돼, 스콧.”');st('str',4);}
+}
+function argue(){
+  S.daily.talkM=1;pass(30);
+  say('마리아가 “일자리는…” 하고 운을 떼는 순간, 머릿속에서 무언가가 튕겨 나갑니다. “그 얘기 좀 그만해! 내가 놀고 싶어서 노는 줄 알아?!” 당신의 고함에 그릇이 바닥에 떨어져 깨집니다.');
+  say(emilyHome()?'방문 틈으로 에밀리가 버니를 끌어안고 떨고 있습니다.':'마리아는 아무 말 없이 깨진 그릇 조각을 줍습니다.');
+  rel('maria',-12);if(emilyHome())rel('emily',-8);st('str',5);st('tra',2);st('ctl',-3);
+}
+function playEmily(){S.daily.play=1;pass(60);rel('emily',6);rel('maria',2);st('str',-10);
+  say(pick(['에밀리가 당신의 머리에 종이 왕관을 씌우고 “해적 왕”이라고 부릅니다. 당신은 과장된 목소리로 “아르르!” 하고 소리칩니다.','거실 바닥에 블록으로 탑을 쌓습니다. 에밀리가 무너뜨릴 때마다 까르르 웃습니다.','에밀리와 함께 버니 인형의 소꿉 파티를 엽니다. 보이지 않는 차가 정말 맛있다고 해야 합니다.']));}
+function snapEmily(){S.daily.play=1;pass(20);rel('emily',-10);rel('maria',-5);st('str',3);st('ctl',-2);
+  say('에밀리가 장난감을 당신 발등에 떨어뜨립니다. “조용히 좀 해!” 당신의 목소리가 생각보다 크게 터져 나옵니다. 에밀리의 눈에 눈물이 고이고, 아이는 엄마 품으로 달려갑니다.');}
+function pickEmily(){S.daily.picked=1;S.daily.mariaOff=0;pass(30);rel('emily',7);rel('maria',4);st('str',-6);S.loc='home';
+  say('어린이집 선생님이 놀란 얼굴로 에밀리를 건네줍니다. “오늘은 아빠가 오셨네!” 에밀리가 당신의 손을 꼭 잡고 집까지 쉴 새 없이 떠듭니다.');}
+function mariaSuspicion(){
+  say('마리아가 서랍 속 지폐 뭉치를 들고 서 있습니다. “스콧. 이 돈 어디서 났어?”');
+  opt('“일용직 몇 번 뛰었어.” (거짓말)',()=>{const ok=R()<(0.3+S.st.cha/150);if(ok){say('마리아는 한참 당신의 얼굴을 보다가 고개를 끄덕입니다. 믿고 싶은 얼굴입니다.');st('str',6);st('tra',2);}else{say('“거짓말하지 마. 당신 눈 보면 알아.” 마리아의 목소리가 떨립니다.');rel('maria',-15);st('str',8);}});
+  opt('토니 일을 솔직히 털어놓는다',()=>{rel('maria',-22);st('str',10);st('ctl',3);say('마리아가 털썩 주저앉습니다. “에밀리 생각은 했어? 당신이 감옥 가면 우린…” 그녀는 끝내 울음을 터뜨립니다. 그래도 거짓말보다는 나았는지, 그녀는 당신 손을 뿌리치지 않습니다.');});
+}
+
+/* ============ 술 ============ */
+function drinkBeer(){
+  S.inv.beer=Math.max(0,S.inv.beer-1);drinkEffect();
+  say(pick(['차가운 캔을 땁니다. 첫 모금이 목을 타고 내려가자 어깨의 힘이 빠집니다.','한 캔, 그리고 또 한 캔. 생각을 멈추기엔 이만한 게 없습니다.']));
+  if(S.loc==='home'&&mariaHome()){rel('maria',-6);say('부엌에서 마리아가 빈 캔을 보고 말없이 고개를 젓습니다.');}
+  if(S.inv.beer>0&&R()<(100-effCtl())/120+0.1){S.inv.beer--;drinkEffect();st('ctl',-2);say('정신을 차리고 보니 캔이 하나 더 비어 있습니다.');}
+}
+function drinkEffect(){
+  S.drank=true;S.crave=0;
+  alcMod(26);
+  pass(30,{drinking:true});
+  st('str',-18);st('ctl',-3);st('fat',4);
+}
+function buyBeer(){if(!pay(8))return;S.inv.beer+=3;st('str',-2);say('계산대 위에 맥주 세 캔을 올려놓습니다. 점원은 당신 얼굴을 쳐다보지도 않습니다.');}
+function buyBeerImpulse(){say('집으로 가려던 발걸음이 주류 판매점 앞에서 멈춥니다. 정신을 차려보니 손에 비닐봉지가 들려 있습니다.');if(S.money>=8){cash(-8);S.inv.beer+=3;}pass(10);}
+
+/* ============ 수면 ============ */
+const NIGHTMARES=[
+ '꿈속에서 당신은 일곱 살입니다. 어머니는 소파에 늘어져 있고 TV만 시끄럽게 떠듭니다. 배가 고프다고 흔들어 깨우지만 어머니는 눈을 뜨지 않습니다. 식은땀에 젖어 잠에서 깹니다.',
+ '골목길. 깨진 병, 누군가의 웃음소리. 왼쪽 눈에 뜨거운 것이 번지고 세상의 절반이 꺼집니다. 당신은 헐떡이며 빈 눈두덩을 움켜쥐고 일어납니다.',
+ '마리아와 에밀리가 문밖으로 걸어 나갑니다. 아무리 불러도 둘은 돌아보지 않습니다. 눈을 뜨고 한참 동안 심장이 가라앉지 않습니다.',
+ '해고 통지서가 끝없이 쏟아집니다. 상사의 얼굴이 어머니의 얼굴로 녹아내립니다. 비명을 지르며 깹니다.'];
+function sleepNight(){let m=(7*60-S.t+1440)%1440;doSleep(m||480);}
+function doSleep(mins){
+  const nightmare=R()<S.st.tra/110;
+  if(mins>=240)say(S.loc==='home'?'얇은 이불을 끌어당깁니다.':'아무 데나 몸을 누입니다.');
+  pass(mins,{sleep:true,rest:nightmare?6:12});
+  if(nightmare){say(pick(NIGHTMARES));st('str',12);st('ctl',-2);}
+  else if(mins>=240){say('오랜만에 꿈 없이 잤습니다.');st('str',-10);st('ctl',1);}
+  else{st('str',-3);say('잠깐 눈을 붙였습니다.');}
+  if(S.loc==='home'&&!weekend()&&hh()===7)say('현관문 닫히는 소리. 마리아가 에밀리를 어린이집에 데려다주고 출근했습니다.');
+}
+function collapse(){
+  say('<b>시야가 기울어집니다.</b> 한계까지 몰아붙인 몸이 더는 버티지 못합니다.');
+  if(S.loc!=='home'){const lost=Math.min(S.money,Math.floor(R()*40));if(lost>0){cash(-lost);say(`정신을 차려보니 지갑에서 $${lost}가 사라져 있습니다.`);}rel('maria',-5);}
+  doSleep(480);
+}
+function breakdown(){
+  say('<b>머릿속에서 무언가 툭 끊어집니다.</b>');
+  if(S.loc==='home'&&mariaHome()){say('당신은 벽에 주먹을 꽂아 넣습니다. 석고보드가 움푹 패이고 손등에서 피가 흐릅니다. 마리아가 에밀리를 안고 욕실 문을 잠급니다.');rel('maria',-15);rel('emily',-12);}
+  else{say('지나가던 남자와 어깨가 부딪히는 순간, 당신은 그의 멱살을 잡고 있습니다. 주먹이 오가고, 누군가 경찰을 부르는 소리에 당신은 달아납니다.');S.injured=true;S.heat+=8;}
+  st('tra',5);st('ctl',-8);S.st.str=70;fx.str=(fx.str||0)-30;
+}
+
+/* ============ 구인 & 근무 (일반 + 전문직) ============ */
+const DAY_LABOR_LIST=[
+  {id:'dl_warehouse',n:'새벽 물류센터 상하차 일용직',hours:5,pay:78,str:6,reqAttr:'strg',reqVal:30,desc:'택배 분류 및 화물 적재 작업. 체력 소모가 크지만 당일 정산됩니다.'},
+  {id:'dl_moving',n:'이삿짐 포장·운반 보조',hours:4,pay:68,str:4,reqAttr:'stam',reqVal:28,desc:'원룸 및 소형 주택 이삿짐 운반 보조. 무난한 일당을 받을 수 있습니다.'},
+  {id:'dl_repair',n:'단기 기계·설비 보조공',hours:4,pay:86,str:3,reqSkill:'mech',reqVal:30,desc:'공장 설비 교체와 배관 보조 작업. 정비 기술이 있으면 수월합니다.'},
+  {id:'dl_event',n:'주말 행사장 철거·세팅 스태프',hours:3,pay:52,str:2,reqSkill:'craft',reqVal:22,desc:'무대 자재와 천막을 정리하는 단기 알바. 부담이 적은 편입니다.'}
+];
+const RANKS={
+  mech:{t:['견습 정비공','정비공','선임 정비사','정비 반장'],sk:'mech',req:[0,34,44,58]},
+  guard:{t:['경비원','선임 경비원','경비 조장','보안 실장'],sk:'street',req:[0,18,28,40]},
+  cafe:{t:['아르바이트','정규 바리스타','시프트 리더','부점장'],sk:'know',req:[0,22,30,42]},
+  clean:{t:['청소부','선임 미화원','미화 반장','시설관리 주임'],sk:'craft',req:[0,25,33,45]},
+  police:{t:['순경','경장','경사','형사'],sk:'know',req:[0,37,46,56]},
+  army:{t:['일병 정비병','상병 정비병','병장 정비조장','하사 정비 분대장'],sk:'mech',req:[0,48,56,66]}
+};
+const PROMO_DAYS=[0,4,9,15],PROMO_PERF=[0,28,70,130],PROMO_MULT=[1,1.2,1.45,1.75];
+const BOSS={mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'시설관리 과장',police:'제4지구 서장',army:'정비 중대장'};
+const jobRank=()=>S.job?(S.job.rank||0):0;
+const jobTitle=(id,r)=>RANKS[id].t[r==null?jobRank():r];
+const jobPay=()=>S.job?Math.round(JOBS[S.job.id].pay*PROMO_MULT[jobRank()]):0;
+const banUntil=id=>{const b=S.flags['ban_'+id];return b&&b>S.day?b:0;};
+
+/* ----- 노트북 (텍스트 페이지) ----- */
+let laptopTab='portal';
+function laptopPage(tab,msg){
+  if(tab)laptopTab=tab;
+  if(!S.interviews)S.interviews={};
+  pageTitle='낡은 중고 노트북';
+  if(msg)note(msg);
+  const h=hh(),isNight=h>=22||h<6;
+  sys(`Wi-Fi 연결됨 · ${DAYS[wd()]} ${tstr()} · 현금 $${S.money}`);
+  if(laptopTab==='portal'){
+    say('지역 구인구직 포털 <b>「워크파인드(WorkFind)」</b>에 접속했습니다. 공고를 찾아보고 원하는 날짜로 현장 면접 일정을 잡을 수 있습니다.');
+    const keys=['mech','guard','cafe','clean','police','army'];
+    const lines=keys.map(k=>{
+      const J=JOBS[k],known=!!S.leads[k],cur=S.job&&S.job.id===k,sched=S.interviews[k],ban=banUntil(k);
+      const badge=cur?'현재 재직 중':sched?(sched.day===S.day?'오늘 면접 예약':`${sched.day}일차 면접 예약`):ban?`재지원 제한 (${ban}일차부터)`:known?'지원 가능':'미확인 공고';
+      const req=k==='police'?'조건: 무전과 · 생활 지식 32+ · 거리의 요령 22+':k==='army'?'조건: 무전과 · 정비 기술 45+ · 트라우마 55 이하':k==='mech'?'우대: 정비 기술 · 프랭크와 친분 또는 월터 추천서':'조건: 특별 자격 제한 없음 (면접 통과 필요)';
+      return `<b>${J.n}</b> <span class="sys">[${badge}]</span><br><span class="sys">${known?`근무지 ${PL[J.loc].n} · ${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00 (${J.hours}시간) · 초봉 일당 $${J.pay} · 승진 시 최대 $${Math.round(J.pay*PROMO_MULT[3])}<br>${req}`:'세부 공고를 검색해야 채용 조건과 면접 일정을 확인할 수 있습니다.'}</span>`;
+    });
+    say(lines.join('<br>'));
+    keys.forEach(k=>{
+      const J=JOBS[k],known=!!S.leads[k],cur=S.job&&S.job.id===k,sched=S.interviews[k];
+      if(cur)return;
+      if(!known){opt(`「${J.n}」 공고를 검색한다`,()=>{pass(30);S.leads[k]=1;st('str',1);flushFx();laptopPage('portal',`「${J.n}」 채용 공고의 상세 정보와 지원 양식을 확보했습니다.`);},{grp:'공고 검색',min:30});return;}
+      if(banUntil(k))return;
+      if(sched){opt(`「${J.n}」 면접 예약을 취소한다`,()=>{delete S.interviews[k];laptopPage('portal',`「${J.n}」 면접 예약을 취소했습니다.`);},{grp:'면접 예약'});return;}
+      if(S.job)return;
+      [S.day,S.day+1].forEach(dd=>opt(`「${J.n}」 면접을 ${dd===S.day?'오늘':'내일'}(${DAYS[(dd-1)%7]})로 잡는다`,()=>{
+        if((k==='police'||k==='army')&&(S.crimes>0||S.gangRank>0)){laptopPage('portal','온라인 사전 결격사유 조회에서 범죄·조직 이력이 확인되어 면접 예약이 거부되었습니다.');return;}
+        pass(15);S.interviews[k]={day:dd};flushFx();
+        laptopPage('portal',`「${J.n}」 면접을 ${dd===S.day?'오늘':'내일'}로 예약했습니다. 영업시간 내에 ${PL[J.loc].n}을(를) 방문하세요.`);
+      },{grp:'면접 예약',min:15}));
+    });
+    if(S.job)opt('현재 직장에 사직서를 이메일로 보낸다',quitConfirm,{grp:'재직 중',cls:'risk'});
+  }else if(laptopTab==='daylabor'){
+    const done=!!S.daily.dayLabor;
+    say('당일 급전이 필요할 때 온라인으로 신청해 즉시 파견 나가는 <b>단기 일용직 게시판</b>입니다. 하루 1회, 06:00~22:00에만 지원할 수 있습니다. 근무는 현장에서 한 시간씩 직접 진행됩니다.');
+    say(DAY_LABOR_LIST.map(dl=>{
+      const cur=dl.reqAttr?S.attrs[dl.reqAttr]:S.skills[dl.reqSkill];
+      const nm=dl.reqAttr?ATTRN[dl.reqAttr]:SKILLN[dl.reqSkill];
+      return `<b>${dl.n}</b> · 일당 $${dl.pay}<br><span class="sys">${dl.desc} · ${dl.hours}시간 · 권장 ${nm} ${dl.reqVal} (현재 ${fl(cur)})</span>`;
+    }).join('<br>'));
+    if(done)sys('오늘은 이미 일용직을 다녀왔습니다.');
+    else if(isNight)sys('심야 시간에는 당일 파견을 신청할 수 없습니다.');
+    else DAY_LABOR_LIST.forEach((dl,i)=>opt(`「${dl.n}」에 지원하고 바로 출근한다`,()=>startDayLabor(i),{grp:'지원하기'}));
+  }else{
+    say('동영상 스트리밍 사이트를 열어 무료한 시간을 보냅니다.');
+    VIDS.forEach(v=>opt(v.t,()=>{
+      pass(v.m);st('str',v.str);if(v.fat)st('fat',v.fat);if(v.ctl)st('ctl',v.ctl);if(v.mech)skUp('mech',v.mech);
+      say(v.txt);
+      if(S.st.fat>=100||S.st.str>=100)return;
+      flushFx();laptopPage('video');
+    },{grp:'영상',min:v.m}));
+  }
+  if(laptopTab!=='portal')opt('구인구직 사이트로 이동한다',()=>laptopPage('portal'),{grp:'노트북'});
+  if(laptopTab!=='daylabor')opt('일용직 게시판으로 이동한다',()=>laptopPage('daylabor'),{grp:'노트북'});
+  if(laptopTab!=='video')opt('영상 사이트로 이동한다 (시간 때우기)',()=>laptopPage('video'),{grp:'노트북'});
+  opt('노트북을 덮는다',()=>{say('노트북 화면을 덮습니다. 팬 소리가 잦아듭니다.');},{grp:'노트북'});
+}
+const VIDS=[
+  {t:'엔진 수리 다큐멘터리를 본다',m:60,str:-6,fat:1,mech:1,txt:'엔진 분해와 조립 영상을 보며 시간을 보냈습니다. 기름때 냄새가 나는 듯해 마음이 조금 놓입니다.'},
+  {t:'스탠드업 코미디 클립을 몰아 본다',m:60,str:-9,fat:1,ctl:1,txt:'코미디 영상을 보며 오랜만에 피식 웃음이 새어 나왔습니다. 무거운 생각이 잠시 물러납니다.'},
+  {t:'빗소리 로파이 영상을 틀어 놓는다',m:90,str:-7,fat:-5,ctl:1,txt:'잔잔한 음악과 빗소리를 틀어놓고 눈을 감았습니다. 한결 차분해졌습니다.'},
+  {t:'추천 영상을 끝없이 넘긴다',m:120,str:-5,fat:4,txt:'추천 영상을 끝없이 넘기다 보니 어느새 두 시간이 훌쩍 지나 있습니다.'}
+];
+function startDayLabor(i){
+  const dl=DAY_LABOR_LIST[i];
+  if(S.st.fat>=85){laptopPage('daylabor','몸이 너무 지쳐 있어 당장 현장에 나갈 수 없습니다.');return;}
+  S.daily.dayLabor=1;
+  pass(30);S.loc='site';
+  say(`노트북으로 <b>「${dl.n}」</b>에 지원한 뒤 작업복을 챙겨 버스를 탔습니다. 현장 반장이 출석부에 당신 이름을 적습니다. “${dl.hours}시간이야. 농땡이 치면 일당 깎는다.”`);
+  S.shift={kind:'day',dl:i,total:dl.hours,total0:dl.hours,done:0,late:false,perf:0,bonus:0,ded:0,seen:[],ate:false};
+  shiftStep();
+}
+
+/* ----- 구인 · 면접 ----- */
+function jobOptions(loc,id){
+  const J=JOBS[id];
+  if(S.job&&S.job.id===id){
+    const now=S.t,st0=J.start*60,r=jobRank(),RK=RANKS[id];
+    sys(`현재 직급 <b>${RK.t[r]}</b> · 일당 $${jobPay()} · 근무 ${S.job.worked}일 · 누적 평가 ${S.job.perf||0}점 · 경고 ${S.job.strikes}/3`);
+    if(r<3)sys(`다음 직급 「${RK.t[r+1]}」 조건: 근무 ${PROMO_DAYS[r+1]}일 · 평가 ${PROMO_PERF[r+1]}점 · ${SKILLN[RK.sk]} ${RK.req[r+1]} (현재 ${fl(S.skills[RK.sk])}) · 경고 1회 이하`);
+    if(J.days.includes(wd())&&S.job.lastDay!==S.day&&now>=st0-60&&now<=st0+90)opt(`근무를 시작한다 (${J.hours}시간 · 일당 $${jobPay()})`,startShift);
+    else sys(`근무 일정: ${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00부터 ${J.hours}시간 (출근 가능: 시작 1시간 전 ~ 1시간 30분 후)`);
+    opt('사직서를 낸다',quitConfirm,{cls:'risk'});
+    return;
+  }
+  if(S.job)return;
+  const ban=banUntil(id);
+  if(ban&&S.leads[id]){sys(`「${J.n}」에는 ${ban}일차부터 다시 지원할 수 있습니다.`);return;}
+  const sched=S.interviews&&S.interviews[id];
+  if(sched&&isOpen(loc)){
+    const tag=sched.day===S.day?'오늘 예약됨 · 가산점':(sched.day<S.day?'예약일 경과':`${sched.day}일차 ${DAYS[(sched.day-1)%7]} 예약`);
+    opt(`「${J.n}」 예약된 면접을 본다`,()=>interview(id),{tag});
+  }else if(S.leads[id]&&!S.daily['ap_'+id]&&isOpen(loc)){
+    opt(`「${J.n}」 자리에 지원한다`,()=>interview(id));
+  }
+}
+function interview(id){
+  const sched=S.interviews&&S.interviews[id];
+  const onTime=sched&&sched.day===S.day;
+  if(sched)delete S.interviews[id];
+  S.daily['ap_'+id]=1;pass(45);
+  if(id==='police'){
+    if(S.crimes>0||S.gangRank>0){say('신원 조회 단말기를 확인한 경사가 차갑게 서류를 덮습니다. “전과나 불미스러운 기록이 있는 사람은 경찰 제복을 입을 수 없습니다.”');st('str',8);return;}
+    if(S.skills.know<32||S.skills.street<22){say('채용 담당 경사가 고개를 젓습니다. “필기 평가와 현장 판단력 기준에 못 미칩니다. (필요: 생활 지식 32 이상, 거리의 요령 22 이상)”');st('str',5);return;}
+  }
+  if(id==='army'){
+    if(S.crimes>0||S.gangRank>0){say('모병관이 신원 조회 결과를 보고 인상을 찌푸립니다. “규율 위반 이력이 있는 인원은 기지 출입 허가가 나지 않소.”');st('str',8);return;}
+    if(S.skills.mech<45||S.st.tra>55){say('모병관이 서류를 돌려줍니다. “군용 장비 정비 기준(정비 기술 45 이상)과 심리 안정 기준(트라우마 55 이하)을 충족해야 합니다.”');st('str',5);return;}
+  }
+  const who={mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'원무과 직원',police:'제4지구 경찰서 인사 담당 경사',army:'포트 밀러 기지 모병관'}[id];
+  say(`${who}이(가) 당신의 이력서와 얼굴을 번갈아 봅니다. 시선이 왼쪽 눈에서 멈춥니다. “그 눈은… 어쩌다 그런 겁니까? 그리고 전 직장은 왜 그만두셨죠?”`);
+  const skillBonus=id==='mech'?S.skills.mech*0.35:id==='guard'?S.skills.street*0.18:id==='police'?(S.skills.know+S.skills.street)*0.22:id==='army'?S.skills.mech*0.3:S.skills.know*0.12;
+  const attrBonus=id==='police'?(S.attrs.strg+S.attrs.calm)*0.12:id==='army'?(S.attrs.strg+S.attrs.stam)*0.14:id==='guard'?S.attrs.strg*0.12:S.attrs.dex*0.08;
+  const base=22+S.st.cha*0.5-S.st.fat*0.25-(S.st.str>=70?15:0)+skillBonus+attrBonus
+    +(onTime?14:(sched?5:0))
+    +(id==='mech'?(S.rel.frank||0)*0.4+(S.flags.walterRec?25:0):0)
+    +(id==='army'&&(S.flags.walterRec||S.flags.counsel)?22:0)
+    +(id==='cafe'?(S.rel.sophie||0)*0.4:0)
+    -(S.heat>=40?15:0)-(S.flags.firedCount||0)*4;
+  if(onTime)say('사전에 온라인으로 면접 일정을 예약해 둔 덕분에 담당자가 당신의 이력서를 미리 검토해 두었습니다.');
+  if(S.flags.firedCount)say('“이전 직장에서 해고된 이력이 있으시네요.” 담당자가 펜 끝으로 이력서를 톡톡 두드립니다.');
+  const blow=()=>{say('“그게 일하는 거랑 무슨 상관인데?” 의자가 뒤로 밀리는 소리. 면접은 그걸로 끝났습니다.');st('str',8);st('ctl',-2);if(id==='mech')rel('frank',-10);};
+  opt('“어릴 때 사고였습니다. 일에는 지장 없습니다.” (담담하게)',()=>hireRoll(id,base+10),{imp:blow});
+  opt('과거와 카운슬링 사실을 솔직하게 털어놓는다',()=>hireRoll(id,base+(S.flags.counsel?20:0)+(S.st.cha>=50?10:-5)),{imp:blow});
+}
+function hireRoll(id,p){
+  const J=JOBS[id];
+  if(R()*100<p){
+    S.job={id,strikes:0,lastDay:0,hired:S.day,worked:0,rank:0,perf:0};st('str',-12);st('ctl',3);rel('maria',J.pro?14:9);
+    if(id==='mech')rel('frank',8);
+    say(J.pro?'“축하합니다, 카터 씨. 신원 조회와 적성 심사를 통과했습니다. 다음 근무일부터 제복을 지급받게 됩니다.”':'“좋아요. 다음 근무일부터 나오세요.” 악수하는 손에 힘이 들어갑니다.');
+    say(S.rel.maria>=35?'집에 돌아와 취직 소식을 전하자 마리아의 얼굴이 환해집니다. “정말? 스콧, 잘됐어.” 그녀는 앞치마에 손을 닦고 당신을 꼭 끌어안습니다.':'마리아에게 취직 소식을 전합니다. 그녀는 놀란 듯 눈을 크게 뜨고는 작게 고개를 끄덕입니다. “잘됐네, 스콧. 이번엔 오래 다녀.”');
+    note(`취직: ${J.n} (${jobTitle(id,0)}) · ${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00 시작 · 일당 $${J.pay} · 경고 3회 누적 시 해고`);
+  }else{
+    st('str',10);say('“연락드리겠습니다.” 그 말이 무슨 뜻인지 당신은 압니다.');
+    sys('(관련 기술과 매력을 올리고, 피로·스트레스를 낮추면 합격 가능성이 높아집니다.)');
+  }
+}
+
+/* ----- 경고 · 해고 · 사직 ----- */
+function addStrike(reason,n=1){
+  if(!S.job)return false;
+  S.job.strikes=(S.job.strikes||0)+n;
+  note(`경고 ${Math.min(3,S.job.strikes)}/3 — ${reason}`);
+  st('str',4);
+  if(S.job.strikes>=3){fireJob(`경고 누적 (${reason})`);return true;}
+  return false;
+}
+function fireJob(reason,txt){
+  if(!S.job)return;
+  const id=S.job.id,J=JOBS[id];
+  say(txt||'관리자가 굳은 얼굴로 당신을 사무실로 부릅니다. “미안하지만 오늘부로 그만 나와 주게.” 사물함 열쇠를 반납하고 나오는 길, 등 뒤로 동료들의 시선이 꽂힙니다.');
+  note(`해고: 「${J.n}」 (${jobTitle(id)}) — 사유: ${reason} · 14일간 재지원 불가`);
+  S.flags['ban_'+id]=S.day+14;S.flags.firedCount=(S.flags.firedCount||0)+1;
+  S.job=null;S.shift=null;
+  st('str',15);st('ctl',-3);st('tra',1);rel('maria',-12);
+  if(id==='mech')rel('frank',-15);
+}
+function quitConfirm(){
+  if(!S.job)return;
+  const id=S.job.id,J=JOBS[id],mid=!!S.shift;
+  pageTitle='사직';
+  say(mid?'작업 도중, 손에 쥔 공구를 내려다봅니다. 지금 이대로 걸어 나가면 오늘 일당은 한 푼도 받지 못하고, 업계에 소문도 날 것입니다.'
+    :`「${J.n}」의 ${jobTitle(id)} 자리를 그만두려 합니다. 일당 $${jobPay()}짜리 일자리입니다. 마리아에게는 뭐라고 말해야 할까요.`);
+  sys(`그만두면 ${mid?14:7}일 동안 같은 직장에 재지원할 수 없고, 쌓아 온 직급과 근무 평가가 모두 사라집니다.`);
+  opt(mid?'작업복을 벗어 던지고 그대로 나간다':'정식으로 사직서를 제출한다',()=>{
+    S.flags['ban_'+id]=S.day+(mid?14:7);
+    if(mid){S.shift=null;st('str',-4);st('ctl',-3);rel('maria',-10);say('“야, 카터! 어디 가!” 등 뒤의 고함을 무시하고 문을 박차고 나옵니다. 잠깐은 속이 시원하지만, 주머니 속 손이 금세 차가워집니다.');}
+    else{st('str',-8);rel('maria',S.rel.maria>=50?-4:-8);say(`${BOSS[id]}이(가) 사직서를 받아 들고 잠시 당신을 바라봅니다. “아쉽군. 몸 조심하게.” 짐을 챙겨 나오는 발걸음이 가볍고도 무겁습니다.`);}
+    if(id==='mech')rel('frank',mid?-20:-6);
+    note(`퇴사: 「${J.n}」`);
+    S.job=null;
+  },{cls:'risk'});
+  opt('다시 생각한다',()=>{
+    if(mid){say('숨을 한 번 고르고 공구를 다시 쥡니다.');cont();}
+    else say('사직서를 다시 접어 주머니에 넣습니다. 아직은 버텨야 합니다.');
+  });
+}
+
+/* ----- 근무 진행 (1시간 단위) ----- */
+const WORK_LINES={
+  mech:['리프트에 올린 세단의 하부를 점검하며 오일 팬 볼트를 조입니다.','브레이크 패드를 교체하고 캘리퍼를 다시 조립합니다. 손끝에 익숙한 감각이 돌아옵니다.','엔진룸에 머리를 박고 점화 플러그를 하나씩 갈아 끼웁니다.','타이어 네 짝을 위치 교환하고 휠 너트를 토크 렌치로 조입니다.'],
+  guard:['쇼핑몰 1층부터 3층까지 순찰 동선을 따라 천천히 걷습니다.','CCTV 모니터 앞에 앉아 화면 열여섯 개를 번갈아 훑어봅니다.','출입구 앞에서 오가는 사람들의 가방과 손을 무심한 척 살핍니다.','주차장 구석구석을 손전등으로 비추며 돌아봅니다.'],
+  cafe:['에스프레소 샷을 내리고 우유 스팀을 칩니다. 주문표가 계속 쌓입니다.','테이블을 닦고 빈 컵을 회수합니다. 소피가 옆에서 콧노래를 부릅니다.','원두 봉투를 뜯어 그라인더를 채우고 시럽 병을 정리합니다.','계산대에 서서 주문을 받고 거스름돈을 셉니다.'],
+  clean:['소독약 냄새가 진동하는 복도를 대걸레로 길게 밀고 나갑니다.','병실 쓰레기통을 비우고 의료 폐기물 봉투를 따로 묶습니다.','화장실 거울과 세면대를 닦습니다. 거울 속 의안이 형광등에 번들거립니다.','대기실 의자를 하나하나 소독 티슈로 닦아 나갑니다.'],
+  police:['순찰차를 몰고 담당 구역의 골목을 천천히 돕니다. 무전기가 쉴 새 없이 지직거립니다.','교차로에서 교통 정리를 하며 수신호를 보냅니다.','상점가를 도보 순찰하며 상인들과 짧게 인사를 나눕니다.','지구대 책상에서 민원 접수 서류를 정리합니다.'],
+  army:['군용 트럭의 디젤 엔진 연료 필터를 교체합니다.','장갑차 궤도 장력을 점검하고 정비 일지에 기록합니다.','병기고에서 소총 부품을 분해·세척하고 다시 조립합니다.','발전기 부하 시험을 하며 계기판 수치를 받아 적습니다.'],
+  day:['무거운 자재를 어깨에 메고 계단을 오르내립니다.','반장의 고함 속에서 묵묵히 짐을 나르고 정리합니다.','먼지를 뒤집어쓴 채 같은 동작을 수백 번 반복합니다.','허리를 펼 틈도 없이 다음 짐이 밀려옵니다.']
+};
+const SLACK_OK=['창고 구석에 숨어 휴대폰을 만지작거리며 시간을 보냅니다.','바쁜 척 서류를 들고 이리저리 걸어 다니며 한숨을 돌립니다.','화장실 칸에 앉아 눈을 감고 잠깐 숨을 돌립니다.'];
+const SLACK_CAUGHT=['“카터! 지금 뭐 하는 거야?” 관리자의 목소리가 등 뒤에서 날아옵니다.','쉬고 있는 모습을 동료가 관리자에게 일러바쳤습니다. 곧바로 호출이 떨어집니다.'];
+function shiftKey(sh){return sh.kind==='day'?'day':sh.id;}
+function shiftName(){const sh=S.shift;if(!sh)return '';return sh.kind==='day'?DAY_LABOR_LIST[sh.dl].n:`${PL[JOBS[sh.id].loc].n} · ${jobTitle(sh.id)}`;}
+function cont(){if(S.shift)shiftStep();}
+function eo(label,fn,o={}){
+  const oo=Object.assign({},o);
+  if(oo.imp){const f=oo.imp;oo.imp=()=>{f();cont();};}
+  opt(label,()=>{fn();cont();},oo);
+}
+function startShift(){
+  const J=JOBS[S.job.id];const lateMin=S.t-J.start*60;const late=lateMin>30;
+  S.job.lastDay=S.day;
+  S.shift={kind:'job',id:S.job.id,total:J.hours,total0:J.hours,done:0,late,perf:0,bonus:0,ded:0,seen:[],ate:false};
+  say(`${PL[J.loc].n}에서 출근 카드를 찍습니다. 오늘도 「${jobTitle(S.job.id)}」로서 ${J.hours}시간 근무가 시작됩니다.`);
+  if(late){S.shift.ded+=15;S.shift.perf-=2;say(`${lateMin}분 지각입니다. 관리자가 손목시계를 톡톡 두드리며 눈살을 찌푸립니다. (일당 -$15)`);if(R()<0.5&&addStrike('지각'))return;}
+  if(S.alc>=20){
+    say('숨결에서 술 냄새가 풍깁니다. 동료 하나가 코를 찡그리며 당신을 쳐다봅니다.');
+    const strict=S.job.id==='police'||S.job.id==='army';
+    if(R()<(strict?0.6:0.4)){
+      if(strict){fireJob('근무 중 음주','감독관이 음주 측정기를 들이밉니다. 수치가 기준을 넘자 그 자리에서 직무 정지와 파면 통보가 내려집니다.');return;}
+      say('관리자가 당신을 따로 불러 경고합니다. “술 깨고 와. 오늘 일당에서 깐다.” (일당 -$20)');S.shift.ded+=20;
+      if(addStrike('음주 출근'))return;
+    }
+  }
+  shiftStep();
+}
+function shiftStep(){
+  const sh=S.shift;if(!sh)return;
+  if(S.st.fat>=100){shiftCollapse();return;}
+  if(S.st.str>=100){shiftBreakdown();return;}
+  if(sh.done>=sh.total){endShift();return;}
+  if(!sh.ate&&sh.total>=5&&sh.done>=Math.floor(sh.total/2)){lunchBreak();return;}
+  pageTitle=shiftName()+' · 근무 중';
+  sys(`근무 ${sh.done}/${sh.total}시간 · 남은 근무 ${sh.total-sh.done}시간 · 현재 ${tstr()} · 오늘 평가 ${sh.perf>=0?'+':''}${sh.perf}${sh.ded?` · 공제 예정 -$${sh.ded}`:''}`);
+  opt('성실하게 일한다 (평가↑ · 피로↑)',()=>workBlock('hard'),{grp:'근무',min:60});
+  opt('적당히 페이스를 조절하며 일한다',()=>workBlock('steady'),{grp:'근무',min:60});
+  opt('눈치껏 땡땡이를 친다 (적발 위험)',()=>workBlock('slack'),{grp:'근무',min:60,cls:'risk'});
+  if(sh.done>=1)opt(sh.kind==='day'?'일을 중도에 포기하고 현장을 떠난다':'관리자에게 말하고 조퇴한다',()=>leaveEarly(false),{grp:'기타'});
+  if(sh.kind==='job')opt('근무 도중 사직서를 던진다',quitConfirm,{grp:'기타',cls:'risk'});
+}
+function workBlock(mode){
+  const sh=S.shift;if(!sh)return;
+  const key=shiftKey(sh);
+  pass(60,{work:mode!=='slack'});
+  sh.done++;
+  if(mode==='hard'){st('fat',2);st('str',1);sh.perf+=2;say(pick(WORK_LINES[key]));}
+  else if(mode==='steady'){sh.perf+=1;say(pick(WORK_LINES[key]));}
+  else{
+    st('str',-3);st('fat',-3);
+    const strict=sh.kind==='job'&&(sh.id==='police'||sh.id==='army');
+    const caughtP=0.22+(strict?0.12:0)-(S.skills.street||0)*0.0025;
+    if(R()<caughtP){
+      sh.perf-=3;say(pick(SLACK_CAUGHT));
+      if(sh.kind==='job'){if(addStrike('근무 태만'))return;}
+      else{sh.ded+=10;say('반장이 장부에 무언가를 적습니다. “일당에서 10달러 깐다.”');}
+    }else{sh.perf-=1;say(pick(SLACK_OK));}
+  }
+  if(sh.kind==='job'&&jobRank()>=2)st('str',1);
+  if(mode!=='slack'&&R()<0.3){
+    if(sh.kind==='job')skUp(RANKS[sh.id].sk,1);
+    else{const dl=DAY_LABOR_LIST[sh.dl];if(dl.reqAttr)atUp(dl.reqAttr,1);else skUp(dl.reqSkill,1);}
+  }
+  if(sh.done<sh.total&&R()<0.36){runShiftEvent();return;}
+  shiftStep();
+}
+function lunchBreak(){
+  const sh=S.shift;sh.ate=true;
+  pageTitle=shiftName()+' · 휴게 시간';
+  say('휴게 시간입니다. 30분 동안 숨을 돌릴 수 있습니다. (휴게 시간은 근무 시간에 포함되지 않습니다.)');
+  const brk=fn=>()=>{pass(30);fn();cont();};
+  opt('근처 식당에서 든든하게 먹는다 ($11)',brk(()=>{
+    if(S.money<11){lose(4);st('fat',-4);say('지갑이 얇아 결국 편의점 삼각김밥으로 발길을 돌립니다.');return;}
+    cash(-11);st('fat',-10);st('str',-4);say('뜨끈한 국물에 밥 한 공기를 말아 먹습니다. 몸에 온기가 돕니다.');}),{min:30});
+  opt('편의점 삼각김밥으로 때운다 ($4)',brk(()=>{
+    if(lose(4)<4){st('fat',3);st('str',3);say('동전이 모자라 물만 한 잔 마십니다. 배 속이 쓰립니다.');return;}
+    st('fat',-5);st('str',-1);say('벤치에 앉아 삼각김밥을 씹어 삼킵니다.');}),{min:30});
+  opt('동료들과 어울려 함께 먹는다 ($8)',brk(()=>{
+    if(lose(8)<8){st('str',2);say('돈이 모자라다고 말하기 민망해 먼저 일어납니다.');return;}
+    st('fat',-7);
+    if(R()<0.3+S.st.cha/200){sh.perf+=2;st('str',-5);say('동료들과 실없는 농담을 주고받습니다. 누군가 당신 어깨를 툭 치며 웃습니다. 조금은 이 자리에 섞인 기분입니다.');}
+    else{st('str',3);say('대화에 끼지 못하고 밥만 먹습니다. 누군가 당신의 의안 쪽을 힐끔거립니다.');}}),{min:30});
+  opt('굶고 잠깐 눈을 붙인다',brk(()=>{st('fat',-6);st('str',3);say('휴게실 의자에 기대 눈을 감습니다. 배에서 꼬르륵 소리가 납니다.');}),{min:30});
+}
+function leaveEarly(family){
+  const sh=S.shift;if(!sh)return;
+  sh.perf-=family?1:3;
+  if(sh.kind==='day'){say('반장에게 몸이 안 좋다고 말하고 현장을 빠져나옵니다. 반장은 혀를 차며 일한 시간만큼만 셈을 칩니다.');endShift();return;}
+  if(family)say('관리자에게 사정을 설명합니다. 관리자는 한숨을 쉬지만 이번만 봐주겠다며 손짓합니다.');
+  else{say('관리자가 못마땅한 얼굴로 조퇴를 허락합니다. “일한 시간만큼만 쳐주겠네.”');if(R()<0.35&&addStrike('무단 조퇴'))return;}
+  endShift();
+  if(family&&!S.shift){
+    pass(40);S.loc='home';S.daily.picked=1;lose(12);
+    say('어린이집에서 열에 들뜬 에밀리를 안고 약국에 들렀다 집으로 돌아왔습니다. 해열제 값 $12. 에밀리가 당신 목에 뜨거운 이마를 기댑니다.');
+  }
+}
+function endShift(){
+  const sh=S.shift;if(!sh)return;S.shift=null;
+  const worked=Math.min(sh.done,sh.total0),full=sh.done>=sh.total0;
+  if(sh.kind==='day'){
+    const dl=DAY_LABOR_LIST[sh.dl];
+    const cur=dl.reqAttr?S.attrs[dl.reqAttr]:S.skills[dl.reqSkill];
+    const base=Math.round(dl.pay*worked/sh.total0);
+    const skB=full&&cur>=dl.reqVal?8:0;
+    const net=Math.max(0,base+sh.bonus+skB-sh.ded);
+    cash(net);st('str',dl.str);
+    say('작업이 끝났습니다. 반장이 장부를 펼쳐 셈을 칩니다.');
+    sys(`정산 — 기본 $${base}${sh.bonus?` · 추가 $${sh.bonus}`:''}${skB?` · 숙련 수당 $${skB}`:''}${sh.ded?` · 공제 -$${sh.ded}`:''} → 실수령 <b>$${net}</b>`);
+    pass(30);S.loc='home';
+    say('땀에 전 작업복 차림으로 버스를 타고 집에 돌아왔습니다.');
+    return;
+  }
+  const id=sh.id;
+  const base=Math.round(jobPay()/sh.total0*worked);
+  const merit=full&&sh.perf>=sh.total0*1.5?Math.round(jobPay()*0.1):0;
+  const tip=id==='cafe'&&full?Math.floor(S.st.cha/10)*2:0;
+  const net=Math.max(0,base+sh.bonus+merit+tip-sh.ded);
+  cash(net);
+  S.job.worked++;S.job.perf=(S.job.perf||0)+sh.perf;
+  st('str',4+jobRank());
+  if(id==='mech')rel('frank',2);
+  if(id==='police'||id==='army')st('ctl',1);
+  say(full?pick(['근무를 마쳤습니다. 손에 쥔 일당이 묵직합니다.','하루가 끝났습니다. 허리가 뻐근하지만 오랜만에 쓸모 있는 사람이 된 기분입니다.','퇴근 카드를 찍습니다. 어깨에 쌓인 피로만큼 지갑이 조금 두꺼워졌습니다.']):'근무를 다 채우지 못하고 일터를 나섭니다.');
+  sys(`정산 — 기본 $${base}${sh.bonus?` · 추가 수당 $${sh.bonus}`:''}${merit?` · 성과 수당 $${merit}`:''}${tip?` · 팁 $${tip}`:''}${sh.ded?` · 공제 -$${sh.ded}`:''} → 실수령 <b>$${net}</b> · 오늘 평가 ${sh.perf>=0?'+':''}${sh.perf} (누적 ${S.job.perf})`);
+  if(full&&sh.perf>=sh.total0*1.5&&S.job.strikes>0&&R()<0.25){S.job.strikes--;note('성실한 근무 태도가 인정되어 경고 1회가 말소되었습니다.');}
+  if(sh.perf<=-4&&addStrike('근무 평가 불량'))return;
+  if(S.job.worked>=3&&jobRank()===0&&S.job.perf<S.job.worked*4&&R()<0.08){
+    fireJob('경영 악화에 따른 감원',`${BOSS[id]}이(가) 봉투 하나를 내밉니다. “본사에서 인원을 줄이라는군. 실적 하위부터라서… 미안하네.” 봉투 속에는 해고 통지서 한 장뿐입니다.`);return;}
+  if(S.heat>=45&&R()<(JOBS[id].pro?0.35:0.1)){
+    fireJob('평판 조회','“경찰이 자네에 대해 묻고 갔네.” 관리자가 서류를 정리하며 눈을 피합니다. “이런 일로 가게 이름이 오르내리면 곤란해.”');return;}
+  checkPromotion();
+}
+function checkPromotion(){
+  const j=S.job;if(!j)return;
+  const r=j.rank||0;if(r>=3)return;
+  const n=r+1,RK=RANKS[j.id];
+  if(j.worked>=PROMO_DAYS[n]&&j.perf>=PROMO_PERF[n]&&(S.skills[RK.sk]||0)>=RK.req[n]&&j.strikes<2){
+    if(j.id==='police'&&n===3&&S.crimes>0)return;
+    const newPay=Math.round(JOBS[j.id].pay*PROMO_MULT[n]);
+    say(`퇴근 직전, ${BOSS[j.id]}이(가) 당신을 따로 부릅니다. “카터, 그동안 지켜봤네. 「${RK.t[n]}」 자리를 맡겨 볼 생각인데, 어떤가?”`);
+    sys(`승진 시 일당 $${jobPay()} → $${newPay} · 경고 기록 초기화 · 책임이 늘어 근무 스트레스 증가`);
+    opt(`「${RK.t[n]}」 승진을 받아들인다`,()=>{
+      j.rank=n;j.strikes=0;rel('maria',8);st('str',-6);st('ctl',2);st('cha',1);
+      if(j.id==='mech')rel('frank',6);
+      say(`${BOSS[j.id]}이(가) 당신의 손을 굳게 잡습니다. 집에 돌아와 소식을 전하자 마리아가 입을 막고 웃습니다. “스콧, 승진이라니!” 에밀리는 뜻도 모르면서 박수를 칩니다.`);
+      note(`승진: ${RK.t[n]} · 일당 $${newPay}`);
+    });
+    opt('아직은 이르다며 사양한다',()=>{j.perf=Math.floor(j.perf*0.7);st('str',-2);say('“아직 자신이 없습니다.” 상대가 아쉬운 듯 고개를 끄덕입니다. “마음 바뀌면 실적으로 보여주게.”');});
+  }
+}
+function shiftCollapse(){
+  const sh=S.shift;
+  say('<b>눈앞이 하얘집니다.</b> 작업 도중 그대로 주저앉고 말았습니다. 동료들이 달려와 당신을 휴게실로 옮깁니다.');
+  sh.perf-=2;
+  if(sh.kind==='job'&&R()<0.4&&addStrike('근무 중 탈진'))return;
+  endShift();
+}
+function shiftBreakdown(){
+  const sh=S.shift;
+  say('<b>머릿속에서 무언가 툭 끊어집니다.</b> 손에 든 물건을 바닥에 내동댕이치고 고함을 지릅니다. 일터가 순식간에 얼어붙습니다.');
+  S.st.str=75;fx.str=(fx.str||0)-25;st('ctl',-5);st('tra',2);
+  if(sh.kind==='day'){sh.ded+=Math.round(DAY_LABOR_LIST[sh.dl].pay*0.5);say('반장이 “당장 꺼져” 하고 소리칩니다.');endShift();return;}
+  if(R()<0.5){fireJob('근무 중 난동');return;}
+  if(addStrike('근무 중 난동',2))return;
+  endShift();
+}
+
+/* ----- 근무 중 돌발 이벤트 ----- */
+const BREAK_ITEM={mech:'토크 렌치',guard:'무전기',cafe:'에스프레소 머신의 포터필터',clean:'전동 바닥 광택기',police:'순찰차 사이드미러',army:'정비창 유압 잭',day:'현장 자재 상자'};
+const MOCK_TXT={
+  mech:'고객 하나가 수리비 영수증을 집어던집니다. “외눈박이가 고친 차를 어떻게 믿어?”',
+  guard:'술 취한 10대 무리가 당신을 둘러싸고 의안을 흉내 내며 낄낄댑니다.',
+  cafe:'정장 차림 남자가 커피가 늦었다며 컵을 당신 앞치마에 쏟습니다.',
+  clean:'술 취한 환자 보호자가 방금 닦은 바닥에 침을 뱉고 비웃습니다.',
+  police:'순찰 구역에서 난동을 부리던 취객이 당신의 의안을 가리키며 욕설을 퍼붓습니다.',
+  army:'신참 병사가 정비 지시를 어기고 장비를 망가뜨린 뒤 당신 탓으로 돌립니다.',
+  day:'현장 인부 하나가 당신의 의안을 가리키며 “외눈박이가 줄은 제대로 맞추겠냐”고 비웃습니다.'
+};
+function shiftSkill(sh){
+  if(sh.kind==='day'){const dl=DAY_LABOR_LIST[sh.dl];return dl.reqAttr?S.attrs[dl.reqAttr]:S.skills[dl.reqSkill];}
+  return S.skills[RANKS[sh.id].sk]||0;
+}
+function workDrink(sh){
+  alcMod(14);S.drank=true;S.crave=Math.max(0,S.crave-25);st('str',-8);st('ctl',-2);
+  const strict=sh.kind==='job'&&(sh.id==='police'||sh.id==='army');
+  if(R()<(strict?0.35:0.22)){
+    if(strict){fireJob('근무 중 음주','당직 사관이 술 냄새를 맡고 그 자리에서 당신의 신분증을 회수합니다. “근무 중 음주는 즉시 파면이다.”');return;}
+    say('“너 지금 술 마셨어?” 관리자가 코를 킁킁거립니다.');
+    if(sh.kind==='job')addStrike('근무 중 음주');else{sh.ded+=20;say('반장이 일당에서 20달러를 깎겠다고 합니다.');}
+  }else say('목구멍이 뜨거워지며 어깨의 긴장이 풀립니다. 아무도 눈치채지 못한 것 같습니다.');
+}
+const SHIFT_EVENTS=[
+  {id:'overtime',when:sh=>sh.done>=sh.total-2&&sh.total-sh.total0<2,run:sh=>{
+    const day=sh.kind==='day';const p=day?18:Math.round(jobPay()/sh.total0*1.5);
+    say(day?'반장이 다가옵니다. “자재가 늦게 들어왔어. 한 시간만 더 해 주면 웃돈 얹어 줄게.”':`${BOSS[sh.id]}이(가) 다가옵니다. “카터, 오늘 일손이 모자라. 한 시간만 더 남아 줄 수 있겠나? 수당은 1.5배로 쳐 주지.”`);
+    eo(`연장 근무를 받아들인다 (+1시간 · +$${p})`,()=>{sh.total++;sh.bonus+=p;sh.perf+=2;say('고개를 끄덕입니다. 퇴근 시간이 한 시간 밀려납니다.');});
+    eo('정중하게 거절한다',()=>{sh.perf-=1;say('“오늘은 집에 일이 있어서요.” 상대가 아쉬운 듯 돌아섭니다.');});
+  }},
+  {id:'break',run:sh=>{
+    const cost=20+Math.floor(R()*45);
+    say(`잠깐 한눈을 판 사이, ${BREAK_ITEM[shiftKey(sh)]}이(가) 손에서 미끄러져 망가지고 맙니다.`);
+    eo(`솔직하게 보고하고 변상한다 (일당 -$${cost})`,()=>{sh.ded+=cost;sh.perf-=1;st('str',4);say('관리자가 한숨을 쉬며 장부에 적습니다. “다음부턴 조심해.”');});
+    eo('아무도 못 봤으니 슬쩍 치운다',()=>{
+      if(R()<0.55){st('str',3);say('망가진 것을 구석에 밀어 넣습니다. 다행히 아무도 눈치채지 못했습니다. 심장이 쿵쾅거립니다.');}
+      else{sh.ded+=cost*2;sh.perf-=3;st('str',8);say(`CCTV에 그대로 찍혀 있었습니다. 은폐 시도까지 더해져 변상금이 두 배($${cost*2})로 불어났습니다.`);if(sh.kind==='job')addStrike('파손 은폐');}
+    },{cls:'risk'});
+  }},
+  {id:'snack',run:sh=>{
+    say(pick(['동료가 집에서 싸 온 엠파나다를 하나 건넵니다. “우리 엄마 솜씨야. 먹어 봐.”','관리자가 오늘 고생한다며 도넛 상자를 돌립니다.','옆자리 동료가 자판기에서 뽑은 캔커피를 하나 더 건넵니다.']));
+    eo('고맙게 받는다',()=>{st('fat',-4);st('str',-3);say('단맛이 입안에 퍼집니다. 별것 아닌데 이상하게 힘이 납니다.');});
+    eo('입맛이 없다며 사양한다',()=>{say('상대가 머쓱하게 웃으며 손을 거둡니다.');});
+  }},
+  {id:'loan',when:()=>S.money>=40&&!S.flags.loanBack,run:sh=>{
+    say('동료가 머뭇거리며 다가옵니다. “카터… 미안한데 40달러만 빌려줄 수 있어? 애 분유값이 모자라서. 사흘 뒤 꼭 갚을게.”');
+    eo('빌려준다 (-$40)',()=>{lose(40);st('str',-2);S.flags.loanBack={day:S.day+3,amt:R()<0.55?40:0};say('지폐를 건네자 동료가 몇 번이나 고개를 숙입니다.');});
+    eo('형편이 어렵다며 거절한다',()=>{st('str',2);say('“…그래, 미안.” 동료가 어깨를 늘어뜨리고 돌아섭니다.');});
+  }},
+  {id:'sleepy',when:()=>S.st.fat>=55,run:sh=>{
+    say('눈꺼풀이 천근만근입니다. 손에 쥔 도구의 감각이 둔해지고, 시야 가장자리가 흐릿해집니다.');
+    eo('자판기 커피를 뽑아 마신다 ($3)',()=>{if(lose(3)<3){say('주머니가 텅 비어 있습니다. 찬물로 세수만 합니다.');st('fat',-2);return;}st('fat',-7);say('쓴 커피가 목을 타고 내려갑니다. 정신이 조금 돌아옵니다.');});
+    eo('그냥 버틴다',()=>{if(R()<0.4){const c=15+Math.floor(R()*25);sh.ded+=c;sh.perf-=2;st('str',6);say(`깜빡 조는 사이 실수를 저질렀습니다. 손해분 $${c}가 일당에서 공제됩니다.`);}else{st('str',3);say('허벅지를 꼬집어 가며 겨우 버팁니다.');}},{cls:'risk'});
+  }},
+  {id:'cut',run:sh=>{
+    say(pick(['날카로운 모서리에 손바닥이 쭉 베였습니다. 피가 뚝뚝 떨어집니다.','무거운 것을 옮기다 발목을 삐끗했습니다. 욱신거리는 통증이 올라옵니다.']));
+    eo('구급함으로 대충 처치하고 계속한다',()=>{st('fat',4);if(R()<0.35){S.injured=true;say('상처가 생각보다 깊습니다. 나중에 병원에 가 봐야 할 것 같습니다.');}else say('붕대를 칭칭 감고 다시 일에 손을 댑니다.');});
+    eo('근처 약국에서 제대로 치료한다 ($22 · 30분 무급)',()=>{lose(22);pass(30);st('str',2);say('약사가 소독하고 밴드를 붙여 줍니다. 약값이 아깝지만 덧날 걱정은 덜었습니다.');});
+  }},
+  {id:'mariaCall',when:sh=>sh.kind==='job'&&!S.daily.mariaCall,run:sh=>{
+    S.daily.mariaCall=1;
+    say('주머니 속 휴대폰이 계속 진동합니다. 마리아입니다. “스콧, 어린이집에서 전화 왔는데 에밀리가 열이 난대. 난 지금 식당에서 도저히 못 빠져…”');
+    eo('조퇴하고 에밀리를 데리러 간다',()=>{rel('maria',8);rel('emily',6);st('str',3);leaveEarly(true);});
+    eo('“근무 중이라 못 가. 어떻게든 해 봐.”',()=>{rel('maria',-8);rel('emily',-3);st('str',6);sh.perf+=1;say('전화 너머로 긴 침묵이 흐릅니다. “…알았어.” 뚝 끊기는 소리가 유난히 크게 들립니다.');});
+  }},
+  {id:'inspect',run:sh=>{
+    const v=shiftSkill(sh);
+    say(sh.kind==='day'?'원청 감독관이 현장을 돌며 작업 상태를 점검합니다.':`본사 감독관이 불시 점검을 나왔습니다. ${BOSS[sh.id]}이(가) 긴장한 얼굴로 당신을 힐끗 봅니다.`);
+    eo('평소대로 차분하게 작업을 보여준다',()=>{
+      if(R()*100<30+v*0.9){sh.perf+=4;sh.bonus+=10;say('감독관이 클립보드에 체크하며 고개를 끄덕입니다. “깔끔하군요.” (수당 +$10)');}
+      else{sh.perf-=3;st('str',6);say('감독관이 실수 하나를 정확히 짚어냅니다. 관리자의 얼굴이 굳습니다.');if(sh.kind==='job'&&sh.perf<0)addStrike('점검 지적');}
+    });
+    eo('바쁜 척 감독관의 동선을 피해 다닌다',()=>{if(R()<0.6)say('창고와 복도를 오가며 점검을 무사히 피했습니다.');else{sh.perf-=2;st('str',4);say('“거기 당신, 지금 뭐 하는 겁니까?” 피해 다니던 모습이 오히려 눈에 띄었습니다.');}},{cls:'risk'});
+  }},
+  {id:'praise',run:sh=>{
+    const tip=sh.kind==='job'&&['cafe','guard','mech'].includes(sh.id)?5+Math.floor(R()*10):0;
+    say(pick(['지나가던 손님이 당신에게 고맙다며 진심 어린 인사를 건넵니다.','관리자가 지나가며 당신의 작업을 보고 짧게 고개를 끄덕입니다. “괜찮군.”','동료가 당신 덕분에 일이 수월했다며 어깨를 두드립니다.'])+(tip?` 손에 $${tip}짜리 팁까지 쥐여 줍니다.`:''));
+    sh.perf+=3;st('str',-3);if(tip)cash(tip);
+  }},
+  {id:'mock',run:sh=>{
+    say(MOCK_TXT[shiftKey(sh)]);
+    const fire=()=>{
+      S.heat+=5;st('tra',2);st('ctl',-4);
+      if(sh.kind==='day'){S.shift=null;st('str',10);say('당신의 주먹이 먼저 나갔습니다. 반장이 둘을 떼어 놓고 당신을 현장 밖으로 내쫓습니다. “일당? 꿈 깨.”');return;}
+      fireJob('근무 중 폭력','당신의 주먹이 먼저 나갔습니다. 비명, 쏟아지는 시선. 상관이 당신의 이름표를 떼어 갑니다. “해고야. 지금 당장 나가.”');
+    };
+    eo('이를 악물고 참는다',()=>{st('str',8);st('ctl',-1);say('손톱이 손바닥을 파고듭니다. 숨을 고르고 하던 일을 계속합니다.');},{imp:fire});
+    eo('침착하고 능숙하게 상황을 정리한다',()=>{
+      if(R()<0.3+(S.st.cha+S.skills.know+S.attrs.calm)/260){sh.perf+=3;st('cha',1);say('단호하면서도 침착한 대처에 상대가 물러섭니다. 지켜보던 동료가 고개를 끄덕입니다.');}
+      else{st('str',12);say('말이 제대로 먹히지 않아 진땀을 뺐습니다.');}
+    },{imp:fire});
+  }},
+  {id:'flashback',when:()=>S.st.tra>=45,run:sh=>{
+    say('어디선가 유리병이 깨지는 소리가 납니다. 순간 일터의 소음이 사라지고, 그 골목의 웃음소리와 왼쪽 눈의 뜨거운 통증이 되살아납니다.');
+    eo('작업대를 짚고 5-4-3-2-1 호흡을 한다',()=>{st('str',-2);st('tra',-1);st('ctl',1);say('보이는 것 다섯, 들리는 것 넷… 천천히 현재로 돌아옵니다.');},{imp:()=>{sh.ded+=30;sh.perf-=4;st('str',6);say('정신을 차려 보니 손에 들고 있던 것을 벽에 집어던진 뒤입니다. 수리비 $30이 일당에서 빠집니다.');if(sh.kind==='job')addStrike('근무 중 기물 파손');}});
+    eo('화장실로 피해 숨을 고른다 (평가 하락)',()=>{sh.perf-=2;st('str',-5);say('세면대에 찬물을 틀어 얼굴을 적십니다. 거울 속 남자의 숨이 천천히 가라앉습니다.');});
+  }},
+  {id:'payroll',when:sh=>sh.kind==='job'&&S.job&&S.job.worked>=2,run:sh=>{
+    const amt=25+Math.floor(R()*40);
+    say(`휴게실 게시판의 급여 명세서를 확인하다 눈을 의심합니다. 지난 근무분에서 $${amt}가 영문 모를 ‘장비 사용료’ 명목으로 빠져 있습니다.`);
+    eo('인사 담당자에게 근로 규정을 들이대며 따진다',()=>{
+      if(S.skills.know>=28&&R()<0.35+S.skills.know/200){say('규정 조항을 하나하나 짚자 담당자가 당황합니다. “전산 오류였네요.” 다음 날 계좌로 돌려받기로 했습니다.');cash(amt);}
+      else{lose(amt);st('str',8);sh.perf-=1;say('“규정상 문제없습니다.” 담당자는 서류만 넘깁니다. 돈은 돌아오지 않고, 괜히 찍힌 기분만 남습니다.');}
+    });
+    eo('괜히 문제 만들지 않고 넘어간다',()=>{lose(amt);st('str',5);say('입술을 깨물고 명세서를 접습니다.');});
+  }},
+  {id:'locker',when:()=>S.money>=30,run:sh=>{
+    const amt=lose(15+Math.floor(R()*50));
+    say('사물함을 열어 보니 자물쇠가 뜯겨 있습니다. 재킷 안주머니에 넣어 둔 지갑이 비어 있습니다.');
+    note(`사물함 도난으로 $${amt}를 잃었습니다.`);st('str',8);
+    eo('관리자에게 신고한다',()=>{if(R()<0.25){const b=Math.round(amt*0.6);cash(b);say(`CCTV를 돌려 본 관리자가 범인을 찾아냈습니다. $${b}를 돌려받았습니다.`);}else say('“CCTV 사각지대라 어쩔 수 없네.” 관리자가 어깨를 으쓱합니다.');});
+    eo('분을 삭이며 일로 돌아간다',()=>{st('ctl',-1);say('빈 지갑을 주머니에 쑤셔 넣고 이를 악뭅니다.');});
+  }},
+  {id:'crave',when:()=>S.crave>=40,run:sh=>{
+    say('창고 뒤편에서 동료 하나가 은박지에 싼 작은 술병을 흔들어 보입니다. “한 모금만 해. 아무도 몰라.”');
+    eo('한 모금 받아 마신다',()=>workDrink(sh),{cls:'risk'});
+    eo('고개를 젓고 자리를 뜬다',()=>{st('ctl',2);st('str',4);S.crave=Math.max(0,S.crave-5);say('목이 바싹 마르지만 발걸음을 돌립니다. 열까지 셉니다.');},{imp:()=>{say('거절하려던 손이 술병을 받아 들고 있습니다.');workDrink(sh);}});
+  }},
+  /* 정비소 */
+  {id:'mech_scratch',job:'mech',run:sh=>{
+    say('리프트에서 내리던 고객의 독일제 세단 범퍼에 공구 카트가 부딪힙니다. 끼익 — 선명한 흠집이 생겼습니다.');
+    eo('사실대로 말하고 도색비를 물어준다 (-$140)',()=>{const p=lose(140);if(p<140)sh.ded+=140-p;sh.perf-=1;st('str',8);rel('frank',2);say('프랭크가 혀를 찹니다. “정직한 건 좋은데, 지갑이 아프겠군.”');});
+    eo('광택제로 흠집을 감춘다',()=>{
+      if(R()*100<25+S.skills.craft*0.8){st('str',4);say('컴파운드로 몇 번 문지르자 흠집이 감쪽같이 사라졌습니다.');}
+      else{sh.ded+=120;sh.perf-=4;st('str',12);say('출고 직전, 고객이 흠집을 발견하고 고함을 지릅니다. 수리비 $120가 일당에서 빠집니다.');addStrike('고객 차량 파손 은폐');}
+    },{cls:'risk'});
+  }},
+  {id:'mech_diag',job:'mech',run:sh=>{
+    say('원인 모를 시동 꺼짐 증상으로 세 번째 입고된 픽업트럭입니다. 다른 정비사들은 모두 손을 들었습니다.');
+    eo('끝까지 붙잡고 원인을 찾는다 (30분 초과)',()=>{pass(30);if(R()*100<20+S.skills.mech){sh.perf+=5;sh.bonus+=20;skUp('mech',1);rel('frank',4);say('연료 펌프 릴레이의 미세한 접촉 불량을 찾아냅니다. 프랭크가 휘파람을 붑니다. “보너스 20달러.”');}else{sh.perf-=1;st('str',6);say('한참을 매달렸지만 원인을 찾지 못했습니다.');}});
+    eo('선임에게 넘긴다',()=>{say('“이건 제 선을 넘네요.” 선임이 어깨를 으쓱하며 트럭을 넘겨받습니다.');});
+  }},
+  {id:'mech_parts',job:'mech',run:sh=>{
+    say('단골이라는 남자가 슬쩍 다가옵니다. “정품 말고 폐차장 중고 부품으로 갈고, 영수증은 정품 가격으로 끊어 줘. 차액은 반반이야.”');
+    eo('제안을 받아들인다 (+$60)',()=>{cash(60);S.heat+=4;if(R()<0.3){fireJob('부품 사기','며칠 치 영수증을 대조하던 프랭크가 작업대를 내려칩니다. “내 가게에서 사기를 쳐? 당장 나가.”');}else say('봉투가 작업복 주머니로 들어옵니다. 프랭크는 아무것도 모릅니다. 아직은.');},{cls:'risk'});
+    eo('거절한다',()=>{sh.perf+=1;st('ctl',1);say('“그런 건 안 합니다.” 남자가 혀를 차며 물러납니다.');});
+  }},
+  /* 쇼핑몰 경비 */
+  {id:'guard_thief',job:'guard',run:sh=>{
+    say('보석 매장 앞에서 한 남자가 여성의 핸드백을 낚아채 출구 쪽으로 달립니다!');
+    eo('전력으로 쫓아가 제압한다',()=>{if(R()*100<25+S.attrs.stam*0.5+S.attrs.strg*0.3){sh.perf+=6;sh.bonus+=30;atUp('stam',1);say('출구 직전에서 남자의 허리를 낚아채 바닥에 눕힙니다. 매니저가 포상금 $30를 약속합니다.');}else{S.injured=true;st('fat',10);st('str',8);say('남자의 팔꿈치가 얼굴을 강타합니다. 쓰러진 사이 범인은 사라졌습니다.');}},{cls:'risk'});
+    eo('무전으로 보고하고 출구를 봉쇄한다',()=>{sh.perf+=2;say('무전을 받은 동료가 출구를 막습니다. 범인은 결국 붙잡혔습니다.');});
+  }},
+  {id:'guard_kid',job:'guard',run:sh=>{
+    say('푸드코트 구석에서 네 살쯤 된 여자아이가 울고 있습니다. 에밀리 또래입니다.');
+    eo('아이를 달래며 부모를 찾아준다 (20분)',()=>{pass(20);sh.perf+=3;st('str',-4);say('무릎을 꿇고 눈높이를 맞춥니다. 십 분 뒤, 사색이 된 엄마가 달려와 아이를 끌어안습니다.');});
+    eo('안내 데스크에 맡긴다',()=>{sh.perf+=1;say('안내 데스크 직원에게 아이를 넘깁니다.');});
+  }},
+  {id:'guard_collude',job:'guard',run:sh=>{
+    say('야간조 동료가 귓속말을 합니다. “창고에 반품 처리된 전자제품 있잖아. 한 박스만 빼자. 넌 CCTV 쪽만 봐 줘. 50달러.”');
+    eo('망을 봐 준다 (+$50)',()=>{if(R()<0.3){S.heat+=10;fireJob('재고 절도 공모','다음 날 아침, 보안 실장이 CCTV 캡처 사진을 책상에 펼칩니다. 둘 다 그 자리에서 해고입니다.');}else{cash(50);S.heat+=5;S.crimes++;say('박스 하나가 뒷문으로 사라집니다. 손에 지폐가 쥐어집니다.');}},{cls:'risk'});
+    eo('못 들은 척 거절한다',()=>{st('str',2);say('“난 빠질게.” 동료가 혀를 차며 돌아섭니다.');});
+    eo('보안 실장에게 보고한다',()=>{sh.perf+=4;st('str',4);say('동료는 다음 날 해고되었습니다. 휴게실의 공기가 싸늘해졌습니다.');});
+  }},
+  /* 카페 */
+  {id:'cafe_spill',job:'cafe',run:sh=>{
+    say('러시 아워, 서두르다 뜨거운 라떼가 손님의 흰 코트 위로 쏟아집니다.');
+    eo('사과하고 세탁비를 물어준다 (-$28)',()=>{const p=lose(28);if(p<28)sh.ded+=28-p;st('str',5);say('손님은 투덜대면서도 돈을 받아 들고 나갑니다.');});
+    eo('“손님이 부딪히셨잖아요.” 하고 맞선다',()=>{sh.perf-=4;st('str',6);say('손님이 점장을 부르라고 소리칩니다.');if(R()<0.45)addStrike('고객 항의');},{cls:'risk'});
+  }},
+  {id:'cafe_till',job:'cafe',run:sh=>{
+    say('시재 점검 시간. 계산대 금액이 $32 모자랍니다. 오늘 계산대는 당신 담당이었습니다.');
+    eo('모자란 금액을 채워 넣는다 (-$32)',()=>{const p=lose(32);if(p<32)sh.ded+=32-p;st('str',5);say('지갑에서 지폐를 꺼내 금고에 넣습니다. 오늘 일한 게 무슨 의미인지 모르겠습니다.');});
+    eo('영수증을 하나하나 대조해 본다 (20분)',()=>{pass(20);if(R()*100<20+S.skills.know){sh.perf+=2;say('환불 처리가 누락된 영수증을 찾아냈습니다. 금액이 딱 맞습니다.');}else{sh.ded+=32;st('str',6);say('결국 원인을 찾지 못해 일당에서 $32가 공제됩니다.');}});
+  }},
+  {id:'cafe_rush',job:'cafe',run:sh=>{
+    say('관광버스 한 대가 카페 앞에 멈춰 섭니다. 주문이 폭포처럼 쏟아집니다.');
+    eo('정신없이 주문을 쳐낸다',()=>{st('fat',8);st('str',4);sh.perf+=4;const t=6+Math.floor(S.st.cha/8);sh.bonus+=t;say(`이마에 땀이 맺히도록 주문을 쳐냅니다. 팁 통에 $${t}가 쌓였습니다.`);});
+    eo('제 속도대로 하나씩 처리한다',()=>{sh.perf+=1;say('줄이 길어지지만 실수 없이 하나씩 처리합니다.');});
+  }},
+  /* 병원 청소 */
+  {id:'clean_wallet',job:'clean',run:sh=>{
+    say('병실 침대 밑을 닦다가 두툼한 가죽 지갑을 발견합니다. 현금 $120가 들어 있습니다.');
+    eo('원무과 분실물 센터에 맡긴다',()=>{sh.perf+=4;st('ctl',2);st('str',-2);if(R()<0.4){cash(20);say('주인이 찾아와 사례금 $20를 건넵니다.');}else say('원무과 직원이 고맙다며 장부에 이름을 적습니다.');});
+    eo('현금만 빼고 지갑은 버린다 (+$120)',()=>{cash(120);S.crimeMoney+=120;S.crimes++;S.heat+=6;st('tra',1);
+      if(R()<0.35){lose(120);S.heat+=8;fireJob('분실물 절취','병원 보안팀이 복도 CCTV를 들고 찾아옵니다. 돈을 돌려주고, 그 자리에서 해고 통보를 받습니다.');}
+      else say('지폐를 작업복 안쪽에 밀어 넣습니다. 손이 미세하게 떨립니다.');},{cls:'risk'});
+  }},
+  {id:'clean_needle',job:'clean',run:sh=>{
+    say('의료 폐기물 봉투를 묶다가 삐져나온 주삿바늘에 손가락이 찔립니다.');
+    eo('응급실에서 감염 검사를 받는다 (-$45 · 30분)',()=>{lose(45);pass(30);st('str',3);say('혈액 검사 결과는 며칠 뒤에 나온다고 합니다. 직원 할인도 없습니다.');});
+    eo('대수롭지 않게 넘긴다',()=>{st('str',6);st('tra',1);if(R()<0.3){S.injured=true;say('퇴근 무렵 손가락이 퉁퉁 붓기 시작합니다.');}else say('피를 짜내고 밴드를 붙입니다. 불안이 가시지 않습니다.');},{cls:'risk'});
+  }},
+  {id:'clean_patient',job:'clean',run:sh=>{
+    say('복도 끝에서 링거대를 끌던 노인 환자가 미끄러져 넘어집니다.');
+    eo('달려가 부축하고 간호사를 부른다',()=>{sh.perf+=3;st('str',-3);say('노인이 떨리는 손으로 당신의 팔을 붙잡습니다. “고맙네, 젊은이.”');});
+    eo('못 본 척 걸레질을 계속한다',()=>{st('str',3);st('ctl',-1);if(R()<0.4){sh.perf-=3;say('수간호사가 그 장면을 봤습니다. 차가운 질책이 날아옵니다.');}else say('다른 간호사가 달려갑니다. 마음 한쪽이 찜찜합니다.');});
+  }},
+  /* 경찰 */
+  {id:'police_domestic',job:'police',run:sh=>{
+    st('tra',1);
+    say('무전: “2-Adam-12, 엘름 가 312호 가정폭력 신고.” 문 너머로 아이 울음소리와 남자의 고함이 들립니다. 어린 시절 그 집의 소리와 똑같습니다.');
+    eo('침착하게 남자를 분리하고 아이를 보호한다',()=>{if(R()*100<30+S.attrs.calm*0.6+S.st.ctl*0.2){sh.perf+=6;st('str',4);say('남자를 벽으로 밀어 수갑을 채우고, 구석에 웅크린 아이에게 담요를 덮어 줍니다.');}else{sh.perf+=1;st('str',10);st('tra',2);say('상황은 정리됐지만, 순찰차로 돌아온 뒤에도 한참 동안 손이 떨립니다.');}},
+      {imp:()=>{sh.perf-=6;S.heat+=6;say('정신을 차려 보니 남자의 얼굴이 피범벅입니다. 동료가 당신을 뜯어말립니다. 내사과에 보고가 올라갑니다.');addStrike('과잉 진압',2);}});
+    eo('지원 병력을 기다린다',()=>{sh.perf-=1;st('str',6);say('지원이 도착하기까지 칠 분. 그 칠 분 동안 아이 울음소리가 멈추지 않습니다.');});
+  }},
+  {id:'police_bribe',job:'police',run:sh=>{
+    say('과속으로 세운 BMW 운전자가 면허증 밑에 100달러 지폐를 끼워 내밉니다. “바쁘실 텐데, 서로 편하게 갑시다.”');
+    eo('지폐를 챙기고 보내 준다 (+$100)',()=>{cash(100);S.heat+=5;if(R()<0.3){S.heat+=10;fireJob('뇌물 수수','감찰반이 대시캠 영상을 내밀며 당신의 배지를 회수합니다.');}else say('BMW가 유유히 멀어집니다. 지폐가 가슴 주머니에서 무겁게 느껴집니다.');},{cls:'risk'});
+    eo('딱지를 끊는다',()=>{sh.perf+=3;st('ctl',1);say('지폐를 돌려주고 과속 딱지를 끊습니다. 운전자의 얼굴이 붉으락푸르락합니다.');});
+  }},
+  {id:'police_chase',job:'police',run:sh=>{
+    say('편의점 강도 용의자가 순찰차를 보자마자 골목으로 튑니다!');
+    eo('도보로 추격한다',()=>{if(R()*100<25+S.attrs.stam*0.5+S.attrs.strg*0.25){sh.perf+=7;sh.bonus+=25;atUp('stam',1);say('세 블록을 쫓아가 담장 앞에서 용의자를 제압합니다. 서장 표창 수당 $25.');}else{st('fat',12);if(R()<0.4)S.injured=true;say('숨이 턱까지 차오른 채 놓쳐 버렸습니다. 무릎이 쓰라립니다.');}},{cls:'risk'});
+    eo('무전으로 포위망을 요청한다',()=>{sh.perf+=2;say('지원 순찰차가 골목 반대편을 막습니다. 용의자는 체포되었습니다.');});
+  }},
+  {id:'police_report',job:'police',run:sh=>{
+    say('경사가 밀린 사건 보고서 세 건을 책상에 던집니다. “오늘 안에 정리해.”');
+    eo('꼼꼼하게 작성한다',()=>{if(R()*100<25+S.skills.know){sh.perf+=4;skUp('know',1);say('법 조항과 사건 경위를 깔끔하게 정리했습니다. 경사가 별말 없이 서류를 가져갑니다.');}else{sh.perf-=2;st('str',6);say('“이게 보고서야, 일기야?” 서류가 빨간 줄투성이로 돌아옵니다.');}});
+    eo('동료에게 슬쩍 떠넘긴다',()=>{if(R()<0.5){say('동료가 투덜대며 받아 갑니다.');}else{sh.perf-=3;say('경사가 그 장면을 봤습니다. “카터, 네 일은 네가 해.”');}},{cls:'risk'});
+  }},
+  /* 주방위군 */
+  {id:'army_deadline',job:'army',run:sh=>{
+    say('긴급 출동 대기 명령. 고장 난 험비 두 대를 두 시간 안에 가동 상태로 만들어야 합니다.');
+    eo('정비팀을 이끌고 달려든다',()=>{st('fat',8);if(R()*100<18+S.skills.mech*0.9){sh.perf+=7;sh.bonus+=25;say('마지막 볼트를 조이는 순간 엔진이 우렁차게 깨어납니다. 중대장이 엄지를 세웁니다. (수당 +$25)');}else{sh.perf-=3;st('str',10);say('한 대는 끝내 시동이 걸리지 않았습니다.');if(R()<0.3)addStrike('정비 지연');}});
+    eo('규정대로 순서를 지켜 점검한다',()=>{sh.perf+=1;say('규정집대로 하나씩 점검합니다. 빠르진 않지만 실수는 없습니다.');});
+  }},
+  {id:'army_accident',job:'army',run:sh=>{
+    say('유압 잭이 미끄러지며 들어 올린 트럭이 기우뚱합니다! 바로 밑에 신병이 누워 있습니다.');
+    eo('몸을 던져 신병을 끌어낸다',()=>{if(R()<0.55+S.attrs.dex/300){sh.perf+=6;st('tra',1);say('신병의 발목을 잡아끌어 내는 순간, 트럭이 쿵 하고 내려앉습니다. 정비창 전체가 숨을 멈췄다 내쉽니다.');}else{S.injured=true;st('fat',15);st('tra',2);sh.perf+=3;say('신병은 구했지만 당신의 팔이 차체에 긁혀 깊게 찢어졌습니다.');}},{cls:'risk'});
+    eo('뒤로 물러나 안전을 확보한다',()=>{st('str',5);say('신병은 가까스로 굴러 나왔습니다. 누구도 당신을 탓하지 않지만, 당신은 스스로를 탓합니다.');});
+  }},
+  {id:'army_theft',job:'army',run:sh=>{
+    say('보급 담당 상병이 속삭입니다. “남는 발전기 부품, 장부에서 지우고 밖에 팔면 150달러는 나와요. 서명만 해 주시면.”');
+    eo('서명해 준다 (+$150)',()=>{cash(150);S.heat+=8;S.crimes++;if(R()<0.35){S.heat+=12;fireJob('군수품 횡령','헌병대 수사관이 정비창에 들이닥칩니다. 불명예 전역 서류에 서명하는 손이 떨립니다.');}else say('서명 한 줄. 봉투 하나. 장부의 숫자가 조용히 바뀝니다.');},{cls:'risk'});
+    eo('거절하고 장부를 바로잡는다',()=>{sh.perf+=3;st('ctl',1);say('상병이 얼굴을 붉히며 물러납니다.');});
+  }},
+  {id:'army_inspect',job:'army',run:sh=>{
+    say('대대장 사열. 정비창 전원이 도열합니다.');
+    eo('복장과 장비를 완벽하게 갖춘다',()=>{if(R()*100<35+S.st.cha*0.4+S.st.ctl*0.2){sh.perf+=4;say('대대장이 당신 앞에서 걸음을 멈추고 짧게 고개를 끄덕입니다.');}else{sh.perf-=2;st('str',5);say('군화 끈 하나가 풀려 있었습니다. 대대장의 눈썹이 꿈틀합니다.');}});
+  }},
+  /* 일용직 */
+  {id:'day_wage',job:'day',when:sh=>sh.done>=2,run:sh=>{
+    const cut=Math.round(DAY_LABOR_LIST[sh.dl].pay*0.4);
+    say(`반장이 슬그머니 다가와 말합니다. “원청에서 돈이 덜 내려왔어. 오늘 일당은 $${cut} 빼고 줄게. 싫으면 지금 가든가.”`);
+    eo('부당하다며 강하게 항의한다',()=>{if(R()*100<25+S.st.cha*0.3+S.skills.know*0.3){say('노동청 신고 이야기를 꺼내자 반장이 한발 물러섭니다. “…알았어, 다 줄게.”');}else{sh.ded+=cut;st('str',10);sh.perf-=1;say('“그럼 내일부터 나오지 마.” 결국 깎인 일당을 받아야 합니다.');}});
+    eo('어쩔 수 없이 받아들인다',()=>{sh.ded+=cut;st('str',7);say('대꾸할 기운도 없습니다. 다시 자재를 들어 올립니다.');});
+  }},
+  {id:'day_accident',job:'day',run:sh=>{
+    say('위에서 떨어진 각목이 어깨를 스칩니다. 비틀거리며 주저앉습니다.');
+    st('fat',6);st('str',6);if(R()<0.5)S.injured=true;
+    eo('이를 악물고 계속한다',()=>{st('fat',4);say('욱신거리는 어깨를 주무르며 다시 일어섭니다.');});
+    eo('일을 접고 병원에 간다',()=>{leaveEarly(false);});
+  }},
+  {id:'day_praise',job:'day',run:sh=>{
+    say('반장이 당신의 작업 속도를 보고 엄지를 세웁니다. “자네 일 좀 하는군. 오늘 웃돈 얹어 주지.”');
+    sh.bonus+=12;sh.perf+=2;st('str',-2);
+  }}
+];
+function runShiftEvent(){
+  const sh=S.shift;const key=shiftKey(sh);
+  const pool=SHIFT_EVENTS.filter(e=>(!e.job||e.job===key)&&(!e.when||e.when(sh))&&!sh.seen.includes(e.id));
+  const w=[];pool.forEach(e=>{w.push(e);if(e.job)w.push(e,e);});
+  if(!w.length){shiftStep();return;}
+  const e=pick(w);sh.seen.push(e.id);
+  pageTitle=shiftName()+' · 돌발 상황';
+  e.run(sh);
+  if(!choices.length)cont();
+}
+
+/* ============ NPC ============ */
+function walterTalk(){S.daily.walter=1;pass(45);
+  if(!S.met.walter){rel('walter',5);say('비둘기에게 빵 부스러기를 던지던 노인이 당신을 힐끗 봅니다. “그 눈. 전쟁터에서 잃은 건 아니겠고. 앉게, 젊은이.” 그가 자신을 월터라고 소개합니다.');return;}
+  const r=S.rel.walter;
+  if(r>=40&&!S.flags.walterRec){S.flags.walterRec=1;rel('walter',5);say('“주유소 옆 프랭크 녀석 알지? 내 옛 부하야. 또 주방위군 기지 모병관도 나랑 오래 알고 지낸 사이지. 내 이름을 대게.”');note('월터의 추천서 획득: 정비소 및 주방위군 기지 취업 확률 크게 상승');S.leads.mech=1;S.leads.army=1;return;}
+  rel('walter',6);st('str',-8);
+  const L=['“악몽 말이야. 나도 아직 꿔. 오십 년이 지났는데도.” 월터가 담배를 비벼 끕니다. “안 꾸는 법은 몰라. 꿈에서 깨면 옆에 누가 있는지 확인하는 법은 알지.”',
+    '월터가 아내 이야기를 합니다. 먼저 떠난 아내. “있을 때 잘해. 이건 늙은이 잔소리가 아니야.”',
+    '“화가 나면 숫자를 세. 열까지. 그래도 화나면 다시 세. 바보 같지? 근데 효과는 있어.”'];
+  const l=pick(L);say(l);if(l.includes('숫자'))st('ctl',2);if(l.includes('악몽'))st('tra',-3);
+}
+function sophieTalk(){S.daily.sophie=1;pass(30);
+  if(!S.met.sophie){rel('sophie',5+Math.floor(S.st.cha/10));say('“처음 보는 얼굴인데? 난 소피야.” 바리스타가 주근깨 가득한 얼굴로 웃습니다. 당신의 의안을 보고도 눈 하나 깜짝하지 않습니다.');return;}
+  rel('sophie',3+Math.floor(S.st.cha/20));st('str',-4);
+  if(S.rel.sophie>=30&&!S.leads.cafe){S.leads.cafe=1;say('“아 맞다, 우리 오전 알바 하나 그만뒀는데. 너 커피 내릴 줄 알아? 점장한테 얘기해볼래?”');note('새 구인 정보: 카페 아르바이트');return;}
+  if(S.rel.sophie>=25&&!S.flags.sophieTip&&S.met.tony){S.flags.sophieTip=1;say('소피가 목소리를 낮춥니다. “그 금목걸이 아저씨, 토니? 항구의 빅 살바토레 조직 사람이래. 경찰들이 그쪽 뒤 캐고 다닌다니까 조심해.”');return;}
+  say(pick(['소피가 단골손님들의 기막힌 연애사를 들려줍니다. 당신은 오랜만에 소리 내어 웃습니다.','“딸 있다며? 사진 보여줘!” 휴대폰 속 에밀리를 보고 소피가 호들갑을 떱니다.']));
+}
+function frankTalk(){S.daily.frank=1;pass(40);
+  if(!S.met.frank){rel('frank',10);say('보닛 밑에서 기름투성이 남자가 기어 나옵니다. “뭐요? 차 맡기러 온 거 아니면 바빠요.” 정비소 사장 프랭크입니다. 리프트 위의 차에서 당신 귀에 익은 잡음이 들립니다.');
+    opt('“타이밍 벨트 쪽 소리네요.” 하고 거든다',()=>{rel('frank',10);st('cha',1);skUp('mech',2);say('프랭크가 눈썹을 치켜올립니다. “…맞아. 어디서 일했어?”');});
+    opt('그냥 돌아선다',()=>{});return;}
+  opt('무료로 정비 일을 거든다 (3시간)',()=>{pass(180);st('fat',12);st('str',-5);rel('frank',12);skUp('mech',3);say('손에 다시 렌치를 쥐니 몸이 기억합니다. 프랭크가 말없이 커피 한 잔을 내밉니다.');if(S.rel.frank>=35&&!S.leads.mech){S.leads.mech=1;note('프랭크: “…자리 하나 비어. 정식으로 지원해 보든가.”');}});
+  opt('잡담만 하고 나온다',()=>{rel('frank',3);say('프랭크는 요즘 젊은 놈들은 기본이 없다고 투덜댑니다.');});
+}
+function meetJess(){
+  S.met.jess=1;S.rel.jess=25;
+  say('“혼자예요?” 짙은 립스틱의 여자가 당신 옆자리에 앉습니다. 제시카라고 자신을 소개한 그녀가 당신의 의안을 손끝으로 가리킵니다. “섹시하네. 위험한 남자 같아.”');
+  opt('결혼반지를 보여주며 선을 긋는다',()=>{st('ctl',2);rel('jess',-5);say('제시카가 어깨를 으쓱합니다. “아쉽네. 마음 바뀌면 비치 바로 와.”');},{imp:jessFlirt});
+  opt('웃으며 장단을 맞춘다',jessFlirt,{cls:'risk'});
+}
+function jessFlirt(){rel('jess',12);st('str',-6);pass(30);S.flags.jessFlirt=(S.flags.jessFlirt||0)+1;say('대화가 술술 이어집니다. 그녀의 웃음소리가 묘하게 기분을 들뜨게 합니다. 헤어질 때 그녀가 당신 손바닥에 전화번호를 적어줍니다.');if(R()<0.3){rel('maria',-8);say('그날 밤, 마리아가 당신 손바닥의 번진 잉크를 봅니다. 그녀는 아무 말도 하지 않습니다.');}}
+
+/* ============ 해변 ============ */
+function fishing(){if(!pay(5))return;S.daily.fish=1;pass(180);st('str',-10);
+  const r=R();if(r<0.25)say('입질 한 번 없이 세 시간이 흘렀습니다. 그래도 나쁘지 않았습니다.');else{const v=10+Math.floor(R()*30);cash(v);say(`농어 몇 마리를 낚아 부둣가 횟집에 $${v}에 넘깁니다.`);}}
+function beachBar(){
+  if(!pay(10))return;drinkEffect();say('네온사인 아래에서 위스키를 한 잔 들이켭니다. 목구멍이 뜨겁게 타들어 갑니다.');
+  if(S.st.cha>=45&&S.met.jess&&R()<0.5){say('“또 왔네?” 제시카가 다가와 당신 잔에 자신의 잔을 부딪칩니다.');
+    opt('“이만 가봐야 해.”',()=>{st('ctl',2);say('당신은 잔을 내려놓고 자리에서 일어납니다.');},{imp:jessNight});
+    opt('한 잔 더 하자고 한다',jessNight,{cls:'risk'});return;}
+  if(S.st.cha>=45&&!S.met.jess&&R()<0.5){meetJess();return;}
+  if(effCtl()<60&&R()<0.3){say('옆자리 남자가 당신 눈을 보고 히죽거립니다.');
+    opt('무시한다',()=>{st('str',6);say('잔을 비우고 자리를 뜹니다.');},{imp:barFight});
+    opt('“뭘 봐?” 하고 쏘아본다',barFight,{cls:'risk'});}
+}
+function jessNight(){drinkEffect();pass(180);S.flags.affair=(S.flags.affair||0)+1;rel('jess',15);st('tra',3);st('str',-10);
+  say('잔이 비고, 또 채워집니다. 눈을 떠보니 낯선 모텔 천장입니다. 휴대폰엔 마리아의 부재중 전화가 열한 통.');
+  if(R()<0.5){rel('maria',-35);rel('emily',-5);say('집에 돌아오자 마리아가 당신 셔츠 깃의 립스틱 자국을 봅니다. 그녀의 눈에서 무언가가 꺼지는 것을 당신은 똑똑히 봅니다.');}
+  else rel('maria',-8);}
+function barFight(){pass(30);S.injured=true;S.heat+=10;st('tra',3);st('ctl',-3);st('str',-5);say('의자가 날아가고 유리잔이 깨집니다. 당신은 그를 바닥에 눕혔지만 눈썹 위가 찢어졌습니다. 바텐더가 경찰을 부르기 전에 빠져나옵니다.');}
+
+/* ============ 범죄 & 갱단 조직 승급 루트 ============ */
+function meetTony(){
+  S.met.tony=1;S.rel.tony=25;
+  say('“어이, 스콧! 스콧 카터 맞지?” 귀에 익은 목소리. 금목걸이를 건 토니 레예스가 이를 드러내고 웃고 있습니다. 열여섯 살, 그 골목에서 함께 굴러다니던 녀석입니다. 당신이 눈을 잃던 밤에도 그는 거기 있었습니다.');
+  say('“해고당했다며? 기름밥 그만 먹고 나랑 다시 일하자. 돈 되는 일 많아. 저녁엔 해변 비치 바 근처에 있으니까.”');
+  opt('“생각해 볼게.”',()=>{rel('tony',5);say('토니가 당신 어깨를 툭 칩니다. “그래, 생각해 봐. 애 키우려면 돈 들잖아.”');});
+  opt('“난 그 생활 끝냈어.”',()=>{rel('tony',-5);st('ctl',2);say('토니가 낄낄 웃습니다. “다들 그렇게 말하지.”');},{imp:()=>{rel('tony',10);say('끝냈다고 말하려 했지만, 당신 입에서 나온 말은 “…얼마나 되는데?”였습니다. 토니가 씩 웃습니다.');}});
+}
+function tonyTalk(){
+  pass(20);const r=S.rel.tony;
+  if(S.pendingTony){say(`“꾸러미는 오늘 밤 공원에서 넘기면 돼. 20시 이후로.”`);return;}
+
+  if(S.gangRank===0 && S.crimes>=3 && r>=45 && !S.flags.donOffered){
+    S.flags.donOffered=1;
+    say('토니가 담배를 비벼 끄며 주변을 살핍니다. “스콧, 우리 보스 <b>빅 살바토레</b>가 네 얘기를 들었어. 손도 빠르고 입도 무겁다고. 동네 잔챙이 짓은 그만하고 정식으로 조직에 들어오라는군. 어떡할래?”');
+    opt('조직에 정식으로 합류한다 (행동대원 입단)',()=>{
+      S.gangRank=1;S.gangRep=15;rel('tony',10);rel('don',25);st('tra',3);
+      if(S.job&&(S.job.id==='police'||S.job.id==='army')){
+        note(`조직 합류 사실이 알려져 「${JOBS[S.job.id].n}」에서 즉시 파면되었습니다.`);
+        S.job=null;
+      }
+      say('토니가 씨익 웃으며 악수를 청합니다. “환영한다, 형제. 이제부터 넌 살바토레 패밀리 식구야.”');
+      note('조직 계급: 조직 행동대원');
+    },{cls:'risk'});
+    opt('“조직까진 부담스러워. 그냥 건당으로만 하자.”',()=>{rel('tony',-3);say('토니가 어깨를 으쓱합니다. “네 선택이지. 마음 바뀌면 말해.”');});
+    return;
+  }
+
+  if(S.gangRank===1 && S.gangRep>=55 && (S.rel.don||0)>=45){
+    S.gangRank=2;rel('don',15);rel('tony',8);
+    say('항구 창고 사무실. 빅 살바토레가 시가 연기를 내뿜으며 당신을 봅니다. “카터, 네가 처리한 일들이 깔끔하더군. 오늘부터 부두와 웨스트 브룩 구역 수금과 관리는 네가 맡아라. 토니도 네 지시를 따를 거다.”');
+    note('조직 승급: 구역 관리자 (간부) · 매일 구역 상납금 $90 지급');
+    return;
+  }
+
+  if(S.gangRank===2 && S.gangRep>=115 && (S.rel.don||0)>=75){
+    S.gangRank=3;rel('don',20);
+    say('빅 살바토레가 병색이 완연한 얼굴로 금반지를 빼어 책상 위에 올려놓습니다. “경찰 압박도 심하고 내 몸도 예전 같지 않아. 내가 은퇴하면 이 도시 뒷골목을 이끌 놈은 너뿐이다, 스콧.”');
+    note('최종 승급: 조직 보스 (뒷골목의 왕) · 매일 조직 상납금 $220 지급');
+    opt('조직 보스의 자리를 받아들인다 (보스 엔딩 보기)',()=>endGame('boss'),{cls:'risk'});
+    opt('자리를 넘겨받고 계속 도시를 지배한다',()=>{say('당신은 살바토레의 금반지를 손가락에 끼웁니다. 이제 이 도시의 밤은 당신의 것입니다.');});
+    return;
+  }
+
+  say(S.gangRank>=1
+    ? `토니가 고개를 숙여 인사합니다. “${S.gangRank===3?'보스':'형님'}, 오늘 처리할 조직 작전 목록입니다.” (조직 공헌도: ${S.gangRep})`
+    : pick(['토니가 비치 바 난간에 기대 담배를 피우고 있습니다. “왔네, 형제.”','“그 눈 볼 때마다 미안하다, 스콧. 진짜야.” 토니가 오늘따라 진지합니다.']));
+
+  opt('일거리를 묻는다',()=>{
+    say('“골라봐.”');
+    opt('꾸러미 배달 · $250 (오늘 밤 공원)',()=>{S.pendingTony='pkg';rel('tony',3);say('토니가 테이프로 칭칭 감긴 작은 꾸러미를 건넵니다. 무엇인지는 묻지 않기로 합니다.');note('오늘 20:00~03:00 사이 공원에서 전달');},{cls:'risk'});
+    if(S.crimes>=1&&r>=35)opt('차량 절도 · $900 (지금 바로, 4시간)',()=>crime('car'),{cls:'risk'});
+    if(S.crimes>=3&&r>=55)opt('항구 창고 털이 · $2500 (지금 바로, 큰일)',()=>crime('big'),{cls:'risk'});
+    if(S.gangRank>=1)opt('조직 작전: 경쟁 조직 밀수선 습격 · $1800 (4시간)',()=>crime('syndicate'),{cls:'risk'});
+    if(S.gangRank>=2)opt('조직 작전: 시의원 협박 및 이권 장악 · $3200 (5시간)',()=>crime('takeover'),{cls:'risk'});
+    opt('아직은 아니다',()=>{say('“언제든.” 토니가 손을 흔듭니다.');});
+  },{cls:'risk'});
+  opt('옛날 얘기나 한다',()=>{pass(40);rel('tony',5);st('str',-5);st('tra',1);say('그 시절 이야기에 둘 다 웃습니다. 웃다가 문득, 그 골목의 깨진 병이 떠오릅니다.');});
+  opt('그만 가본다',()=>{});
+}
+const CR={
+  pkg:{pay:250,heat:12,risk:10,tra:2,time:90,rep:10,txt:'어두운 공원 화장실 뒤. 후드를 쓴 남자가 말없이 꾸러미를 받고 봉투를 건넵니다.'},
+  car:{pay:900,heat:25,risk:20,tra:4,time:240,rep:16,txt:'쇼핑몰 주차장의 SUV. 당신의 손은 10초 만에 시동을 겁니다. 정비공 경력이 이런 데 쓰일 줄은 몰랐습니다.'},
+  big:{pay:2500,heat:40,risk:30,tra:8,time:300,rep:25,txt:'항구 창고의 자물쇠가 끊어지고, 상자들이 트럭으로 옮겨집니다. 토니의 패거리 중 누군가가 경비원을 때려눕히는 소리가 들립니다.'},
+  syndicate:{pay:1800,heat:30,risk:22,tra:5,time:240,rep:28,txt:'안개 낀 부두에서 경쟁 조직의 밀수 화물을 가로챕니다. 살바토레의 조직원들이 당신의 지휘 아래 일사불란하게 움직입니다.'},
+  takeover:{pay:3200,heat:35,risk:24,tra:6,time:300,rep:35,txt:'항만 재개발 이권을 쥔 시의원의 약점을 쥐고 서명을 받아냅니다. 이제 부두의 모든 물류가 살바토레 패밀리를 거칩니다.'},
+  rob:{pay:0,heat:40,risk:28,tra:12,time:30,rep:0,txt:''}
+};
+function crime(k){
+  const C=CR[k];pass(C.time);
+  if(k==='pkg')S.pendingTony=null;
+  if(S.job&&(S.job.id==='police'||S.job.id==='army')){
+    note(`범죄 가담 사실이 적발되어 「${JOBS[S.job.id].n}」에서 파면되었습니다.`);
+    S.job=null;
+  }
+  const skillReduce=S.gangRank>=1?S.skills.street*0.2:0;
+  const risk=Math.max(5,C.risk+S.heat/3+(S.st.fat>70?10:0)-skillReduce);
+  if(R()*100<risk){caught(k);return;}
+  let p=C.pay;if(k==='rob')p=300+Math.floor(R()*450);
+  if(C.txt)say(C.txt);
+  cash(p);S.crimeMoney+=p;S.crimes++;S.heat+=C.heat;st('tra',C.tra);st('str',k==='pkg'?4:10);
+  if(k!=='rob'){
+    rel('tony',8);
+    if(S.gangRank>=1){
+      S.gangRep+=C.rep;
+      rel('don',Math.floor(C.rep/3));
+      note(`조직 공헌도 +${C.rep} (현재 ${S.gangRep})`);
+    }
+  }
+  if(S.crimeMoney>=2500&&S.money>=3000&&!S.flags.escHint){S.flags.escHint=1;note('충분한 돈이 모였습니다. 집에서 이 도시를 떠날 수 있습니다.');}
+}
+function caught(k){
+  say('<b>사이렌.</b> 붉고 푸른 불빛이 골목을 가릅니다. “경찰이다! 꼼짝 마!”');
+  const runChance=Math.max(12,Math.min(85,Math.round(52-S.st.fat/2+(S.skills.street*0.25)+(S.attrs.stam*0.28))));
+  opt(`있는 힘껏 달아난다 (성공률 ${runChance}%)`,()=>{const esc=R()*100<runChance;if(esc){S.heat+=20;st('str',20);st('tra',4);atUp('stam',1);say('담장을 넘고 골목을 꺾고, 폐가 터질 듯 달립니다. 간신히 따돌렸습니다. 빈손입니다.');if(k==='pkg')rel('tony',-15);}else sendToPrison(k);},{cls:'risk'});
+  opt('두 손을 들고 순순히 체포된다',()=>sendToPrison(k));
+}
+
+const SENTENCE_INFO={
+  shoplift:{reason:'상점 절도',days:2},
+  pickpocket:{reason:'소매치기',days:2},
+  street:{reason:'불심검문 불응 및 경범죄',days:2},
+  pkg:{reason:'불법 물품 운반',days:4},
+  rob:{reason:'편의점 특수강도',days:6},
+  car:{reason:'차량 절도',days:6},
+  syndicate:{reason:'조직 밀수 및 폭력',days:8},
+  big:{reason:'항구 창고 특수절도',days:9},
+  takeover:{reason:'공갈 및 이권 갈취',days:10}
+};
+
+function sendToPrison(k){
+  const info=SENTENCE_INFO[k]||{reason:'치안 방해 및 범죄 혐의',days:3};
+  const extra=S.gangRank>=2?2:(S.crimes>=5?1:0);
+  const totalDays=info.days+extra;
+  if(S.job){
+    note(`구속 수감으로 인해 「${JOBS[S.job.id].n}」에서 해고되었습니다.`);
+    S.job=null;
+  }
+  S.pendingTony=null;
+  S.loc='prison';
+  S.prison={reason:info.reason,daysLeft:totalDays,totalDays,escapePrep:0};
+  rel('maria',-18);
+  rel('emily',-8);
+  st('str',16);st('tra',4);
+  say(`수갑이 채워진 채 법원 약식 재판을 거쳐 <b>블랙우드 시립 교도소</b>로 이송되었습니다.`);
+  say(`판사가 판결문을 읽습니다. “피고인 스콧 카터에게 <b>${info.reason}</b> 혐의로 <b>징역 ${totalDays}일</b>을 선고한다.”`);
+  note(`수감 시작: ${info.reason} · 복역 기간 ${totalDays}일`);
+}
+function robPrompt(){
+  say('편의점 안에는 졸고 있는 야간 알바생 하나. 카운터 너머 금고. 당신의 손이 주머니 속에서 렌치를 쥡니다.');
+  opt('정말로 턴다',()=>{say('“금고 열어. 천천히.” 알바생의 얼굴이 하얗게 질립니다. 겁에 질린 그 눈이, 어릴 적 거울 속 당신 눈과 닮았습니다.');if(S.job&&S.job.id==='mech'){S.job=null;rel('frank',-50);note('프랭크의 정비소 일자리를 잃었습니다.');}crime('rob');},{cls:'risk'});
+  opt('그만둔다',()=>{st('ctl',2);say('당신은 껌 한 통을 사서 나옵니다. 손이 떨립니다.');},{imp:()=>{say('그만두려 했지만, 다리는 이미 카운터로 향하고 있습니다.');crime('rob');}});
+}
+function pickpocket(){
+  pass(20);
+  const skill=S.skills.street||0;
+  const dex=S.attrs.dex||26;
+  const chance=Math.max(8,Math.min(85,26+skill*0.44+dex*0.24+S.st.cha*0.1-S.heat*0.55-(S.st.fat>70?12:0)));
+  if(R()*100<chance){
+    const gain=8+Math.floor(R()*43)+Math.floor((skill+dex)/18);
+    cash(gain);S.crimeMoney+=gain;S.crimes++;S.heat+=4;skUp('street',2);atUp('dex',2);
+    say('출근길 인파가 정류장 앞에 몰려 있습니다. 스콧은 사람들의 움직임에 섞여 짧은 순간 손을 뻗습니다. 몇 걸음 떨어진 뒤 주머니 속 지갑에서 지폐를 꺼냅니다.');
+    note(`소매치기에 성공했습니다. 돈 +$${gain}`);
+    if(S.heat>=35&&R()<0.22){say('뒤에서 누군가 “지갑!” 하고 외칩니다. 근처의 시선이 당신에게 쏠립니다.');st('str',8);}
+  }else{
+    S.heat+=10;skUp('street',1);st('str',8);
+    if(R()<0.45){
+      say('손을 뻗는 순간 상대가 팔을 낚아챕니다. “지금 뭐 하는 거야?” 주변 사람들이 돌아봅니다. 당신은 손을 뿌리치고 인파 속으로 사라집니다.');
+      if(S.heat>=45){say('멀리서 경찰차 사이렌이 들립니다.');if(R()<0.35){sendToPrison('pickpocket');return;}}
+    }else say('기회를 노렸지만 사람들의 움직임이 뜻대로 되지 않습니다. 아무것도 얻지 못한 채 거리를 빠져나옵니다.');
+  }
+}
+function shoplift(){pass(15);
+  const dex=S.attrs.dex||26;
+  if(R()<0.65+(dex*0.003)-S.heat/200){const g=pick(['toy','flower']);S.inv[g]++;S.heat+=6;atUp('dex',1);st('str',4);say(g==='toy'?'곰 인형 하나를 재킷 안에 밀어 넣고 태연하게 걸어 나옵니다.':'꽃다발 하나를 들고 그대로 출구를 지나칩니다. 아무도 부르지 않습니다.');}
+  else{say('“손님, 잠깐만요.” 경비원의 손이 당신 어깨를 잡습니다.');
+    if(S.heat>=45){sendToPrison('shoplift');return;}
+    const fine=Math.min(S.money,100);cash(-fine);S.heat+=12;st('str',12);st('cha',-2);say(`경비실에서 한 시간을 붙잡혀 있다 벌금 $${fine}를 물고 풀려납니다.`);if(S.job&&S.job.id==='guard'){S.job=null;note('경비원 일자리에서 해고되었습니다.');}}
+}
+
+/* ============ 거리 이벤트 ============ */
+function streetEncounter(){
+  const pool=[beggar,neighbor];
+  if(!S.met.tony&&S.day>=2)pool.push(meetTony,meetTony);
+  if(S.heat>=30)pool.push(policeStop,policeStop);
+  if(S.st.cha>=45&&!S.met.jess)pool.push(meetJess);
+  if(S.crave>=50)pool.push(liquorTempt);
+  if(S.money>=20)pool.push(gotPickpocketed);
+  if(S.money>=20&&!S.daily.gamble){pool.push(()=>{S.daily.gamble=1;streetGamble();});}
+  if(S.weather==='비'||S.weather==='폭풍우')pool.push(splash,splash);else if(R()<0.3)pool.push(splash);
+  pick(pool)();
+}
+function beggar(){say('담요를 두른 노숙인이 종이컵을 내밉니다. “1달러면 돼요, 형씨.”');
+  opt('1달러를 준다',()=>{if(S.money>=1){cash(-1);st('str',-2);say('“신의 축복을.” 당신은 신을 믿지 않지만, 고개를 끄덕입니다.');}});
+  opt('지나친다',()=>{say('그의 눈을 피해 걸음을 재촉합니다. 어머니도 저렇게 앉아 있던 적이 있었습니다.');st('tra',1);});}
+function neighbor(){say(pick(['아래층 로페즈 부인이 장바구니를 들고 지나가며 인사합니다. “에밀리 엄마 고생 많더라.” 말에 가시가 있습니다.','집주인 고든 씨가 맞은편에서 걸어옵니다. “월요일이야, 카터. 잊지 말라고.”']));st('str',3);}
+function liquorTempt(){say('주류 판매점 쇼윈도에 위스키 병들이 반짝입니다. 목이 바싹 마릅니다.');
+  opt('발걸음을 돌린다',()=>{st('ctl',2);st('str',5);S.crave=Math.max(0,S.crave-10);say('주먹을 쥐고 걸음을 옮깁니다. 열까지 셉니다.');},{imp:buyBeerImpulse});
+  opt('한 병만 산다',buyBeer,{cls:'risk'});}
+function policeStop(){
+  if(S.job&&S.job.id==='police'){
+    say('순찰차 경관이 당신을 알아보고 거수경례를 합니다. “수고하십니다, 카터 경관님.”');
+    S.heat=Math.max(0,S.heat-10);return;
+  }
+  if(S.heat>=80){say('경찰차 두 대가 당신 앞을 막아섭니다. “스콧 카터? 체포 영장이 발부되었습니다.”');opt('…',()=>sendToPrison('street'));return;}
+  say('순찰차가 당신 옆에 섭니다. 경관이 창문을 내립니다. “잠깐 얘기 좀 합시다. 요즘 이 동네에서 뭐 하고 지냅니까?”');
+  opt('침착하게 대답한다',()=>{if(R()*100<55+(S.st.cha+S.attrs.calm)/4-S.heat/2){st('str',8);say('몇 가지 질문 끝에 경관이 돌아갑니다. 등줄기에 식은땀이 흐릅니다.');}else{S.heat+=10;st('str',15);say('경관이 당신 이름을 무전으로 조회합니다. “지켜보고 있겠습니다, 카터 씨.”');}},{imp:()=>{say('대답 대신 다리가 먼저 뜁니다. 그건 최악의 선택이었습니다.');if(R()<0.55)sendToPrison('street');else{S.heat+=25;st('str',20);say('골목 몇 개를 지나 간신히 따돌렸습니다.');}}});
+}
+function mugging(){say('어둠 속에서 두 그림자가 다가옵니다. “지갑 내놔.” 칼날이 가로등 빛에 번뜩입니다.');
+  opt('지갑을 건넨다',()=>{const l=Math.min(S.money,Math.floor(20+R()*60));cash(-l);st('str',12);st('tra',3);say('놈들이 돈만 빼고 지갑을 던집니다. 손이 떨립니다.');},{imp:()=>fightMug()});
+  opt('맞서 싸운다',fightMug,{cls:'risk'});}
+function fightMug(){const win=0.42+(S.attrs.strg*0.004);if(R()<win){st('str',5);st('tra',2);S.heat+=3;atUp('strg',1);say('당신의 주먹에 한 놈이 쓰러지자 다른 놈이 달아납니다. 아드레날린이 가라앉지 않습니다.');}else{S.injured=true;const l=Math.min(S.money,50);cash(-l);st('tra',6);st('str',15);say('옆구리에 날카로운 통증. 칼이 스쳤습니다. 놈들은 돈을 챙겨 사라집니다. 병원에 가야 합니다.');}}
+
+/* ============ 생활 사건 (크고 작은 금전 손실) ============ */
+const LIFE={
+  fridge:{home:true,w:()=>!S.flags.fridgeDone,run:()=>{
+    S.flags.fridgeDone=S.day;
+    say('냉장고 문을 여니 미지근한 공기가 흘러나옵니다. 모터가 완전히 멈췄습니다. 우유와 고기에서 시큼한 냄새가 올라옵니다.');
+    opt('수리 기사를 부른다 ($85)',()=>{pass(60);const p=lose(85);if(p<85){st('str',8);say('돈이 모자라 기사는 임시 조치만 하고 돌아갑니다. 냉장고가 힘겹게 웅웅거립니다.');}else say('기사가 컴프레서 릴레이를 교체합니다. 냉장고가 다시 웅웅거리기 시작합니다.');},{min:60});
+    opt('직접 뜯어서 고쳐 본다',()=>{pass(90);if(R()*100<15+S.skills.craft*0.6+S.skills.mech*0.4){skUp('craft',1);st('str',-2);say('뒷판을 열고 녹슨 릴레이 접점을 갈아 냅니다. 냉장고가 덜컹 소리와 함께 다시 돌아갑니다.');}else{lose(30);st('str',8);say('사 온 부품이 맞지 않습니다. 부품값 $30만 날리고 결국 아이스박스 신세입니다.');}},{min:90});
+    opt('당분간 그냥 버틴다',()=>{lose(25);rel('maria',-4);st('str',5);say('상한 음식을 버리고 아이스박스로 버팁니다. 장을 다시 보느라 $25가 더 나갔습니다.');});
+  }},
+  emilySick:{home:true,w:()=>true,run:()=>{
+    say('에밀리가 칭얼대며 깹니다. 이마가 불덩이 같습니다. 체온계가 39도를 가리킵니다.');
+    opt('소아과에 데려간다 ($70)',()=>{pass(120);const p=lose(70);rel('emily',6);rel('maria',5);st('fat',6);say(p<70?'진료비가 모자라 남은 금액은 다음에 내기로 사정합니다. 의사가 처방전을 써 줍니다.':'의사가 목을 들여다보더니 편도염이라고 합니다. 약을 받아 오자 에밀리가 당신 품에서 잠듭니다.');if(p<70)S.flags.medDebt=(S.flags.medDebt||0)+(70-p);},{min:120});
+    opt('약국에서 해열제만 사 온다 ($16)',()=>{pass(30);lose(16);if(R()<0.45){S.flags.emilyWorse=S.day+1;say('해열제를 먹이자 잠시 열이 내립니다. 하지만 기침 소리가 영 심상치 않습니다.');}else{rel('emily',2);say('해열제를 먹이고 물수건을 올려 줍니다. 저녁 무렵 열이 내렸습니다.');}},{min:30});
+    opt('하룻밤 지켜본다',()=>{rel('maria',-6);st('str',4);if(R()<0.6)S.flags.emilyWorse=S.day+1;say('“병원비 아끼다 큰일 나면 어쩌려고.” 마리아가 날 선 목소리로 말합니다.');});
+  }},
+  emilyWorse:{home:false,w:()=>false,run:()=>{
+    say('마리아에게서 다급한 연락이 옵니다. 에밀리의 열이 다시 치솟고 숨소리가 쌕쌕거린다고 합니다. 기관지염 의심. 응급실로 달려갈 수밖에 없습니다.');
+    const p=lose(160);pass(180);S.loc='hospital';rel('maria',-3);rel('emily',3);st('str',12);st('fat',10);
+    note(`응급실 진료비 $${p}${p<160?` (부족분 $${160-p}는 의료비 미납으로 쌓였습니다)`:''}`);
+    if(p<160)S.flags.medDebt=(S.flags.medDebt||0)+(160-p);
+  }},
+  phone:{home:false,w:()=>!S.flags.phoneBroken,run:()=>{
+    say('주머니에서 휴대폰을 꺼내다 놓쳤습니다. 아스팔트 위로 떨어진 액정이 거미줄처럼 금이 갑니다.');
+    opt('수리점에서 액정을 간다 ($55)',()=>{if(!pay(55))return;pass(40);say('새 액정이 반짝입니다. 지갑이 그만큼 가벼워졌습니다.');},{min:40});
+    opt('테이프를 붙여 그냥 쓴다',()=>{S.flags.phoneBroken=1;st('cha',-1);st('str',3);say('투명 테이프를 덕지덕지 붙입니다. 화면 반쪽이 잘 눌리지 않습니다.');});
+  }},
+  leak:{home:true,w:()=>!S.flags.leakDone,run:()=>{
+    S.flags.leakDone=1;
+    say('천장에서 물방울이 똑똑 떨어집니다. 윗집 배관이 터졌습니다. 집주인 고든 씨가 올라와 혀를 찹니다. “당신네 천장 수리비 절반, $90은 내야 해.”');
+    opt('수리비를 낸다 ($90)',()=>{const p=lose(90);if(p<90){S.flags.rentExtra=(S.flags.rentExtra||0)+(90-p);say(`가진 돈 $${p}만 건넵니다. 고든 씨가 나머지 $${90-p}는 다음 집세에 얹겠다고 합니다.`);}else say('고든 씨가 지폐를 세어 주머니에 넣습니다.');st('str',6);});
+    opt('윗집 책임이라며 거부한다',()=>{if(R()*100<20+S.skills.know*0.6){st('str',2);say('세입자 권리 조항을 들이대자 고든 씨가 우물쭈물 물러섭니다. “…알았어, 윗집에 청구하지.”');}else{S.flags.rentExtra=(S.flags.rentExtra||0)+40;st('str',8);rel('maria',-3);say('“그럼 다음 집세에 위약금 $40 얹겠어.” 고든 씨가 문을 쾅 닫고 나갑니다.');}});
+    opt('직접 천장을 막는다',()=>{pass(120);if(R()*100<20+S.skills.craft*0.7){skUp('craft',1);say('석고 보드를 잘라 붙이고 실리콘으로 마감합니다. 고든 씨가 마지못해 청구를 철회합니다.');}else{lose(35);st('fat',8);say('자재값 $35만 들고 물은 계속 샙니다. 결국 고든 씨가 업자를 부르고 다음 집세에 $60를 얹었습니다.');S.flags.rentExtra=(S.flags.rentExtra||0)+60;}},{min:120});
+  }},
+  tooth:{home:true,w:()=>!S.flags.tooth&&!S.flags.toothDone,run:()=>{
+    say('밥을 씹다가 어금니에 번개 같은 통증이 지나갑니다. 찬물만 닿아도 머리끝이 쭈뼛 섭니다.');
+    opt('바로 치과에 간다 ($140)',()=>{if(!pay(140)){S.flags.tooth=1;say('치과 접수대에서 견적을 듣고 발길을 돌립니다. 통증은 계속될 것입니다.');return;}pass(90);S.flags.toothDone=1;st('str',-4);say('신경 치료를 받았습니다. 마취가 풀리자 욱신거리지만 날카로운 통증은 사라졌습니다.');},{min:90});
+    opt('진통제로 버틴다 ($9)',()=>{lose(9);S.flags.tooth=1;st('str',4);say('진통제 두 알을 삼킵니다. 당장은 괜찮지만, 매일 아침 통증이 돌아올 것입니다. (병원에서 치과 진료 가능)');});
+  }},
+  fine:{home:true,w:()=>!S.flags.fineDue,run:()=>{
+    say('우편함에 시청 직인이 찍힌 봉투가 꽂혀 있습니다. 「분리수거 위반 과태료 $50 — 7일 이내 미납 시 가산금 부과」');
+    opt('바로 낸다 ($50)',()=>{const p=lose(50);if(p<50){S.flags.fineDue=S.day+4;say('잔액이 모자라 일부만 냈습니다. 나머지는 곧 가산금과 함께 청구됩니다.');}else say('온라인으로 과태료를 납부합니다. 억울하지만 어쩔 수 없습니다.');st('str',4);});
+    opt('나중에 낸다',()=>{S.flags.fineDue=S.day+4;say('고지서를 냉장고 위에 던져 둡니다. (4일 뒤 가산금 포함 $100 강제 징수)');});
+  }},
+  wifeCut:{home:false,w:()=>!S.flags.wifeCut,run:()=>{
+    S.flags.wifeCut=1;
+    say('마리아에게서 문자가 옵니다. 「식당 손님이 줄어서 이번 주 근무 시간이 깎였어. 주급이 $120 적게 나올 거야… 미안해.」');
+    st('str',6);
+    opt('“괜찮아, 내가 더 벌게.” 하고 답장한다',()=>{rel('maria',4);st('str',2);say('잠시 뒤 답장이 옵니다. 「고마워.」 하트 하나가 붙어 있습니다.');});
+    opt('한숨만 쉬고 휴대폰을 집어넣는다',()=>{rel('maria',-2);say('읽음 표시만 남은 채 대화창이 조용해집니다.');});
+  }},
+  daycare:{home:true,w:()=>!S.flags.daycareDone,run:()=>{
+    S.flags.daycareDone=1;
+    say('에밀리가 어린이집 가정통신문을 내밉니다. 「동물원 현장학습 — 참가비 $35, 이번 주 금요일까지」 에밀리의 눈이 반짝입니다. “아빠, 기린 보러 간대!”');
+    opt('참가비를 낸다 ($35)',()=>{const p=lose(35);if(p<35){rel('emily',-3);say('돈이 모자랍니다. 에밀리에게 미안하다고 말하자 아이가 입술을 삐죽입니다.');return;}rel('emily',7);rel('maria',2);say('“진짜? 아빠 최고!” 에밀리가 통신문을 들고 방 안을 뛰어다닙니다.');});
+    opt('이번엔 어렵다고 말한다',()=>{rel('emily',-6);rel('maria',-3);st('str',5);say('에밀리가 아무 말 없이 통신문을 접어 가방에 넣습니다. 그 작은 등이 오늘따라 더 작아 보입니다.');});
+  }},
+  pest:{home:true,w:()=>!S.flags.pestDone,run:()=>{
+    say('밤에 불을 켜자 부엌 바닥에서 바퀴벌레 떼가 흩어집니다. 마리아가 비명을 지르고 에밀리가 울음을 터뜨립니다.');
+    opt('방역 업체를 부른다 ($40)',()=>{const p=lose(40);S.flags.pestDone=1;rel('maria',2);say(p<40?'돈이 모자라 부분 방역만 받았습니다.':'방역 업체가 집 안 구석구석 약을 칩니다. 며칠은 환기를 시켜야 합니다.');});
+    opt('살충제를 사다 직접 뿌린다 ($8)',()=>{lose(8);if(R()<0.5){S.flags.pestDone=1;say('구석구석 살충제를 뿌리고 틈새를 테이프로 막습니다. 한동안은 조용할 것입니다.');}else{st('str',6);say('며칠 뒤, 바퀴벌레가 다시 나타났습니다.');}});
+    opt('신경 쓰지 않는다',()=>{rel('maria',-5);st('str',5);say('“이런 집에서 애를 키워야 해?” 마리아가 이를 악뭅니다.');});
+  }},
+  rentUp:{home:false,w:()=>!S.flags.rentUp&&S.day>=8,run:()=>{
+    S.flags.rentUp=1;
+    say('현관문에 집주인 고든 씨의 공지문이 붙어 있습니다. 「건물 관리비 상승으로 다음 주부터 월세를 주당 $25 인상합니다.」');
+    opt('고든 씨를 찾아가 항의한다',()=>{pass(30);if(R()*100<20+S.st.cha*0.3+S.skills.know*0.4){S.rent+=10;say(`곰팡이와 누수 사진을 들이밀자 고든 씨가 한발 물러섭니다. 인상 폭이 $10로 줄었습니다. (주당 $${S.rent})`);}else{S.rent+=25;st('str',8);say(`“싫으면 나가든가.” 고든 씨가 문을 닫습니다. (주당 집세 $${S.rent})`);}},{min:30});
+    opt('받아들인다',()=>{S.rent+=25;st('str',6);say(`공지문을 떼어 구겨 쥡니다. 다음 주부터 집세는 $${S.rent}입니다.`);});
+  }},
+  relative:{home:false,w:()=>!S.flags.relDone&&S.money>=100,run:()=>{
+    S.flags.relDone=1;
+    say('마리아가 굳은 얼굴로 휴대폰을 내려놓습니다. “여동생 루시아가… 집세가 밀려서 쫓겨나게 생겼대. 100달러만 빌려줄 수 있냐고.”');
+    opt('빌려준다 (-$100)',()=>{lose(100);rel('maria',8);S.flags.luciaBack={day:S.day+7,amt:R()<0.5?100:0};say('마리아가 당신 손을 꼭 잡습니다. “고마워, 스콧. 꼭 갚으라고 할게.”');});
+    opt('우리도 빠듯하다며 거절한다',()=>{rel('maria',-6);st('str',4);say('마리아는 고개를 끄덕이지만, 그날 밤 내내 말이 없습니다.');});
+  }},
+  scam:{home:false,w:()=>S.money>=60,run:()=>{
+    say('모르는 번호로 전화가 옵니다. 다급한 목소리. “스콧 카터 씨죠? 따님이 어린이집 앞에서 사고를 당했습니다. 수술 동의 보증금 150달러를 지금 바로 이 계좌로…”');
+    opt('당황해서 바로 송금한다',()=>{const p=lose(150);st('str',14);st('tra',1);say(`떨리는 손으로 $${p}를 보냅니다. 어린이집에 전화하자 에밀리는 낮잠을 자고 있다고 합니다. 보이스피싱이었습니다.`);},{cls:'risk'});
+    opt('일단 끊고 어린이집에 직접 확인한다',()=>{st('str',3);skUp('know',1);say('어린이집 선생님이 웃으며 말합니다. “에밀리요? 지금 블록 놀이 중인데요.” 식은땀이 등줄기를 타고 흐릅니다.');});
+  }},
+  burglary:{home:true,w:()=>S.money>=150&&S.day>=5&&!S.flags.burgled,run:()=>{
+    S.flags.burgled=1;
+    const amt=lose(Math.min(250,Math.round(S.money*0.3)));
+    say(`현관 자물쇠가 비틀려 있습니다. 서랍장이 모조리 열려 있고, 비상금으로 숨겨 둔 현금 $${amt}가 사라졌습니다.`);
+    st('str',14);rel('maria',-2);
+    opt('경찰에 신고한다',()=>{pass(60);if(S.heat>=30){S.heat+=5;st('str',6);say('출동한 경관이 집 안보다 당신을 더 유심히 훑어봅니다. “카터 씨, 요즘 어디서 일하시죠?”');}else if(R()<0.3){const b=Math.round(amt*0.5);cash(b);say(`며칠 뒤 근처 전당포에서 범인이 잡혔습니다. $${b}를 돌려받았습니다.`);}else say('경관이 조서를 쓰고 돌아갑니다. “찾기는 어려울 겁니다.”');},{min:60});
+    opt('자물쇠만 새로 단다 ($30)',()=>{lose(30);say('철물점에서 튼튼한 보조 자물쇠를 사다 답니다. 마리아가 문고리를 몇 번이나 확인합니다.');});
+  }},
+  laundry:{home:true,w:()=>!S.flags.washerDone,run:()=>{
+    S.flags.washerDone=1;
+    say('세탁기가 굉음을 내더니 물을 토해 내며 멈춥니다. 빨래가 산더미처럼 쌓여 있습니다.');
+    opt('코인 세탁소에 다녀온다 ($14 · 1시간)',()=>{lose(14);pass(60);say('빨래방 건조기 앞에 앉아 돌아가는 옷가지를 멍하니 바라봅니다.');},{min:60});
+    opt('욕조에서 손빨래를 한다 (1시간 30분)',()=>{pass(90);st('fat',10);st('str',4);rel('maria',2);say('팔뚝이 저릴 때까지 빨래를 비벼 빨고 짭니다.');},{min:90});
+  }},
+  found:{home:false,w:()=>R()<0.3,run:()=>{
+    const v=8+Math.floor(R()*18);cash(v);st('str',-3);
+    say(`오래된 재킷 주머니에서 꼬깃꼬깃한 지폐가 나옵니다. $${v}. 작은 행운입니다.`);
+  }},
+  refund:{home:false,w:()=>!S.flags.refund&&R()<0.4,run:()=>{
+    S.flags.refund=1;cash(60);st('str',-4);
+    say('국세청에서 우편이 왔습니다. 작년 원천징수 초과분 환급금 $60가 계좌로 들어왔습니다.');
+  }}
+};
+function pickLife(){const ids=Object.keys(LIFE).filter(k=>LIFE[k].w());return ids.length?pick(ids):null;}
+
+/* ----- 거리의 금전 손실 이벤트 ----- */
+function gotPickpocketed(){
+  if(S.money<20||R()<0.25+S.skills.street*0.008){say('붐비는 인도에서 누군가 몸을 부딪쳐 옵니다. 반사적으로 주머니를 움켜쥐자, 낯선 손이 황급히 빠져나갑니다. 지갑은 무사합니다.');st('str',3);skUp('street',1);return;}
+  const l=lose(15+Math.floor(R()*Math.min(60,S.money*0.3)));
+  st('str',8);say(`한참 걷다 뒷주머니가 허전합니다. 지갑 속 현금 $${l}가 감쪽같이 사라졌습니다. 아까 어깨를 부딪치고 간 남자가 떠오릅니다.`);
+}
+function streetGamble(){
+  say('길모퉁이에서 남자가 종이컵 세 개를 현란하게 섞고 있습니다. “콩 찾으면 두 배! 20달러부터!” 구경꾼 하나가 방금 40달러를 땄다며 환호합니다.');
+  const bet=()=>{if(S.money<20){say('주머니를 뒤져 보지만 판돈이 모자랍니다.');return;}cash(-20);if(R()<0.15){cash(40);st('str',-3);say('콩이 정확히 그 컵 아래에 있습니다! 남자가 떨떠름한 얼굴로 40달러를 건넵니다.');}else{st('str',7);say('콩은 어느 컵에도 없었습니다. 환호하던 구경꾼이 남자와 함께 골목으로 사라집니다. 바람잡이였습니다.');}};
+  opt('20달러를 건다',bet,{cls:'risk'});
+  opt('사기라는 걸 알고 지나친다',()=>{st('ctl',1);say('웃기지도 않는 수법입니다. 걸음을 재촉합니다.');},{imp:()=>{say('지나치려던 손이 이미 지갑을 꺼내고 있습니다.');bet();}});
+}
+function splash(){
+  say('트럭 한 대가 물웅덩이를 밟고 지나가며 흙탕물을 뒤집어씌웁니다. 바지와 셔츠가 흙투성이입니다.');
+  st('cha',-1);st('str',5);
+  opt('코인 세탁소에서 옷을 빤다 ($7)',()=>{if(!pay(7))return;pass(40);st('cha',1);say('세탁소 건조기 앞에서 속옷 차림으로 기다립니다. 꼴은 우습지만 옷은 말끔해졌습니다.');},{min:40});
+  opt('그냥 털고 간다',()=>{say('흙탕물을 대충 털어 냅니다. 지나가는 사람들이 힐끔거립니다.');});
+}
+
+/* ============ 상담 (정신질환 심층 스토리) ============ */
+function counseling(){
+  if(S.daily.counsel){say('오늘 상담은 이미 받았습니다.');return;}
+  if(!pay(30))return;S.daily.counsel=1;S.flags.counsel=(S.flags.counsel||0)+1;pass(60);rel('hanna',8);
+  st('tra',-6);st('str',-15);st('ctl',7);
+  const c=S.flags.counsel;
+  if(c===1){
+    say('한나 웰스 박사가 안경 너머로 당신을 봅니다. “법원 명령이라고 해서 억지로 올 필요는 없어요, 스콧. 하지만 와줘서 기뻐요.”');
+    say('그녀는 당신의 기록을 짚으며 설명합니다. “어린 시절의 방임과 폭력, 그리고 한쪽 눈을 잃은 끔찍한 사고가 겹쳐 있어요. 당신의 뇌는 지금도 매일 밤 그 골목길에 갇혀 비상벨을 울리고 있는 겁니다.”');
+  }else if(c===2){
+    say('“분노는 사실 두려움을 덮기 위한 갑옷이에요.” 한나 박사가 화이트보드에 원을 그립니다. “당신이 소리를 지를 때, 그 아래에는 ‘또 버림받으면 어쩌지’, ‘또 맞으면 어쩌지’ 하는 일곱 살 아이가 숨어 있어요.”');
+  }else if(c===3){
+    say('오늘은 최면 호흡과 그라운딩 기법을 연습합니다. 왼쪽 눈구멍의 환상통과 죄책감에 대해 처음으로 입을 열었습니다. “의안을 낀 건 부끄러운 낙인이 아니에요. 살아남았다는 증거지.”');
+  }else{
+    const L=[
+      '한나 박사가 분노가 올라올 때 몸의 어디가 먼저 반응하는지 묻습니다. 당신은 주먹이라고 대답합니다. “그럼 다음엔 주먹을 펴는 걸 연습해봐요.”',
+      '어머니 이야기가 나오자 당신은 한참 침묵합니다. 한나 박사는 재촉하지 않습니다. 시계 초침 소리만 들립니다.',
+      '“스콧, 당신이 에밀리 나이였을 때 아무도 당신을 지켜주지 않았어요. 지금 당신은 에밀리를 지키려 하고 있고요. 그건 대단한 일이에요.”'
+    ];
+    say(pick(L));
+  }
+  if(S.drank||S.alc>0)say('“술로 감정을 마비시키면 치료도 그만큼 제자리걸음을 하게 돼요, 스콧.” 한나 박사는 숨결의 알코올 냄새를 알아챕니다.');
+  if(S.sober>=7&&!S.flags.sober7){S.flags.sober7=1;st('ctl',5);note('금주 7일 달성. 한나 박사가 작은 칩을 건넵니다.');}
+}
+
+/* ============ 엔딩 ============ */
+const ENDINGS={
+  good:['버텨낸 한 달','4주째 월요일. 집세는 제때 빠져나갔고, 당신은 내일도 출근합니다. 에밀리가 어린이집에서 그린 그림엔 커다란 해적 눈을 한 아빠가 웃고 있습니다. 완벽한 삶은 아니지만, 무너지지 않은 한 달이었습니다.',true],
+  evict:['퇴거','집주인 고든 씨와 보안관이 문 앞에 서 있습니다. 두 번째 집세 미납. 마리아는 에밀리와 함께 언니 집으로 떠나고, 당신은 쓰레기 봉투 세 개에 담긴 짐을 들고 도로변에 섭니다.'],
+  leave:['떠나간 사람들','식탁 위에 쪽지 한 장. “에밀리를 데리고 엄마 집에 가 있을게. 찾지 마.” 마리아의 글씨는 마지막 줄에서 번져 있습니다. 텅 빈 아파트에 냉장고 소리만 남았습니다.'],
+  lost:['통제 상실','그날의 일은 기억나지 않습니다. 깨진 창문, 비명, 손등의 피. 그리고 당신을 겨누던 경찰의 총구. 당신은 결국, 당신을 만든 것들로부터 도망치지 못했습니다.'],
+  arrest:['체포','차가운 수갑이 손목을 조입니다. 순찰차 뒷좌석 창밖으로 아파트 4층 불빛이 멀어집니다. 면회실 유리 너머로 에밀리를 다시 볼 수 있는 건, 몇 년 뒤의 일이 될 것입니다.'],
+  escape:['새벽의 고속도로','동이 트기 전, 낡은 세단에 짐을 싣습니다. 마리아는 묻지 않기로 했습니다. 뒷좌석에서 에밀리가 버니를 안고 잠들어 있습니다. 더러운 돈으로 산 새 출발. 백미러 속 도시가 작아집니다. 언젠가 그 대가를 치르게 될지도 모르지만, 오늘은 아닙니다.'],
+  alone:['혼자 떠나는 길','당신은 돈가방을 들고 현관에 섭니다. 마리아는 따라오지 않겠다고 했습니다. 버스 창에 비친 외눈의 남자. 주머니 속에 에밀리가 그려준 그림 한 장이 구겨져 있습니다.'],
+  boss:['뒷골목의 왕','항구 창고의 옥상에서 도시의 네온사인을 내려다봅니다. 빅 살바토레의 뒤를 이어 이 도시의 밤을 지배하는 보스 스콧 카터. 낡은 아파트 대신 고급 펜트하우스와 검은 세단이 생겼지만, 마리아와 에밀리를 바라보는 당신의 외눈엔 여전한 그림자가 드리워져 있습니다.',true]
+};
+function endGame(k){
+  S.ended=true;choices=[];const E=ENDINGS[k];
+  buf.push(`<div class="end"><h2>— ${E[0]} —</h2></div>`);say(E[1]);
+  sys(`${S.day}일차 · 남은 돈 $${S.money} · 마리아 ${S.rel.maria} · 에밀리 ${S.rel.emily} · 범죄 ${S.crimes}회 · 금주 ${S.sober}일`);
+  if(E[2])opt('계속 플레이한다',()=>{S.ended=false;say('삶은 계속됩니다.');});
+  opt('처음부터 다시 시작한다',start);
+}
+
+/* ============ 시작 ============ */
+function start(){
+  S=newState();buf=[];fx={};choices=[];
+  say('알람 소리. 당신은 얇은 이불 속에서 눈을 뜹니다. 깨어나자마자 왼쪽 눈구멍이 욱신거립니다. 의안을 끼우지 않은 채로 잠든 모양입니다.',
+    '스콧 카터, 스물셋. 정비소에서 잘린 지 3주. 이 낡은 아파트의 월세는 아내 마리아의 식당 월급으로 간신히 막고 있습니다.',
+    '부엌에서 마리아가 에밀리의 도시락을 싸고 있습니다. 네 살 에밀리가 토끼 인형 버니를 끌고 침실 문틈으로 고개를 내밉니다. “아빠, 해적 눈 어딨어?”');
+  sys(`매주 월요일 집세 $${S.rent}가 빠져나갑니다. 마리아의 주급 $${WIFE_PAY}는 금요일에 들어옵니다. 수요일엔 공과금이 빠져나가고, 예기치 못한 지출도 생깁니다. 직장에서는 한 시간씩 직접 근무하며 승진을 노릴 수 있지만, 경고 3회면 해고됩니다.`);
+  opt('에밀리를 번쩍 안아 올린다',()=>{rel('emily',5);st('str',-5);say('에밀리가 꺄르르 웃으며 당신 목에 매달립니다. 의안을 끼우자 “해적 아빠다!” 하고 박수를 칩니다.');morning();});
+  opt('마리아에게 다가가 도시락 싸는 걸 돕는다',()=>{rel('maria',5);say('마리아가 피곤한 얼굴로 웃습니다. “오늘은 일찍 일어났네.” 그녀가 당신 볼에 짧게 입을 맞춥니다.');morning();});
+  opt('이불을 머리끝까지 뒤집어쓴다',()=>{rel('maria',-3);say('현관문 닫히는 소리가 들립니다. 다시 눈을 떴을 땐 집 안이 조용합니다.');pass(180);st('fat',-15);st('str',3);});
+  render();
+}
+function morning(){pass(30);say('7시 반. 마리아가 에밀리 손을 잡고 현관을 나섭니다. “오늘은 뭐라도 해봐, 스콧. 응?”');}
+
+/* ============ 렌더링 ============ */
+const $=id=>document.getElementById(id);
+
+function wornSummaryText(){
+  const upper=CLOTH_CATALOG.find(c=>c.id===S.worn.upper);
+  const lower=CLOTH_CATALOG.find(c=>c.id===S.worn.lower);
+  const underU=CLOTH_CATALOG.find(c=>c.id===S.worn.underUpper);
+  const underL=CLOTH_CATALOG.find(c=>c.id===S.worn.underLower);
+  const items=[upper,lower,underU,underL].filter(Boolean).map(x=>x.n);
+  if(!items.length)return '당신은 아무것도 입지 않은 상태입니다.';
+  return `당신은 ${items.join(', ')} 차림입니다.`;
+}
+
+function statDesc(k,v){
+  if(k==='alc'){
+    return v>=70?'필름이 끊길 정도로 만취했습니다.':v>=40?'술기운이 강하게 올라와 판단이 흐립니다.':'약간 취기가 돌고 있습니다.';
+  }
+  if(k==='fat'){
+    return v>=80?'당장 쓰러질 듯 극심하게 지쳤습니다.':v>=55?'몸이 천근만근 무겁습니다.':v>=25?'약간의 피로감이 느껴집니다.':'정신이 또렷합니다.';
+  }
+  if(k==='str'){
+    return v>=80?'폭발하기 직전의 극한 압박감입니다.':v>=55?'신경이 날카롭게 곤두서 있습니다.':v>=25?'적당한 긴장감을 안고 있습니다.':'마음이 비교적 평온합니다.';
+  }
+  if(k==='tra'){
+    return v>=75?'악몽과 플래시백이 일상을 잠식하고 있습니다.':v>=45?'오래된 상처가 수시로 고개를 듭니다.':v>=20?'과거의 흉터가 희미하게 남아 있습니다.':'마음의 상처가 잘 아물어 있습니다.';
+  }
+  if(k==='ctl'){
+    return v>=75?'스스로를 단단히 통제하고 있습니다.':v>=45?'간신히 감정을 억누르고 있습니다.':v>=20?'충동이 고삐를 흔들고 있습니다.':'자제력을 거의 잃었습니다.';
+  }
+  if(k==='cha'){
+    return v>=70?'주변 사람들의 시선을 단번에 사로잡습니다.':v>=45?'단정하고 호감 가는 인상을 줍니다.':v>=25?'평범하고 무난한 행색입니다.':'지치고 초라해 보입니다.';
+  }
+  return '';
+}
+
+function statDescColor(k,v){
+  if(k==='alc')return '#d48cf7';
+  if(k==='fat'||k==='str'||k==='tra')return v>=70?'#e05555':v>=40?'#e0a03a':'#3bb4c1';
+  if(k==='ctl')return v>=60?'#48c748':v>=30?'#e0a03a':'#e05555';
+  if(k==='cha')return v>=45?'#3bb4c1':'#9a9a9a';
+  return '#ccc';
+}
+
+function dailyTipText(){
+  const todayIv=Object.keys(S.interviews||{}).filter(k=>S.interviews[k]&&S.interviews[k].day===S.day);
+  if(todayIv.length)return `오늘은 「${JOBS[todayIv[0]].n}」 면접 예약일입니다. 영업시간 내에 해당 장소를 방문하세요.`;
+  if(S.missedRent>0)return `이번 주 월요일까지 집세 $${S.rent+(S.flags.rentExtra||0)}를 마련하지 못하면 퇴거당합니다.`;
+  if((S.weather==='비'||S.weather==='폭풍우')&&!hasUmbrella())return '비가 내리고 있습니다. 편의점이나 쇼핑몰에서 우산을 사지 않으면 옷이 젖어 스트레스가 쌓입니다.';
+  if(S.st.tra>=55||S.st.str>=65)return '화요일·목요일 10:00~16:00 사이 세인트 메리 병원 상담실에서 트라우마와 분노를 다스릴 수 있습니다.';
+  if(S.shift)return '근무 중에는 성실히 일할수록 평가가 쌓여 승진에 가까워지지만, 피로도 빠르게 쌓입니다. 땡땡이는 적발되면 경고가 붙습니다.';
+  if(S.flags.tooth)return '어금니 통증이 매일 스트레스를 올립니다. 세인트 메리 병원에서 치과 진료를 받을 수 있습니다.';
+  if(!S.job)return '시립 도서관과 주민센터에서 기술과 지식을 쌓으면 더 나은 직장에 합격할 확률이 높아집니다.';
+  return '집의 옷장에서 상황에 맞는 의상 세트를 갈아입으면 외모와 보온을 관리할 수 있습니다.';
+}
+
+function render(){
+  const timeOfDay=hh()<6?'새벽':hh()<12?'아침':hh()<18?'오후':'밤';
+  const rentLeft=((7-wd())%7)||7;
+  const nextEvent=S.shift?`${shiftName()} 근무 중입니다.`:S.job?`직장: ${PL[JOBS[S.job.id].loc].n} · ${jobTitle(S.job.id)}`:`다음 집세($${S.rent}) 납부까지 ${rentLeft}일 남았습니다.`;
+
+  // 좌측 상시 미니 사이드바
+  const miniStats=[
+    {k:'fat',ch:'피',v:S.st.fat,c:STATC.fat},
+    {k:'str',ch:'스',v:S.st.str,c:STATC.str},
+    {k:'tra',ch:'트',v:S.st.tra,c:STATC.tra},
+    {k:S.alc>0?'alc':'ctl',ch:S.alc>0?'음':'통',v:S.alc>0?Math.round(S.alc):S.st.ctl,c:S.alc>0?'#b85ce6':'#48c748'},
+    {k:'cha',ch:'매',v:S.st.cha,c:'#3bb4c1'}
+  ];
+  $('mini-bar').innerHTML=`<div class="mb-time">${String(hh()).padStart(2,'0')}<span>..</span>${String(S.t%60).padStart(2,'0')}</div>`+
+    miniStats.map(s=>`<div class="mb-stat" title="${s.ch}: ${s.v}"><b style="color:${s.c}">${s.ch}</b><i><em style="width:${s.v}%;background:${s.c}"></em></i></div>`).join('');
+  $('mini-bar').onclick=()=>setPanel(true);
+
+  // 상세 패널 (제목 없음, Arousal 없음, DoL 서술형 스탯 + 격자 버튼)
+  $('dol-top').innerHTML=`<div class="dol-info">
+    <p>${S.weather} ${timeOfDay}입니다.<br>소지금은 <b>$${S.money}</b>입니다.</p>
+    <p>현재 시각은 <b>${tstr()}</b>입니다.<br>오늘은 <b>${DAYS[wd()]}</b> (${S.day}일차)입니다.<br>${nextEvent}</p>
+    <div class="dol-wear">${wornSummaryText()}</div>
+  </div>`;
+
+  $('stats').innerHTML=Object.keys(STATN).map(k=>{
+    const isAlcSlot=(k==='ctl' && S.alc>0);
+    const statKey=isAlcSlot?'alc':k;
+    const label=isAlcSlot?'음주':STATN[k];
+    const val=isAlcSlot?Math.round(S.alc):S.st[k];
+    const barCol=isAlcSlot?'#b85ce6':(k==='ctl'?'#48c748':(k==='cha'?'#3bb4c1':STATC[k]));
+    const dTxt=statDesc(statKey,val);
+    const dCol=statDescColor(statKey,val);
+    return `<div class="dol-stat">
+      <div class="dol-stat-lbl">${label}: <span style="color:${dCol}">${dTxt}</span></div>
+      <div class="dol-bar"><i style="width:${val}%;background:${barCol}"></i></div>
+    </div>`;
+  }).join('');
+
+  $('dol-tip').innerHTML=`<div class="dol-tip"><b>팁:</b> ${dailyTipText()}</div>`;
+
+  $('loc').textContent=S.ended?'':`${pageTitle||PL[S.loc].n} · ${tstr()}`;
+  $('story').innerHTML=buf.join('');
+
+  // 선택지 구역별 렌더링 (주요 장소 / 이동 / 우회 경로)
+  const C=$('choices');C.innerHTML='';
+  const secOrder=[['poi','주요 장소'],['travel','이동'],['alt','우회 경로']];
+  let idxCounter=1;
+  const indexed=choices.map((c,origIdx)=>({c,origIdx}));
+
+  if(!S.ended && isMenu && S.loc!=='home'){
+    secOrder.forEach(([secKey,secTitle])=>{
+      const group=indexed.filter(x=>(x.c.sec||'poi')===secKey);
+      if(!group.length)return;
+      const h=document.createElement('div');h.className='ch-sec';h.textContent=secTitle;C.appendChild(h);
+      group.forEach(({c,origIdx})=>{
+        const b=document.createElement('button');
+        b.innerHTML=`(${idxCounter++}) ${c.label}`;
+        if(c.cls)b.className=c.cls;
+        b.onclick=()=>choose(origIdx);
+        C.appendChild(b);
+      });
+    });
+  }else{
+    let lastGrp=null;
+    indexed.forEach(({c,origIdx},i)=>{
+      if(c.grp&&c.grp!==lastGrp){lastGrp=c.grp;const h=document.createElement('div');h.className='ch-sec';h.textContent=c.grp;C.appendChild(h);}
+      const b=document.createElement('button');
+      b.innerHTML=`(${i+1}) ${c.label}`;
+      if(c.cls)b.className=c.cls;
+      b.onclick=()=>choose(origIdx);
+      C.appendChild(b);
+    });
+  }
+  window.scrollTo(0,0);
+}
+function modal(html){$('mbox').innerHTML=html+'<div style="margin-top:14px"><button id="mclose">닫기</button></div>';$('modal').hidden=false;$('mclose').onclick=()=>$('modal').hidden=true;}
+function showTraits(){
+  const sd={fat:'육체적 피로. 100이 되면 쓰러집니다.',str:'정신적 압박. 100이 되면 폭발합니다.',tra:'오래된 상처. 높을수록 악몽과 플래시백을 자주 겪습니다.',ctl:'자기 통제력. 음주 중에는 일시적으로 음주 스탯으로 대체되며 판단력이 흐려집니다.',cha:'외적 매력. 사람을 끌어당기지만, 나쁜 사람도 꼬입니다.'};
+  modal(`<h3>성향 및 정신·병력</h3>
+  <p><b>신체 결손:</b> 왼쪽 눈 적출 (의안 착용 중)</p>
+  <p><b>정신 건강:</b> 복합 PTSD 및 분노 조절 장애 (한나 웰스 박사 상담 ${S.flags.counsel||0}회 완료)</p>
+  <p><b>알코올 상태:</b> ${S.alc>0?`음주 중 (수치 ${Math.round(S.alc)})`:`맨정신 · 연속 금주 ${S.sober}일째`}</p>
+  ${S.injured?'<p style="color:#e46a6a"><b>부상 상태:</b> 응급실 치료가 필요합니다.</p>':''}
+  <hr style="border-color:#333;margin:12px 0">
+  ${Object.keys(STATN).map(k=>`<p><b>${STATN[k]} (${S.st[k]})</b> — ${sd[k]}</p>`).join('')}`);
+}
+function showJournal(){
+  const J=S.job?JOBS[S.job.id]:null;
+  modal(`<h3>일지 및 가계부</h3><table>
+  <tr><td>경과 일수</td><td>${S.day}일차 (${DAYS[wd()]}) · ${tstr()}</td></tr>
+  <tr><td>날씨 및 기온</td><td>${S.weather} (${S.temp}°C)</td></tr>
+  <tr><td>보유 현금</td><td>$${S.money}</td></tr>
+  <tr><td>월세 현황</td><td>매주 월요일 $${S.rent}${S.flags.rentExtra?` (+추가 청구 $${S.flags.rentExtra})`:''} · 납부 ${S.rentPaid}회 · 미납 ${S.missedRent}회</td></tr>
+  <tr><td>현재 직업</td><td>${J?`${J.n} · ${jobTitle(S.job.id)} (일당 $${jobPay()}, 근무 ${S.job.worked}일, 평가 ${S.job.perf||0}점, 경고 ${S.job.strikes}/3)`:'무직'}${S.flags.firedCount?`<br><span style="color:#e08a5a">해고 이력 ${S.flags.firedCount}회</span>`:''}</td></tr>
+  <tr><td>조직 지위</td><td>${GANG_RANKS[S.gangRank]}${S.gangRank>0?` (공헌도 ${S.gangRep})`:''}</td></tr>
+  <tr><td>구인 정보</td><td>${Object.keys(S.leads).map(k=>JOBS[k].n+(banUntil(k)?` (재지원 ${banUntil(k)}일차부터)`:'')).join('<br>')||'확보된 공고 없음'}</td></tr>
+  <tr><td>평판·수배도</td><td>${S.heat>=60?'경찰 집중 추적 중':S.heat>=30?'경찰의 감시 대상':S.heat>0?'수상한 소문이 조금 있음':'깨끗함'}</td></tr>
+  </table>`);
+}
+function showTech(){
+  modal(`<h3>신체 능력 및 기술·지식</h3>
+  <h4 style="margin:6px 0 8px;color:#c9b26b">신체 및 정신 특성</h4>
+  ${Object.keys(ATTRN).map(k=>`<div class="relc"><div class="t"><b>${ATTRN[k]}</b><span>${fl(S.attrs?.[k]??DEFAULT_ATTRS[k])}/100</span></div><div class="bar" style="margin-top:6px"><i style="width:${S.attrs?.[k]??DEFAULT_ATTRS[k]}%;background:#7fc97f"></i></div><div class="d">${ATTRD[k]}</div></div>`).join('')}
+  <h4 style="margin:14px 0 8px;color:#8ea9df">실용 기술 및 지식</h4>
+  ${Object.keys(SKILLN).map(k=>`<div class="relc"><div class="t"><b>${SKILLN[k]}</b><span>${fl(S.skills?.[k]??DEFAULT_SKILLS[k])}/100</span></div><div class="bar" style="margin-top:6px"><i style="width:${S.skills?.[k]??DEFAULT_SKILLS[k]}%;background:#8ea9df"></i></div><div class="d">${SKILLD[k]}</div></div>`).join('')}`);
+}
+function showInventoryModal(){
+  const invList=[];
+  if(S.inv.beer)invList.push(`맥주 ${S.inv.beer}캔`);
+  if(hasUmbrella())invList.push('튼튼한 검은 장우산');
+  if(S.inv.flower)invList.push(`프리지아 꽃 ${S.inv.flower}다발`);
+  if(S.inv.toy)invList.push(`곰 인형 ${S.inv.toy}개`);
+  if(S.inv.bookset)invList.push(`그림책 세트 ${S.inv.bookset}개`);
+  if(S.inv.vitamin)invList.push(`종합 비타민 ${S.inv.vitamin}회분`);
+  if(S.inv.notebook)invList.push(`가죽 노트 ${S.inv.notebook}권`);
+  if(S.inv.cologne)invList.push(`애프터셰이브 ${S.inv.cologne}회분`);
+  if(S.inv.watch)invList.push(`여성용 손목시계 ${S.inv.watch}개`);
+  const furnNames=(S.furniture||[]).map(id=>FURNITURE.find(f=>f.id===id)?.n).filter(Boolean);
+  const tatNames=S.tattoos.map(id=>TATTOOS.find(t=>t.id===id)?.n).filter(Boolean);
+  modal(`<h3>소지품 및 가구</h3>
+  <p><b>휴대 소지품:</b> ${invList.join(', ')||'없음'}</p>
+  <p><b>아파트 보유 가구:</b> ${furnNames.join(', ')||'기본 가구만 있음'}</p>
+  <p><b>몸에 새긴 타투:</b> ${tatNames.join(', ')||'없음'}</p>
+  <p style="color:#999;font-size:13px">의복 갈아입기는 집의 [옷장] 메뉴에서 이용할 수 있습니다.</p>`);
+}
+function showStatus(){
+  const J=S.job?JOBS[S.job.id]:null;
+  const sd={fat:'육체적 피로. 100이 되면 쓰러집니다.',str:'정신적 압박. 100이 되면 폭발합니다.',tra:'오래된 상처. 높을수록 악몽과 플래시백을 자주 겪습니다.',ctl:'자기 통제력. 음주 중에는 일시적으로 음주 스탯으로 대체되며 판단력이 흐려집니다.',cha:'외적 매력. 사람을 끌어당기지만, 나쁜 사람도 꼬입니다.'};
+  const invList=[];
+  if(S.inv.beer)invList.push(`맥주 ${S.inv.beer}캔`);
+  if(hasUmbrella())invList.push('검은 장우산');
+  if(S.inv.flower)invList.push(`프리지아 꽃 ${S.inv.flower}다발`);
+  if(S.inv.toy)invList.push(`곰 인형 ${S.inv.toy}개`);
+  if(S.inv.bookset)invList.push(`그림책 세트 ${S.inv.bookset}개`);
+  if(S.inv.vitamin)invList.push(`종합 비타민 ${S.inv.vitamin}회분`);
+  if(S.inv.notebook)invList.push(`가죽 노트 ${S.inv.notebook}권`);
+  if(S.inv.cologne)invList.push(`애프터셰이브 ${S.inv.cologne}회분`);
+  if(S.inv.watch)invList.push(`여성용 손목시계 ${S.inv.watch}개`);
+  const tatNames=S.tattoos.map(id=>TATTOOS.find(t=>t.id===id)?.n).filter(Boolean);
+  const furnNames=(S.furniture||[]).map(id=>FURNITURE.find(f=>f.id===id)?.n).filter(Boolean);
+
+  modal(`<h3>캐릭터 스테이터스</h3><table>
+  <tr><td>이름</td><td>스콧 카터 (남, 23세)</td></tr>
+  <tr><td>신체</td><td>180cm / 80kg · 12월 21일생</td></tr>
+  <tr><td>정신·병력</td><td>왼쪽 눈 적출(의안) · 알코올 의존증 · 복합 PTSD 및 분노 조절 장애 (상담 ${S.flags.counsel||0}회)</td></tr>
+  <tr><td>직업</td><td>${J?`${J.n} · <b>${jobTitle(S.job.id)}</b><br>${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00부터 ${J.hours}시간 · 일당 $${jobPay()} · 근무 ${S.job.worked}일 · 평가 ${S.job.perf||0}점 · 경고 ${S.job.strikes}/3`:'무직'}</td></tr>
+  <tr><td>조직 지위</td><td>${GANG_RANKS[S.gangRank]}${S.gangRank>0?` (공헌도 ${S.gangRep})`:''}</td></tr>
+  <tr><td>음주·금주</td><td>${S.alc>0?`<span style="color:#d48cf7">음주 중 (수치 ${Math.round(S.alc)} · 시간이 지나면 감소)</span>`:`맨정신 · 금주 ${S.sober}일째`}</td></tr>
+  <tr><td>집세</td><td>매주 월요일 $${S.rent}${S.flags.rentExtra?` (+추가 청구 $${S.flags.rentExtra})`:''} · 미납 ${S.missedRent}회</td></tr>
+  <tr><td>소지품</td><td>${invList.join(' · ')||'없음'}</td></tr>
+  <tr><td>보유 가구</td><td>${furnNames.join('<br>')||'기본 가구만 있음'}</td></tr>
+  <tr><td>문신 (타투)</td><td>${tatNames.join('<br>')||'없음'}</td></tr>
+  <tr><td>구인 정보</td><td>${Object.keys(S.leads).map(k=>JOBS[k].n).join('<br>')||'없음'}</td></tr>
+  ${S.injured?'<tr><td>상태</td><td style="color:#e46a6a">부상 (병원 치료 필요)</td></tr>':''}
+  ${S.heat>0?`<tr><td>거리의 소문</td><td style="color:#e08a5a">${S.heat>=60?'경찰이 당신을 찾고 있다':S.heat>=30?'경찰의 눈에 띄기 시작했다':'수상한 소문이 조금 돈다'}</td></tr>`:''}
+  </table><h3 style="margin-top:16px">스탯</h3>${Object.keys(STATN).map(k=>`<p><b>${STATN[k]} ${S.st[k]}</b> — ${sd[k]}</p>`).join('')}
+  <h3 style="margin-top:16px">신체 및 정신 특성</h3>${Object.keys(ATTRN).map(k=>`<div class="relc"><div class="t"><b>${ATTRN[k]}</b><span>${fl(S.attrs?.[k]??DEFAULT_ATTRS[k])}/100</span></div><div class="bar" style="margin-top:6px"><i style="width:${S.attrs?.[k]??DEFAULT_ATTRS[k]}%;background:#7fc97f"></i></div><div class="d">${ATTRD[k]}</div></div>`).join('')}
+  <h3 style="margin-top:16px">기술 및 지식</h3>${Object.keys(SKILLN).map(k=>`<div class="relc"><div class="t"><b>${SKILLN[k]}</b><span>${fl(S.skills?.[k]??DEFAULT_SKILLS[k])}/100</span></div><div class="bar" style="margin-top:6px"><i style="width:${S.skills?.[k]??DEFAULT_SKILLS[k]}%;background:#8ea9df"></i></div><div class="d">${SKILLD[k]}</div></div>`).join('')}`);
+}
+function showRel(){
+  const mood=v=>v>=80?'깊이 신뢰함':v>=60?'따뜻함':v>=40?'무난함':v>=20?'서먹함':'냉담함';
+  modal('<h3>사회관계</h3>'+Object.keys(NPC).filter(k=>S.met[k]).map(k=>`<div class="relc"><div class="t"><span>${NPC[k].n}</span><span style="color:#8a8a8a">${S.rel[k]} · ${mood(S.rel[k])}</span></div><div class="bar" style="margin-top:6px"><i style="width:${S.rel[k]}%;background:${(k==='tony'||k==='jess'||k==='don')?'#e08a5a':'#3d9be9'}"></i></div><div class="d">${NPC[k].d}</div></div>`).join(''));
+}
+const SKEY='scott_carter_save_';
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function snapshot(){return JSON.stringify({S,buf,choicesLen:0});}
+function showSave(){
+  let h='<h3>저장 / 불러오기</h3>';
+  for(let i=1;i<=3;i++){const raw=lsGet(SKEY+i);let info='비어 있음';if(raw){try{const d=JSON.parse(raw).S;info=`${d.day}일차 ${DAYS[(d.day-1)%7]} · $${d.money}`}catch(e){}}
+    h+=`<p>슬롯 ${i}: <span style="color:#8a8a8a">${info}</span><br><button data-s="${i}">저장</button>${raw?`<button data-l="${i}">불러오기</button>`:''}</p>`;}
+  h+='<p style="color:#8a8a8a">브라우저 저장소가 막혀 있다면 아래 저장 코드를 복사해 두세요.</p><textarea id="code"></textarea><button id="mk">저장 코드 만들기</button><button id="ld">코드로 불러오기</button><p id="msg" style="color:#c9b26b"></p>';
+  modal(h);
+  document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{if(S.ended){$('msg').textContent='엔딩 상태는 저장할 수 없습니다.';return;}$('msg').textContent=lsSet(SKEY+b.dataset.s,snapshot())?'저장했습니다.':'이 환경에선 저장소를 쓸 수 없습니다. 저장 코드를 이용하세요.';setTimeout(showSave,600);});
+  document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>load(lsGet(SKEY+b.dataset.l)));
+  $('mk').onclick=()=>{const c=btoa(unescape(encodeURIComponent(snapshot())));$('code').value=c;try{navigator.clipboard.writeText(c).then(()=>$('msg').textContent='클립보드에 복사했습니다.',()=>{})}catch(e){}};
+  $('ld').onclick=()=>{try{load(decodeURIComponent(escape(atob($('code').value.trim()))))}catch(e){$('msg').textContent='코드가 올바르지 않습니다.'}};
+}
+function load(raw){
+  try{
+    const d=JSON.parse(raw);
+    const base=newState();
+    S=Object.assign(base,d.S);
+    S.skills=Object.assign({},DEFAULT_SKILLS,d.S?.skills||{});
+    S.attrs=Object.assign({},DEFAULT_ATTRS,d.S?.attrs||{});
+    S.st=Object.assign(base.st,d.S?.st||{});
+    S.rel=Object.assign(base.rel,d.S?.rel||{});
+    S.met=Object.assign({maria:1,emily:1},d.S?.met||{});
+    S.inv=Object.assign(base.inv,d.S?.inv||{});
+    S.furniture=Array.isArray(d.S?.furniture)?d.S.furniture:[];
+    S.wardrobe=Array.isArray(d.S?.wardrobe)?d.S.wardrobe:base.wardrobe;
+    S.worn=Object.assign(base.worn,d.S?.worn||{});
+    S.outfitSets=Array.isArray(d.S?.outfitSets)?d.S.outfitSets:base.outfitSets;
+    S.tattoos=Array.isArray(d.S?.tattoos)?d.S.tattoos:[];
+    S.interviews=Object.assign({},d.S?.interviews||{});
+    buf=['<p class="sys">저장된 게임을 불러왔습니다.</p>'];
+    choices=[];fx={};isMenu=false;pageTitle='';if(S.shift)shiftStep();else menu();render();$('modal').hidden=true;
+  }catch(e){$('msg').textContent='불러오기에 실패했습니다.';}
+}
+
+const OPTION_KEY='scott_carter_display_options';
+const DEFAULT_OPTIONS={story:16,choice:14,ui:14};
+function applyOptions(values){
+  const v=Object.assign({},DEFAULT_OPTIONS,values||{});
+  document.documentElement.style.setProperty('--story-size',v.story+'px');
+  document.documentElement.style.setProperty('--choice-size',v.choice+'px');
+  document.documentElement.style.setProperty('--ui-size',v.ui+'px');
+  [['storySize','storySizeVal',v.story],['choiceSize','choiceSizeVal',v.choice],['uiSize','uiSizeVal',v.ui]].forEach(([id,label,n])=>{
+    const input=$(id),out=$(label);if(input)input.value=n;if(out)out.textContent=n+'px';
+  });
+}
+function readOptions(){try{return JSON.parse(localStorage.getItem(OPTION_KEY)||'{}')}catch(e){return {};}}
+function saveOptions(){
+  const values={story:Number($('storySize').value),choice:Number($('choiceSize').value),ui:Number($('uiSize').value)};
+  applyOptions(values);try{localStorage.setItem(OPTION_KEY,JSON.stringify(values))}catch(e){}
+}
+function showOptions(){
+  const v=Object.assign({},DEFAULT_OPTIONS,readOptions());
+  modal(`<h3>화면 옵션</h3><p style="color:#999;font-size:13px;margin-top:-4px">글자 크기는 변경 즉시 적용되며 이 기기에 저장됩니다.</p>
+    <div class="optrow"><label for="storySize">본문 글자 크기 <span id="storySizeVal">${v.story}px</span></label><input id="storySize" type="range" min="12" max="24" value="${v.story}"></div>
+    <div class="optrow"><label for="choiceSize">선택지 글자 크기 <span id="choiceSizeVal">${v.choice}px</span></label><input id="choiceSize" type="range" min="11" max="20" value="${v.choice}"></div>
+    <div class="optrow"><label for="uiSize">메뉴 글자 크기 <span id="uiSizeVal">${v.ui}px</span></label><input id="uiSize" type="range" min="11" max="20" value="${v.ui}"></div>
+    <button class="optreset" id="resetOptions" type="button">기본값으로 초기화</button>`);
+  applyOptions(v);
+  ['storySize','choiceSize','uiSize'].forEach(id=>$(id).addEventListener('input',saveOptions));
+  $('resetOptions').onclick=()=>{applyOptions(DEFAULT_OPTIONS);try{localStorage.setItem(OPTION_KEY,JSON.stringify(DEFAULT_OPTIONS))}catch(e){}};
+}
+applyOptions(readOptions());
+
+function setPanel(o){$('panel').classList.toggle('open',o);$('tog').classList.toggle('open',o);$('tog').textContent=o?'‹':'›';document.body.classList.toggle('po',o);}
+$('tog').onclick=()=>setPanel(!$('panel').classList.contains('open'));
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>({
+  status:showStatus,rel:showRel,traits:showTraits,journal:showJournal,tech:showTech,wardrobe:showInventoryModal,options:showOptions,save:showSave
+})[b.dataset.m]());
+$('modal').onclick=e=>{if(e.target.id==='modal')$('modal').hidden=true;};
+setPanel(window.innerWidth>=1000);
+start();
+</script>
+</body>
+</html>
