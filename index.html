@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>스콧 카터: 낡은 아파트</title>
+<title>스콧 카터: 윌로우 크릭</title>
 <style>
 :root{--bg:#1c1c1c;--panel:#161616;--line:#3a3a3a;--text:#e6e6e6;--dim:#8a8a8a;--blue:#3d9be9;--story-size:16px;--choice-size:14px;--ui-size:14px;}
 *{box-sizing:border-box}
@@ -87,25 +87,75 @@ hr{border:none;border-top:1px solid var(--line);margin:22px 0}
 .shop-item div{max-width:72%}
 .shop-item b{font-size:14px;display:block;margin-bottom:2px}
 .shop-item span{font-size:12px;color:var(--dim);display:block;line-height:1.4}
-.wd-box{font-size:14px;line-height:1.7;color:#ddd}
-.wd-title{font-size:16px;font-weight:700;text-decoration:underline;margin:10px 0 6px;color:#fff}
-.wd-links{margin:6px 0 10px;line-height:1.8}
-.wd-link{color:#6ea8fe;cursor:pointer;text-decoration:none;font-weight:600}
-.wd-link:hover{text-decoration:underline;color:#9ec5fe}
-.wd-link.active{color:#e0c040;text-decoration:underline}
-.wd-sep{color:#666;margin:0 5px}
-.wd-radios{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0 12px;font-size:13px}
-.wd-radios label{display:inline-flex;align-items:center;gap:4px;cursor:pointer}
-.wd-sets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}
-.wd-setbtn{background:#181818;color:#6ea8fe;border:1px solid #444;padding:10px 8px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;border-radius:2px}
-.wd-setbtn:hover{background:#242424;border-color:#6ea8fe}
-.wd-hr{border:none;border-top:1px solid #3a3a3a;margin:14px 0}
-.wd-item{display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border:1px solid #2e2e2e;background:#191919;margin-bottom:6px;border-radius:3px}
-.wd-item.worn{border-color:#e0c040;background:#222018}
-.wd-item-info b{font-size:13px;color:#eee;display:block}
-.wd-item-info span{font-size:12px;color:#999}
-.wd-actbtn{background:#252525;color:#8ea9df;border:1px solid #4a4a4a;padding:4px 10px;font-size:12px;cursor:pointer;border-radius:2px}
-.wd-actbtn:hover{background:#333;color:#fff}
+/* ===== 옷장 · 노트북 공용 UI (참고 이미지 디자인) ===== */
+.wd{font-size:var(--story-size);line-height:1.8;color:#e6e6e6}
+.wd p{margin:0 0 8px}
+.wd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.wd-head-l{flex:1;min-width:0}
+.wd-optbtn{flex:none;background:transparent;color:#e6e6e6;border:1px solid #5a5a5a;border-radius:4px;padding:9px 15px;font-size:var(--ui-size);font-family:inherit;cursor:pointer;margin-top:34px}
+.wd-optbtn:hover,.wd-optbtn.on{border-color:#a0a0a0;background:#222}
+.wd-hr{border:none;border-top:2px solid #d0d0d0;margin:18px 0}
+.wd-lbl{margin:0 0 6px}
+.wd-gauge{position:relative;height:14px;border-radius:8px;background:linear-gradient(90deg,#3b82f6 0%,#9cc3ec 28%,#fff6cf 50%,#f4b48e 70%,#e5342a 100%);margin:8px 0 14px}
+.wd-gauge .rng{position:absolute;top:-4px;bottom:-4px;border:2px solid rgba(255,255,255,.75);border-radius:9px;box-sizing:border-box}
+.wd-gauge .mk{position:absolute;top:-7px;width:6px;height:28px;margin-left:-3px;background:#fff;border:2px solid #111;border-radius:3px}
+.wd-helpwrap{text-align:center;margin:4px 0 10px}
+.wd-help{display:inline-flex;align-items:center;justify-content:center;width:46px;height:44px;background:transparent;border:1px solid #6a6a6a;cursor:pointer;padding:0}
+.wd-help span{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#3a7bc8;border:2px solid #cfe0f5;color:#fff;font-weight:700;font-size:15px;line-height:1}
+.wd-cold{color:#3fc1c9}.wd-warm{color:#e0c040}.wd-hot{color:#f0863e}.wd-ok{color:#7fc97f}.wd-num{color:#e8963a}
+.wd-dim{color:#8a8a8a;font-size:.9em}
+.wd-msg{margin:4px 0 12px}
+.wd-links,.wd-radios{line-height:2.1}
+.wd-link{color:#6ea8fe;cursor:pointer;text-decoration:none;white-space:nowrap}
+.wd-link:hover{color:#a9cbff;text-decoration:underline}
+.wd-link.active{color:#e8c43a;text-decoration:underline;text-underline-offset:3px}
+.wd-link.risk{color:#e08a5a}
+.wd-sep{color:#d0d0d0;margin:0 9px;font-weight:300}
+.wd-title{color:#fff;text-decoration:underline;text-underline-offset:5px}
+p.wd-sec{margin-top:6px}
+.wd-cnt{color:#e6e6e6;font-style:italic}
+.wd-radio{display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;white-space:nowrap}
+.wd-radio i{flex:none;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid #c8c8c8;box-sizing:border-box}
+.wd-radio.on i{border:6px solid #3b82f6}
+.wd-check i{border-radius:5px}
+.wd-check.on i{border:2px solid #3b82f6;background:#3b82f6 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3 8.5l3 3 7-7' stroke='white' stroke-width='2.4' fill='none'/></svg>") center/14px no-repeat}
+.wd-sets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 6px}
+.wd-setbtn{background:transparent;color:#6ea8fe;border:2px solid #9a9a9a;padding:10px 8px;text-align:center;cursor:pointer;font-size:var(--story-size);font-family:inherit;line-height:1.4;word-break:keep-all}
+.wd-setbtn:hover{background:#222;color:#a9cbff}
+.wd-setbtn.del{color:#e08a5a;border-color:#8a5a44}
+.wd-setbtn small{display:block;color:#8a8a8a;font-size:12px;margin-top:3px}
+.wd-panel{border:1px solid #444;background:#181818;padding:10px 12px;margin:10px 0}
+.wd-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 11px;border:1px solid #3a3a3a;background:#181818;margin:0 0 7px;cursor:pointer}
+.wd-item:hover{border-color:#6ea8fe}
+.wd-item.worn{border-color:#e8c43a;background:#201e15}
+.wd-item.wd-static{cursor:default}
+.wd-item.wd-static:hover{border-color:#3a3a3a}
+.wd-item-info{min-width:0;flex:1}
+.wd-item-info>b{display:block;color:#eee;font-size:.95em;font-weight:600;line-height:1.6}
+.wd-item-info>span{display:block;color:#9a9a9a;font-size:13px;line-height:1.55}
+.wd-item-info>span.wd-desc{color:#767676}
+.wd-item-info .wd-links{margin:4px 0 0;font-size:14px;line-height:1.9}
+.wd-tag{font-style:normal;font-weight:600;color:#e8c43a;font-size:12px;border:1px solid #6b5b20;padding:0 5px;margin-right:4px}
+.wd-act{flex:none;font-size:13px;color:#6ea8fe;border:1px solid #444;padding:3px 9px;white-space:nowrap}
+.wd-act.risk{color:#e08a5a;border-color:#6b4433}
+.wd-act.dim{color:#777}
+.lp-badge.dim{color:#888}
+.fam-box{margin:2px 0 14px}
+.fam-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.fam-card{border:2px solid #9a9a9a;padding:9px 10px;cursor:pointer;background:#181818}
+.fam-card:hover{border-color:#6ea8fe}
+.fam-card.away{border-color:#474747}
+.fam-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.fam-top b{color:#6ea8fe;font-size:1.05em}
+.fam-role{font-size:12px;color:#9a9a9a;white-space:nowrap}
+.fam-where{display:block;font-size:13px;margin:2px 0 6px;line-height:1.4}
+.fam-mood{display:block;font-size:12px;color:#bbb;margin-top:5px}
+.fam-profile{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.fam-avatar{flex:none;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#111}
+.fam-bar{height:7px;margin:4px 0 12px}
+.wd-msgbox{margin:4px 0 12px}
+.wd-na{color:#666}
+.wd-input{width:100%;max-width:280px;background:#111;color:#eee;border:1px solid #555;padding:6px 8px;font-size:14px;font-family:inherit;margin:0 0 4px}
 </style>
 </head>
 <body>
@@ -118,6 +168,7 @@ hr{border:none;border-top:1px solid var(--line);margin:22px 0}
     <div class="dol-grid">
       <button class="pbtn" data-m="status">캐릭터 특성</button>
       <button class="pbtn" data-m="rel">사회관계</button>
+      <button class="pbtn" data-m="family">가족 (마리아 · 에밀리)</button>
       <div class="dol-grid-row">
         <button class="pbtn" data-m="traits">성향·병력</button>
         <button class="pbtn" data-m="journal">일지·가계</button>
@@ -138,7 +189,7 @@ hr{border:none;border-top:1px solid var(--line);margin:22px 0}
   <main>
     <div id="loc"></div>
     <div id="story"></div>
-    <hr>
+    <hr id="ch-hr">
     <div id="choices"></div>
   </main>
   <div id="modal" hidden><div class="box" id="mbox"></div></div>
@@ -178,6 +229,7 @@ const NPC={
   tony:{n:'토니 레예스',d:'10대 시절 패거리 친구. 당신이 눈을 잃던 밤에도 그 자리에 있었다. 지금은 빅 살바토레 조직의 중간책이다.'},
   jess:{n:'제시카',d:'해변 비치 바의 단골. 위험할 만큼 매력적인 웃음을 가졌다.'},
   rosa:{n:'로사 곤잘레스',d:'같은 아파트 3층에 사는 62세 이웃. 오래된 라디오와 화분을 아끼며, 남의 사정을 함부로 캐묻지 않는다.'},
+  claire:{n:'클레어 선생님 (유치원 담임)',d:'윌로우 크릭 초등학교 부속 유치원 해바라기반 담임. 차분하고 아이들을 세심하게 살핀다. 에밀리의 하루를 누구보다 잘 안다.'},
   vince:{n:'빈스',d:'웨스트게이트 쇼핑몰 안쪽 타투샵 「블랙 앵커」의 타투이스트. 묵묵히 바늘을 놀리며 손님들의 흉터와 사연을 새긴다.'},
   don:{n:'빅 살바토레',d:'항구와 뒷골목을 장악한 범죄 조직의 노회한 보스. 냉혹하지만 능력과 충성심을 보인 자에겐 조직을 물려줄 생각을 품고 있다.'}
 };
@@ -188,11 +240,12 @@ const JOBS={
   cafe:{n:'카페 아르바이트',loc:'cafe',days:[0,2,4,5],start:7,hours:6,pay:55},
   clean:{n:'병원 저녁 청소부',loc:'hospital',days:[0,1,2,3,4],start:16,hours:7,pay:65},
   police:{n:'순찰 경관 (제4지구 경찰서)',loc:'precinct',days:[0,1,2,3,4],start:8,hours:8,pay:145,pro:true},
-  army:{n:'주방위군 차량·병기 정비병',loc:'base',days:[0,1,2,3,4],start:7,hours:9,pay:155,pro:true}
+  army:{n:'주방위군 차량·병기 정비병',loc:'base',days:[0,1,2,3,4],start:7,hours:9,pay:155,pro:true},
+  school:{n:'학교 시설 관리인 (윌로우 크릭 초등학교)',loc:'school',days:[0,1,2,3,4],start:7,hours:8,pay:72}
 };
 
 const PL={
-  home:{n:'집 · 낡은 아파트 4층'},
+  home:{get n(){return '집 · '+(S&&HOUSES[S.house]?HOUSES[S.house].short:'낡은 아파트 4층');}},
   street:{n:'윌로우 크릭 드라이브'},
   westbrook:{n:'웨스트 브룩 에비뉴'},
   seabreeze:{n:'시브리즈 블러바드'},
@@ -212,7 +265,9 @@ const PL={
   club:{n:'클럽 「벨벳 스모크」',open:[18,4]},
   dealer:{n:'뒷골목 마약상'},
   hideout:{n:'살바토레 조직 본거지'},
-  site:{n:'일용직 작업 현장'}
+  site:{n:'일용직 작업 현장'},
+  school:{n:'윌로우 크릭 초등학교 & 부속 유치원',open:[7,22]},
+  realty:{n:'「키스톤」 부동산 중개소',open:[9,19]}
 };
 
 const TATTOOS=[
@@ -260,6 +315,63 @@ const CLOTH_CATALOG=[
   {id:'sneakers_clean',slot:'feet',n:'깔끔한 검은 스니커즈',col:'검정',warmth:3,cha:2,integ:95,desc:'가볍고 단정한 외출용 운동화.'}
 ];
 
+
+/* ============ 주거 (부동산 매물) ============ */
+const MOVE_FEE=120;
+const HOUSES={
+  basement:{n:'이스트 엔드 반지하 원룸',short:'반지하 원룸',area:'윌로우 크릭 동쪽 끝 주택가',tier:0,rent:280,deposit:300,rest:10,str:2,damp:true,
+    landlord:'집주인 페트로프 씨',
+    desc:'창문 절반이 보도 아래로 잠긴 반지하 원룸. 집세는 싸지만 습기와 곰팡이가 심하고, 세 식구가 지내기엔 비좁습니다.',
+    day:'창문 위로 지나가는 행인들의 발목만 보이는 반지하 방입니다. 벽 모서리에 곰팡이가 번져 있습니다.',
+    night:'불 꺼진 반지하 방. 축축한 공기 속에 낡은 보일러 소리만 웅웅거립니다.',
+    arrive:'몇 계단을 내려가 습기 찬 반지하 현관문을 엽니다.',
+    tour:'중개인 데니스가 손전등으로 벽을 비춥니다. 벽지 뒤로 물 자국이 번져 있고, 창문으로는 지나가는 사람들의 신발만 보입니다. “싼 데는 다 이유가 있죠.” 데니스가 어깨를 으쓱합니다.'},
+  oldApt:{n:'윌로우 크릭 낡은 아파트 4층',short:'낡은 아파트 4층',area:'윌로우 크릭 드라이브',tier:1,rent:450,deposit:450,rest:12,str:0,
+    landlord:'집주인 고든 씨',
+    desc:'엘리베이터 없는 5층짜리 낡은 아파트의 4층. 벽지에 곰팡이 자국이 있고 배관이 자주 말썽이지만, 그럭저럭 살 만합니다.',
+    day:'좁은 거실. 벽지 곰팡이 자국이 오늘따라 눈에 띕니다.',
+    night:'불 꺼진 아파트. 냉장고 모터 소리와 옆집 TV 소리만 웅웅거립니다.',
+    arrive:'삐걱거리는 계단을 올라 4층 집 문을 엽니다.',
+    tour:'지금 살고 있는 집과 같은 구조의 빈집입니다. 삐걱거리는 마룻바닥과 오래된 라디에이터까지 똑같습니다.'},
+  townhouse:{n:'시빅 센터 리모델링 2룸 타운하우스',short:'2룸 타운하우스',area:'시빅 센터 드라이브 인근',tier:2,rent:620,deposit:1200,buy:16000,upkeep:95,rest:13,str:-1,relM:1,garden:true,
+    landlord:'관리 회사 「메이플 하우징」',
+    desc:'새로 리모델링한 2층 타운하우스. 에밀리 방이 따로 있고, 도서관과 학교 부속 유치원까지 걸어서 갈 수 있습니다. 단지 안에 작은 공용 정원이 있습니다.',
+    day:'햇살이 드는 깔끔한 2층 타운하우스입니다. 계단 위 에밀리 방 문에 크레용 그림이 붙어 있습니다.',
+    night:'조용한 타운하우스. 새로 단 보일러가 낮게 웅웅거립니다.',
+    arrive:'단정한 현관 계단을 올라 타운하우스 문을 엽니다.',
+    tour:'새 페인트 냄새가 나는 거실. 2층에는 작은 방이 두 개 있습니다. 창밖으로 공용 정원과 학교 운동장이 보입니다. “아이 키우기엔 이만한 데가 없어요.” 데니스가 말합니다.'},
+  suburb:{n:'오크우드 교외 단독주택',short:'마당 딸린 단독주택',area:'오크우드 주택가',tier:3,rent:900,deposit:2000,buy:24000,upkeep:140,rest:14,str:-2,relM:1,relE:1,yard:true,
+    landlord:'집주인 하퍼 부부',
+    desc:'잔디 마당과 차고가 딸린 2층 단독주택. 조용한 주택가라 밤에도 안심할 수 있고, 마당에서 에밀리와 뛰어놀 수 있습니다.',
+    day:'창밖으로 잔디 마당과 하얀 울타리가 보이는 단독주택 거실입니다.',
+    night:'풀벌레 소리만 들리는 조용한 단독주택. 현관 센서등이 가끔 깜빡입니다.',
+    arrive:'잔디 마당을 가로질러 단독주택 현관문을 엽니다.',
+    tour:'하얀 울타리 너머로 잔디 마당이 펼쳐집니다. 차고 안에는 작업대까지 있습니다. 당신은 차고 바닥에 묻은 오래된 엔진오일 자국을 한참 바라봅니다. 에밀리가 이 마당을 뛰어다니는 모습이 눈앞에 그려집니다.'},
+  penthouse:{n:'시브리즈 해변 펜트하우스',short:'해변 펜트하우스',area:'시브리즈 블러바드 해안가',tier:4,rent:1800,deposit:5000,buy:60000,upkeep:320,rest:15,str:-3,relM:1,safe:true,view:true,
+    landlord:'「오션 크레스트」 관리 사무소',
+    desc:'바다가 내려다보이는 고층 펜트하우스. 경비원과 보안 시스템이 24시간 지키고, 건물 안에 피트니스 센터가 있습니다. 이런 집에 사는 사람이 무슨 일을 하는지 다들 궁금해합니다.',
+    day:'통유리 너머로 바다가 펼쳐진 펜트하우스 거실입니다. 대리석 바닥이 반짝입니다.',
+    night:'통유리 너머로 해안선의 불빛이 반짝이는 펜트하우스. 도시가 발아래에 있습니다.',
+    arrive:'경비원의 인사를 받으며 전용 엘리베이터를 타고 꼭대기 층에 내립니다.',
+    tour:'엘리베이터 문이 열리자 통유리 너머로 수평선이 펼쳐집니다. 데니스가 목소리를 낮춥니다. “보증금은 현금으로도 받습니다. 출처는… 묻지 않고요.”'}
+};
+const HOUSE_ORDER=['basement','oldApt','townhouse','suburb','penthouse'];
+const REST_N={10:'나쁨',11:'조금 나쁨',12:'보통',13:'좋음',14:'매우 좋음',15:'최상'};
+
+/* ============ 가족 (선택 가능한 인물) ============ */
+const FAMILY={
+  maria:{short:'마리아',name:'마리아 카터',role:'아내',age:25,color:'#d77ad0',
+    job:'식당 「루비스 다이너」 서빙·계산대 직원 (평일 근무)',
+    likes:'노란 프리지아, 오래된 라틴 팝, 일요일 아침의 팬케이크, 진심 어린 사과',
+    dislikes:'술 냄새, 거짓말, 밀린 고지서, 고함',
+    bio:'열아홉에 스콧을 만나 스물한 살에 에밀리를 낳았다. 식당 일로 가족을 먹여 살리며 지쳐 있지만, 아직 스콧이 달라질 수 있다고 믿고 싶어 한다.'},
+  emily:{short:'에밀리',name:'에밀리 카터',role:'딸',age:4,color:'#e0c040',
+    job:'윌로우 크릭 초등학교 부속 유치원 해바라기반',
+    likes:'토끼 인형 버니, 기린, 크레용 그림, 아빠의 해적 흉내, 동화책',
+    dislikes:'큰 소리, 당근, 혼자 자는 밤, 천둥',
+    bio:'아빠의 의안을 “해적 눈”이라 부르며 전혀 무서워하지 않는다. 집 안 분위기에 민감해서, 어른들이 다투면 버니를 끌어안고 숨는다.'}
+};
+
 /* ============ 상태 ============ */
 let S, buf=[], choices=[], fx={}, isMenu=false, pageTitle='';
 const R=Math.random;
@@ -297,7 +409,7 @@ function newState(){
     prison:null,
     missedRent:0,rentPaid:0,leads:{},interviews:{},flags:{},daily:{},sober:0,drank:false,
     crimes:0,crimeMoney:0,ended:false,injured:false,pendingTony:null,
-    rent:RENT,shift:null,pendingLife:null
+    rent:RENT,shift:null,pendingLife:null,clothInteg:{},house:'oldApt',houseOwned:false,deposit:450
   };
 }
 
@@ -421,18 +533,24 @@ function newDay(){
   if(S.flags.loanBack&&S.day>=S.flags.loanBack.day){const lb=S.flags.loanBack;S.flags.loanBack=null;if(lb.amt){cash(lb.amt);note(`동료가 빌려 간 $${lb.amt}를 약속대로 갚았습니다.`);}else{st('str',5);note('돈을 빌려 간 동료가 당신을 피해 다닙니다. 40달러는 떼인 모양입니다.');}}
   if(S.flags.luciaBack&&S.day>=S.flags.luciaBack.day){const lb=S.flags.luciaBack;S.flags.luciaBack=null;if(lb.amt){cash(lb.amt);note('루시아가 빌려 간 $100를 갚았습니다. 마리아가 안도의 한숨을 쉽니다.');}else{st('str',4);note('루시아에게선 소식이 없습니다. 마리아는 그 이야기를 꺼내지 않습니다.');}}
   if(w===0){
-    const due=S.rent+(S.flags.rentExtra||0);
-    if(S.money>=due){cash(-due);S.rentPaid++;S.flags.rentExtra=0;note(`월요일. 집세 $${due}${due>S.rent?` (추가 청구분 포함)`:''}가 빠져나갔습니다. (남은 돈 $${S.money})`);}
+    const due=S.rent+(S.flags.rentExtra||0),HS=HOUSES[S.house],lbl=S.houseOwned?'관리비·재산세':'집세';
+    if(S.money>=due){cash(-due);S.rentPaid++;S.flags.rentExtra=0;note(`월요일. ${lbl} $${due}${due>S.rent?` (추가 청구분 포함)`:''}가 빠져나갔습니다. (남은 돈 $${S.money})`);}
     else{S.missedRent++;st('str',20);rel('maria',-15);
-      note(S.missedRent>=2?`집세를 또 내지 못했습니다...`:`집세 $${due}를 내지 못했습니다! 집주인 고든 씨가 문에 최후통첩을 붙였습니다. 다음 주에도 못 내면 쫓겨납니다.`);}
+      note(S.missedRent>=2?`${lbl}를 또 내지 못했습니다...`:S.houseOwned?`${lbl} $${due}를 내지 못했습니다! 시청에서 체납 독촉장이 날아왔습니다. 다음 주에도 못 내면 집이 압류됩니다.`:`${lbl} $${due}를 내지 못했습니다! ${HS.landlord}이(가) 문에 최후통첩을 붙였습니다. 다음 주에도 못 내면 쫓겨납니다.`);}
+  }
+  {const HS=HOUSES[S.house];
+    if(HS.str)st('str',HS.str);
+    if(HS.relM&&R()<0.6)rel('maria',HS.relM);
+    if(HS.relE&&R()<0.6)rel('emily',HS.relE);
+    if(HS.damp&&R()<0.3){st('fat',3);note('반지하의 눅눅한 곰팡이 냄새 때문에 밤새 기침을 했습니다.');}
   }
   if(S.flags.emilyWorse&&S.day>=S.flags.emilyWorse){S.flags.emilyWorse=0;S.pendingLife='emilyWorse';}
   else if(!S.pendingLife&&S.day>=3&&R()<0.38)S.pendingLife=pickLife();
 }
 
-function isOpen(l){const o=PL[l].open;if(!o)return true;const h=hh();return h>=o[0]&&h<o[1];}
+function isOpen(l){const o=PL[l].open;if(!o)return true;const h=hh();return o[0]<o[1]?(h>=o[0]&&h<o[1]):(h>=o[0]||h<o[1]);}
 const mariaHome=()=>{const h=hh();if(h>=23||h<6)return false;return weekend()?true:(h>=18||(h<7&&h>=6)||S.daily.mariaOff);};
-const emilyHome=()=>{const h=hh();if(h>=21||h<7)return false;return weekend()?true:(h>=18||(S.daily.picked&&h>=17));};
+const emilyHome=()=>{const h=hh();if(S.daily.emilyBed||h>=21||h<7)return false;return weekend()?true:(h>=18||(S.daily.picked&&h>=15));};
 
 /* ============ 메인 루프 ============ */
 function choose(i){
@@ -479,7 +597,7 @@ function hasUmbrella(){
   return (S.inv&&S.inv.umbrella>0)||(S.worn&&S.worn.handheld==='umbrella_blk')||(S.wardrobe&&S.wardrobe.includes('umbrella_blk'));
 }
 function weatherExposure(l){
-  const outdoor=['street','westbrook','seabreeze','civic','park','beach','gas'];
+  const outdoor=['street','westbrook','seabreeze','civic','park','beach','gas','alley'];
   if(!outdoor.includes(l))return;
   const w=S.weather;
   if(w==='비'||w==='폭풍우'){
@@ -564,10 +682,12 @@ function desc(){
   const h=hh(),w=S.weather;
   switch(S.loc){
     case 'home': {
-      const base=h<6||h>=22?'불 꺼진 아파트. 냉장고 모터 소리와 옆집 TV 소리만 웅웅거립니다.':
-        (mariaHome()?'좁은 거실. 마리아가 부엌에서 무언가를 하고 있습니다.':'텅 빈 아파트. 벽지 곰팡이 자국이 오늘따라 눈에 띕니다.');
-      return base+homeFurnitureDesc()+' '+weatherAtmosphere()+' 한쪽 구석에는 삐걱거리는 나무 옷장과 작은 거울이 놓여 있습니다.';
+      const HS=HOUSES[S.house];
+      const base=h<6||h>=22?HS.night:(mariaHome()?HS.day+' 마리아가 부엌에서 무언가를 하고 있습니다.':HS.day);
+      return base+homeFurnitureDesc()+' '+weatherAtmosphere()+' 한쪽 구석에는 옷장과 작은 거울이 놓여 있습니다.';
     }
+    case 'school': return hh()>=8&&hh()<15&&!weekend()?'붉은 벽돌 교사 너머로 아이들의 합창 소리가 들립니다. 운동장 옆 단층 건물이 부속 유치원입니다.':'한산한 학교 정문. 운동장 옆 부속 유치원 창문에 아이들 그림이 붙어 있습니다.';
+    case 'realty': return '매물 사진이 빼곡히 붙은 「키스톤」 부동산 중개소입니다. 중개인 데니스가 전화를 받고 있습니다.';
     case 'street': return w==='비'||w==='폭풍우'?'빗물이 고인 윌로우 크릭 드라이브. 우산을 쓴 행인들이 발걸음을 재촉합니다.':'매연 냄새 나는 윌로우 크릭 드라이브. 병원과 시립 공원이 자리한 메인 도로입니다.';
     case 'westbrook': return w==='비'||w==='폭풍우'?'젖은 아스팔트 위로 상점가 간판 불빛이 번집니다. 웨스트 브룩 에비뉴입니다.':'상점가와 주유소, 주류 판매점이 늘어선 웨스트 브룩 에비뉴입니다.';
     case 'seabreeze': return w==='비'||w==='폭풍우'?'바닷바람과 비가 몰아치는 시브리즈 블러바드입니다.':'짠 바람이 불어오는 해안 도로, 시브리즈 블러바드입니다. 해변과 카페, 군 기지로 이어집니다.';
@@ -584,7 +704,9 @@ function desc(){
 function arrive(l){
   const h=hh(),w=S.weather,night=h>=21||h<5;
   const A={
-    home:'삐걱거리는 계단을 올라 4층 집 문을 엽니다.',
+    home:HOUSES[S.house].arrive,
+    school:'철제 정문을 지나 윌로우 크릭 초등학교 교정에 들어섭니다. 운동장 옆으로 알록달록한 부속 유치원 건물이 보입니다.',
+    realty:'유리문에 「임대·매매 상담」 스티커가 붙은 부동산 중개소에 들어섭니다.',
     street:night?'가로등 불빛이 깜빡이는 윌로우 크릭 드라이브로 나왔습니다. 밤공기가 차갑습니다.':'메인 도로인 윌로우 크릭 드라이브로 나왔습니다. 경적 소리와 사람들의 발걸음이 뒤섞여 있습니다.',
     westbrook:night?'네온사인이 깜빡이는 웨스트 브룩 에비뉴입니다. 상점가와 주유소 불빛이 보입니다.':'상점가와 주유소가 늘어선 웨스트 브룩 에비뉴로 들어섰습니다.',
     seabreeze:night?'어두운 파도 소리가 들리는 시브리즈 블러바드입니다.':'바닷바람이 스치는 시브리즈 블러바드로 나왔습니다. 해변과 카페, 주방위군 기지 표지판이 보입니다.',
@@ -610,13 +732,15 @@ function arrive(l){
 /* ============ 장소별 메뉴 ============ */
 const LOC={};
 LOC.home=()=>{
-  const h=hh(),mh=mariaHome(),eh=emilyHome(),d=S.daily;
-  if(S.day>=2&&!S.met.rosa&&h>=8&&h<20&&!d.rosaMeet)opt('복도에서 곤란해하는 이웃을 돕는다',()=>{
+  const h=hh(),d=S.daily,HS=HOUSES[S.house];
+  buf.push(familyCardsHtml());
+  /* 이웃 로사 (낡은 아파트 3층) */
+  if(S.house==='oldApt'&&S.day>=2&&!S.met.rosa&&h>=8&&h<20&&!d.rosaMeet)opt('복도에서 곤란해하는 이웃을 돕는다',()=>{
     d.rosaMeet=1;pass(15);rel('rosa',8);
     say('현관 앞에서 장바구니가 바닥에 쏟아집니다. 3층에 사는 로사 곤잘레스가 난처한 얼굴로 사과합니다. 당신이 사과와 통조림을 주워 건네자 그녀는 손등으로 이마의 땀을 닦습니다. “고마워요. 요즘 허리가 영 말을 안 듣네요.”');
     say('로사는 당신의 의안을 잠깐 바라보지만 아무것도 묻지 않습니다. 대신 작은 종이봉투에 든 귤 두 개를 내밉니다.');
   },{min:15});
-  if(S.met.rosa&&h>=9&&h<19&&!d.rosaVisit)opt('로사의 집에 들른다',()=>{
+  if(S.house==='oldApt'&&S.met.rosa&&h>=9&&h<19&&!d.rosaVisit)opt('로사의 집에 들른다',()=>{
     d.rosaVisit=1;pass(25);
     if(!S.flags.rosaRadio){
       say('문을 열자 오래된 라디오에서 재즈가 작게 흘러나옵니다. 로사는 주파수가 자꾸 맞지 않는다며 뒷면을 보여줍니다. 당신은 느슨해진 접점을 찾아 고정합니다.');
@@ -630,37 +754,28 @@ LOC.home=()=>{
       rel('rosa',2);st('str',-2);say('로사는 차를 한 잔 내어줍니다. 창밖으로 낡은 아파트의 맞은편 벽이 보입니다. 특별한 이야기는 없지만, 잠시 누군가와 같은 방에 앉아 있는 것만으로도 마음이 가라앉습니다.');
     }
   },{min:25});
-  if(mh&&!d.talkM)opt('마리아와 이야기한다',talkMaria,{imp:argue,min:30});
-  if(mh&&h>=21&&h<23&&!d.nightTogether&&S.rel.maria>=30)opt('마리아와 둘만의 밤을 보낸다',()=>{
-    d.nightTogether=1;pass(180,{sleep:true,rest:8});
-    if(S.drank||S.alc>0){rel('maria',-4);say('마리아는 술 냄새를 느끼고 조용히 고개를 젓습니다. “오늘은 그냥 자자, 스콧.” 당신은 같은 침대에 누웠지만 한동안 잠들지 못합니다.');st('str',3);}
-    else{
-      rel('maria',8);st('str',-8);st('tra',-1);
-      say(pick([
-        '에밀리가 잠든 뒤, 마리아가 당신 옆에 앉습니다. 두 사람은 오래된 농담과 처음 만났던 날의 이야기를 나눕니다. 조심스러운 입맞춤 뒤, 방문 너머에서 에밀이의 고른 숨소리가 들립니다. 그날 밤만큼은 서로의 곁을 지킵니다.',
-        '마리아가 먼저 당신의 손을 잡습니다. “요즘 우리, 이렇게 앉아 있는 시간도 없었지.” 말없이 어깨를 기대온 그녀를 당신은 꼭 안아줍니다. 밤은 천천히 깊어집니다.',
-        '두 사람은 작은 침대에 나란히 누워 천장을 바라봅니다. 내일 걱정은 여전하지만, 마리아가 당신의 손가락을 만지작거리는 동안만큼은 아무 말도 필요하지 않습니다.'
-      ]));
-    }
-  },{min:180});
-  if(mh&&eh&&S.rel.maria>=55&&S.rel.emily>=70&&!S.flags.familyPhoto&&h>=18&&h<21)opt('세 사람이 함께 사진을 찍는다',()=>{S.flags.familyPhoto=1;pass(20);rel('maria',5);rel('emily',5);st('str',-4);say('에밀리가 버니를 가운데에 앉히고 당신과 마리아를 양옆으로 끌어당깁니다. 휴대폰 타이머가 깜빡이는 동안 당신은 어색하게 웃습니다. 사진 속 세 사람은 조금 지쳐 보이지만, 분명 같은 방향을 보고 있습니다.');note('사진 한 장이 냉장고 문에 붙었습니다.');},{min:20});
-  if(mh&&!d.chores)opt('집안일을 돕는다',()=>{d.chores=1;pass(60);rel('maria',5);st('str',-3);say(pick(['설거지를 하고 쓰레기를 내다 버립니다. 마리아가 등 뒤에서 작게 "고마워" 하고 말합니다.','빨래를 개다가 에밀리의 작은 양말 한 짝이 손에 걸립니다. 이상하게 마음이 편해집니다.']));},{min:60});
-  if(eh&&!d.play)opt('에밀리와 놀아준다',playEmily,{imp:S.st.str>=60?snapEmily:null,min:60});
-  if(eh&&h>=19&&h<21&&!d.book)opt('에밀리에게 동화책을 읽어준다',()=>{d.book=1;pass(30);rel('emily',5);st('ctl',2);st('str',-5);say('“아기 곰이 집으로 돌아가는 이야기”를 세 번째 읽어줍니다. 에밀리는 마지막 장에서 늘 그렇듯 잠들어 있습니다.');},{min:30});
+  if(S.house!=='oldApt'&&S.met.rosa&&h>=9&&h<20&&!d.rosaCall)opt('예전 이웃 로사에게 안부 전화를 건다',()=>{
+    d.rosaCall=1;pass(15);rel('rosa',3);st('str',-3);
+    say('“어머, 스콧! 새집은 어때요?” 로사의 목소리 너머로 익숙한 라디오 재즈가 들립니다. “에밀리한테 귤 보내 줄게요. 가끔 놀러 와요.”');
+  },{min:15});
 
-  if(S.inv.flower&&mh)opt('마리아에게 꽃을 건넨다',()=>{S.inv.flower--;rel('maria',8);st('str',-4);say('마리아가 놀란 눈으로 꽃다발을 받아 듭니다. “무슨 날이야?” 그녀가 웃습니다. 오랜만에 보는 웃음입니다.');});
-  if(S.inv.watch&&mh)opt('마리아에게 손목시계를 선물한다',()=>{S.inv.watch--;rel('maria',14);st('str',-5);say('작은 상자를 열어본 마리아가 말을 잇지 못합니다. “스콧, 이거 비싼 거잖아…” 그녀는 몇 번이나 손목을 매만지며 눈시울을 붉힙니다.');});
-  if(S.inv.toy&&eh)opt('에밀리에게 곰 인형을 준다',()=>{S.inv.toy--;rel('emily',12);rel('maria',2);say('“아빠 최고!” 에밀리가 포장지를 찢으며 소리칩니다. 버니에게 새 친구가 생겼다고 한참을 떠듭니다.');});
-  if(S.inv.bookset&&eh)opt('에밀리에게 그림책 세트를 준다',()=>{S.inv.bookset--;rel('emily',10);rel('maria',3);st('ctl',1);say('알록달록한 그림책 세 권을 받아 든 에밀리가 무릎 위에 책을 펼칩니다. “아빠, 이거 다 읽어줘!”');});
+  /* 자기 관리 */
   if(S.inv.cologne&&!d.cologne)opt('애프터셰이브를 바른다',()=>{S.inv.cologne--;d.cologne=1;st('cha',3);st('str',-2);say('면도한 턱선에 은은한 우디 향 애프터셰이브를 톡톡 두드립니다. 기분까지 한결 정돈됩니다.');});
   if(S.inv.vitamin&&!d.vitamin)opt('종합 비타민을 챙겨 먹는다',()=>{S.inv.vitamin--;d.vitamin=1;st('fat',-8);st('str',-2);say('물 한 잔과 함께 종합 비타민을 삼킵니다. 며칠째 쌓인 묵직한 피로가 조금 덜어지는 느낌입니다.');});
   if(S.inv.notebook&&!d.journal)opt('가죽 노트에 오늘의 감정을 기록한다',()=>{
     d.journal=1;pass(30);st('str',-6);st('tra',-2);st('ctl',2);
     say('한나 박사의 조언대로 머릿속을 맴도는 분노와 악몽의 조각들을 종이 위에 적어 내려갑니다. 글자로 옮기고 나니 조금 객관적으로 바라볼 수 있습니다.');
   },{min:30});
-
   if(!d.shave)opt('샤워하고 면도한다',()=>{d.shave=1;pass(30);st('fat',-6);st('cha',1);say('미지근한 물줄기 아래 섭니다. 거울 속 의안이 당신을 마주봅니다. 면도를 마치니 그럭저럭 사람 꼴이 납니다.');},{min:30});
   opt('노트북을 켠다',()=>laptopPage('portal'));
+
+  /* 집 종류별 시설 */
+  if(HS.damp&&!d.mold)opt('곰팡이 핀 벽을 락스로 닦는다',()=>{d.mold=1;pass(40);st('fat',4);st('str',-1);if(mariaHome())rel('maria',2);say('락스 냄새에 눈이 따갑습니다. 검게 번진 곰팡이를 문질러 닦아 내자 벽이 조금은 밝아 보입니다. 며칠 뒤면 다시 피어나겠지만요.');},{min:40});
+  if(HS.garden&&!d.garden&&h>=8&&h<20&&S.weather!=='비'&&S.weather!=='폭풍우')opt('단지 공용 정원 벤치에 앉아 쉰다',()=>{d.garden=1;pass(30);st('str',-6);say('작은 공용 정원의 벤치에 앉습니다. 화단의 라벤더 향과 학교 운동장에서 넘어오는 아이들 웃음소리가 섞여 있습니다.');},{min:30});
+  if(HS.yard&&!d.lawn&&h>=8&&h<19&&S.weather!=='비'&&S.weather!=='폭풍우')opt('마당 잔디를 깎고 화단을 정리한다',()=>{d.lawn=1;pass(60);st('fat',6);st('str',-6);if(mariaHome())rel('maria',2);say('낡은 잔디깎이를 손봐 시동을 겁니다. 갓 깎은 풀 냄새가 마당 가득 퍼집니다. 내 집 마당이라는 게 아직 실감 나지 않습니다.');},{min:60});
+  if(S.house==='suburb'&&!d.garage)opt('차고 작업대에서 고물 엔진을 손본다',()=>{d.garage=1;pass(90);skUp('mech',3);atUp('dex',1);st('str',-5);st('fat',5);say('차고 작업대에 중고 소형 엔진을 올려놓고 분해합니다. 라디오를 틀어 놓고 볼트를 하나씩 푸는 동안 시간 가는 줄 모릅니다.');note('정비 기술이 향상되었습니다.');},{min:90});
+  if(HS.view&&!d.balcony)opt(h>=19||h<5?'발코니에서 해안의 야경을 바라본다':'발코니에서 바다를 내려다본다',()=>{d.balcony=1;pass(30);st('str',-8);st('tra',-1);say(h>=19||h<5?'발코니 난간에 기대 서면 해안선을 따라 불빛이 길게 이어집니다. 저 아래 어딘가에 예전의 낡은 아파트가 있을 것입니다.':'통유리 문을 열자 짠 바닷바람이 거실로 밀려듭니다. 수평선 위로 화물선 한 척이 느리게 지나갑니다.');},{min:30});
+  if(S.house==='penthouse'&&!d.gymP&&h>=6&&h<23)opt('건물 피트니스 센터에서 운동한다',()=>{d.gymP=1;pass(60);st('fat',10);st('str',-6);atUp('strg',2);atUp('stam',3);say('텅 빈 피트니스 센터에서 러닝머신과 바벨을 번갈아 씁니다. 통유리 너머로 바다를 보며 땀을 흘립니다.');note('근력과 지구력이 향상되었습니다.');},{min:60});
   if(S.furniture.includes('sofa')&&!d.sofaRest)opt('새 패브릭 소파에 기대어 휴식한다',()=>{
     d.sofaRest=1;pass(60);st('fat',-12);st('str',-8);
     say('푹신한 소파에 깊숙이 몸을 묻고 눈을 감습니다. 허리의 뻐근함과 머릿속 긴장이 한결 풀립니다.');
@@ -681,6 +796,322 @@ LOC.home=()=>{
   opt('밖으로 나간다',()=>go('street',5),{sec:'travel',min:5,tag:'윌로우 크릭'});
 };
 
+/* ============ 가족: 선택 가능한 인물 (마리아 · 에밀리) ============ */
+function famWhere(k){
+  const h=hh(),atHome=S.loc==='home';
+  if(k==='maria'){
+    if(mariaHome())return {state:'home',here:atHome,txt:'집에 있음'};
+    if(h>=23||h<6)return {state:'asleep',here:atHome,txt:'침실에서 잠들어 있음'};
+    return {state:'away',here:false,txt:'식당 「루비스 다이너」에서 근무 중'};
+  }
+  if(emilyHome())return {state:'home',here:atHome,txt:'집에 있음'};
+  if(S.daily.emilyBed||h>=21||h<7)return {state:'asleep',here:atHome,txt:'자기 방에서 잠들어 있음'};
+  if(!weekend()&&h>=15&&h<18)return {state:'away',here:false,txt:'유치원에서 하원 대기 중 (15:00~18:00)'};
+  return {state:'away',here:false,txt:'학교 부속 유치원 해바라기반에 있음'};
+}
+function famMood(k){
+  const r=S.rel[k];
+  if(k==='maria'){
+    if(S.daily.fought)return '화가 나 있음';
+    if(S.alc>0)return '실망한 기색';
+    return r>=80?'애정 어림':r>=60?'다정함':r>=40?'무난함':r>=20?'지쳐 있음':'냉랭함';
+  }
+  if(S.daily.snapped)return '겁먹음';
+  return r>=85?'아빠 바라기':r>=65?'신남':r>=45?'얌전함':r>=25?'눈치를 봄':'아빠를 피함';
+}
+function familyCardsHtml(){
+  const card=k=>{
+    const F=FAMILY[k],w=famWhere(k),r=S.rel[k],i=ia(F.short,()=>charPage(k));
+    return `<div class="fam-card${w.state==='away'?' away':''}" data-ch="${i}" role="button"><div class="fam-top"><b>${F.short}</b><span class="fam-role">${F.role} · ${F.age}세</span></div><span class="fam-where ${w.state==='home'?'wd-ok':'wd-dim'}">${w.txt}</span><div class="dol-bar"><i style="width:${r}%;background:${F.color}"></i></div><span class="fam-mood">호감 ${r} · ${famMood(k)}</span></div>`;
+  };
+  return `<div class="wd fam-box"><p class="wd-sec"><span class="wd-title">가족</span> <i class="wd-cnt">인물을 선택해 상호작용하세요</i></p><div class="fam-cards">${card('maria')}${card('emily')}</div></div>`;
+}
+/* 상호작용 실행 후 같은 인물 화면으로 돌아오기 (선택지가 생기면 그대로 보여줌) */
+function famAct(k,eff){
+  return ()=>{
+    const save=buf;buf=[];eff();const txt=buf.join('');buf=save;
+    if(choices.length||S.ended){buf.push(txt);return;}
+    charPage(k,txt);
+  };
+}
+function famIntro(k,w){
+  const h=hh(),r=S.rel[k];
+  if(k==='maria'){
+    if(w.state==='away')return '마리아는 지금 식당에서 일하고 있습니다. 휴대폰으로 연락할 수 있습니다.';
+    if(w.state==='asleep')return '마리아가 침실에서 고르게 숨을 쉬며 잠들어 있습니다.';
+    if(S.daily.fought)return '마리아가 등을 돌린 채 싱크대 앞에 서 있습니다. 어깨가 굳어 있습니다.';
+    return `마리아가 ${h<12?'부엌 식탁에서 커피를 마시고':h<18?'거실에서 빨래를 개고':'부엌에서 설거지를 하고'} 있습니다. 당신이 다가가자 ${r>=50?'옅게 웃으며 ':''}고개를 듭니다.`;
+  }
+  if(w.state==='away')return '에밀리는 지금 유치원에 있습니다. 평일 15:00~18:00 사이 윌로우 크릭 초등학교 부속 유치원에서 데려올 수 있습니다.';
+  if(w.state==='asleep')return '에밀리가 버니를 끌어안은 채 새근새근 잠들어 있습니다.';
+  if(S.daily.snapped||r<30)return '에밀리가 방문 뒤에서 버니를 안고 조심스럽게 당신을 살핍니다.';
+  return '에밀리가 거실 바닥에 엎드려 버니에게 무언가를 속삭이다가 당신을 보고 “아빠!” 하고 달려옵니다.';
+}
+function mariaActs(w){
+  const d=S.daily,h=hh(),A=[],r=S.rel.maria;
+  const add=(g,label,o)=>A.push(Object.assign({g,label},o));
+  if(w.state==='away'){
+    add('연락','안부 문자를 보낸다',{done:d.mText,fn:()=>{d.mText=1;if(S.alc>0){say('술기운에 오타투성이 문자를 보냅니다. 「또 마셨어?」 짧은 답장이 돌아옵니다.');rel('maria',-2);return;}rel('maria',2);st('str',-1);say(pick(['「점심은 먹었어?」 문자를 보냅니다. 잠시 뒤 답장이 옵니다. 「손님 폭탄이야ㅠ 그래도 고마워」','「오늘 저녁은 내가 할게」 문자를 보내자 엄지 이모티콘이 돌아옵니다.','「힘들면 말해」 문자를 보냅니다. 한참 뒤 「응. 당신도.」라는 답장이 옵니다.']));}});
+    return A;
+  }
+  if(w.state==='asleep'){
+    add('곁에서','잠든 얼굴을 가만히 바라본다',{done:d.mWatch,fn:()=>{d.mWatch=1;pass(10);st('str',-3);say('침대 맡에 앉아 잠든 마리아를 바라봅니다. 눈가에 피로가 내려앉아 있습니다. 당신은 흘러내린 이불을 어깨까지 덮어 줍니다.');},min:10});
+    return A;
+  }
+  const mh=true,eh=emilyHome();
+  add('대화','이야기를 나눈다',{done:d.talkM,fn:talkMaria,imp:argue,min:30});
+  add('대화','하루 일과를 묻고 들어 준다',{done:d.mListen,min:20,fn:()=>{d.mListen=1;pass(20);rel('maria',3);st('str',-2);
+    say(r>=60?'마리아가 식당에서 있었던 진상 손님 이야기를 털어놓다가 웃음을 터뜨립니다. 그러다 문득 진지해집니다. “사실 요즘 많이 무서웠어. 우리가 이번 달을 버틸 수 있을까 해서.” 당신은 그녀의 손을 잡습니다.':'마리아가 피곤한 목소리로 오늘 있었던 일을 짧게 말합니다. 당신이 끝까지 고개를 끄덕이며 듣자, 그녀의 어깨가 조금 풀립니다.');}});
+  add('대화','가계부를 함께 정리한다',{done:d.mBudget,min:30,fn:()=>{d.mBudget=1;pass(30);skUp('know',1);
+    const due=S.rent+(S.flags.rentExtra||0);
+    say(`식탁에 고지서와 영수증을 펼쳐 놓습니다. 현금 $${S.money}, 다음 월요일 ${S.houseOwned?'관리비·재산세':'집세'} $${due}${S.flags.medDebt?`, 병원 미납금 $${S.flags.medDebt}`:''}.`);
+    if(S.money>=due){rel('maria',3);st('str',-3);say('“이번 주는 괜찮겠다.” 마리아가 작게 한숨을 돌립니다.');}
+    else{rel('maria',1);st('str',4);say(`“$${due-S.money}가 모자라.” 마리아가 계산기를 내려놓습니다. 그래도 함께 숫자를 들여다본 것만으로 그녀는 조금 안심한 얼굴입니다.`);}}});
+  if(d.fought||r<45||(S.flags.lastFight&&S.flags.lastFight>=S.day-2))add('대화','진심으로 사과한다',{done:d.mSorry,min:20,fn:()=>{d.mSorry=1;pass(20);
+    const g=(d.fought?6:3)+Math.floor(S.st.cha/20);rel('maria',S.alc>0?1:g);st('ctl',1);st('str',-3);
+    say(S.alc>0?'술 냄새를 풍기며 하는 사과에 마리아는 고개를 젓습니다. “맨정신일 때 다시 말해.”':'“미안해. 당신한테 그러면 안 됐어.” 마리아는 한참 말이 없다가, 당신의 손등에 자기 손을 겹칩니다. “…다시는 그러지 마.”');
+    if(S.alc<=0)d.fought=0;}});
+  add('애정','꼭 안아 준다',{done:d.mHug,min:5,fn:()=>{d.mHug=1;pass(5);
+    if(S.alc>0){rel('maria',-2);say('마리아가 술 냄새에 얼굴을 찡그리며 당신을 밀어냅니다.');return;}
+    if(r<25||d.fought){rel('maria',1);say('마리아는 뻣뻣하게 서 있다가, 잠시 뒤 당신의 등을 한 번 두드립니다.');return;}
+    rel('maria',3);st('str',-3);say('뒤에서 마리아를 꼭 끌어안습니다. 그녀가 당신 팔에 기대며 눈을 감습니다. “…좋다.”');}});
+  add('애정','고맙다고 말한다',{done:d.mThank,min:5,fn:()=>{d.mThank=1;pass(5);
+    if(r<20){rel('maria',1);say('“…갑자기 왜 그래?” 마리아가 의심스러운 눈으로 당신을 봅니다.');return;}
+    rel('maria',3);st('cha',0);say('“늘 고마워. 당신 없었으면 우린 진작 무너졌을 거야.” 마리아의 눈가가 살짝 붉어집니다.');}});
+  if(h>=19)add('애정','발 마사지를 해 준다',{done:d.mMassage,min:20,fn:()=>{d.mMassage=1;pass(20);rel('maria',5);st('str',-2);say('하루 종일 서서 일한 마리아의 발을 무릎 위에 올려 천천히 주무릅니다. 그녀가 소파에 머리를 기대고 작게 웃습니다. “정비공 손이라 그런가, 힘이 좋네.”');}});
+  if(h>=21&&h<23&&r>=30)add('애정','둘만의 밤을 보낸다',{done:d.nightTogether,min:180,fn:()=>{
+    d.nightTogether=1;pass(180,{sleep:true,rest:8});
+    if(S.drank||S.alc>0){rel('maria',-4);st('str',3);say('마리아는 술 냄새를 느끼고 조용히 고개를 젓습니다. “오늘은 그냥 자자, 스콧.” 당신은 같은 침대에 누웠지만 한동안 잠들지 못합니다.');return;}
+    rel('maria',8);st('str',-8);st('tra',-1);
+    say(pick([
+      '에밀리가 잠든 뒤, 마리아가 당신 옆에 앉습니다. 두 사람은 오래된 농담과 처음 만났던 날의 이야기를 나눕니다. 조심스러운 입맞춤 뒤, 방문 너머에서 에밀리의 고른 숨소리가 들립니다. 그날 밤만큼은 서로의 곁을 지킵니다.',
+      '마리아가 먼저 당신의 손을 잡습니다. “요즘 우리, 이렇게 앉아 있는 시간도 없었지.” 말없이 어깨를 기대온 그녀를 당신은 꼭 안아줍니다. 밤은 천천히 깊어집니다.',
+      '두 사람은 나란히 누워 천장을 바라봅니다. 내일 걱정은 여전하지만, 마리아가 당신의 손가락을 만지작거리는 동안만큼은 아무 말도 필요하지 않습니다.'
+    ]));}});
+  add('함께하기','집안일을 나눠 한다',{done:d.chores,min:60,fn:()=>{d.chores=1;pass(60);rel('maria',5);st('str',-3);say(pick(['설거지를 하고 쓰레기를 내다 버립니다. 마리아가 등 뒤에서 작게 "고마워" 하고 말합니다.','빨래를 개다가 에밀리의 작은 양말 한 짝이 손에 걸립니다. 이상하게 마음이 편해집니다.']));}});
+  if(h>=16&&h<21)add('함께하기','저녁을 차린다 (장보기 $12)',{done:d.cook,min:60,fn:()=>{
+    if(!pay(12))return;d.cook=1;pass(60);rel('maria',6);st('fat',-6);st('str',-3);skUp('know',0.5);if(eh)rel('emily',3);
+    say(eh?'양파를 볶고 미트볼 스파게티를 만듭니다. 에밀리가 식탁에 포크를 놓으며 “아빠 요리사!” 하고 외칩니다. 마리아는 퇴근 후 차려진 식탁을 보고 잠시 말을 잃습니다.':'간단한 치킨 수프를 끓입니다. 마리아가 김이 오르는 그릇을 두 손으로 감싸 쥐며 웃습니다. “이런 거 오랜만이다.”');}});
+  if(h>=17&&h<21){
+    const sit=!eh||S.met.rosa;
+    add('함께하기','외식 데이트를 제안한다 ($35)',{done:d.date,min:120,na:sit?'':'에밀리를 맡길 사람이 없음',fn:()=>{
+      if(!pay(35))return;d.date=1;pass(120);
+      if(S.alc>0){rel('maria',2);say('식당에 마주 앉았지만 술 냄새 때문에 마리아의 표정이 내내 굳어 있습니다.');return;}
+      rel('maria',10);st('str',-10);st('cha',1);if(eh){rel('rosa',2);say('로사가 기꺼이 에밀리를 봐 주겠다며 귤을 한 봉지 들고 올라옵니다.');}
+      say('바닷가 작은 타코 가게. 마리아가 처음 데이트하던 날처럼 소스를 볼에 묻히고 웃습니다. 돌아오는 길, 그녀가 당신의 팔짱을 낍니다. “오늘 좋았어. 진짜로.”');}});
+  }
+  if(eh&&S.rel.maria>=55&&S.rel.emily>=70&&!S.flags.familyPhoto&&h>=18&&h<21)add('함께하기','세 식구가 함께 사진을 찍는다',{min:20,fn:()=>{S.flags.familyPhoto=1;pass(20);rel('maria',5);rel('emily',5);st('str',-4);say('에밀리가 버니를 가운데에 앉히고 당신과 마리아를 양옆으로 끌어당깁니다. 휴대폰 타이머가 깜빡이는 동안 당신은 어색하게 웃습니다. 사진 속 세 사람은 조금 지쳐 보이지만, 분명 같은 방향을 보고 있습니다.');note('사진 한 장이 냉장고 문에 붙었습니다.');}});
+  if(S.inv.flower)add('선물','프리지아 꽃다발을 건넨다',{fn:()=>{S.inv.flower--;rel('maria',8);st('str',-4);say('마리아가 놀란 눈으로 꽃다발을 받아 듭니다. “무슨 날이야?” 그녀가 웃습니다. 오랜만에 보는 웃음입니다.');}});
+  if(S.inv.watch)add('선물','손목시계를 선물한다',{fn:()=>{S.inv.watch--;rel('maria',14);st('str',-5);say('작은 상자를 열어본 마리아가 말을 잇지 못합니다. “스콧, 이거 비싼 거잖아…” 그녀는 몇 번이나 손목을 매만지며 눈시울을 붉힙니다.');}});
+  return A;
+}
+function emilyActs(w){
+  const d=S.daily,h=hh(),A=[],HS=HOUSES[S.house];
+  const add=(g,label,o)=>A.push(Object.assign({g,label},o));
+  if(w.state==='away')return A;
+  if(w.state==='asleep'){
+    add('곁에서','잠든 에밀리의 이마에 입을 맞춘다',{done:d.eKiss,min:5,fn:()=>{d.eKiss=1;pass(5);st('str',-4);st('ctl',1);say('살금살금 방에 들어가 에밀리의 이마에 입을 맞춥니다. 에밀리가 잠결에 “아빠…” 하고 중얼거리며 버니를 더 꼭 끌어안습니다.');}});
+    return A;
+  }
+  const rain=S.weather==='비'||S.weather==='폭풍우';
+  add('놀이','놀아 준다',{done:d.play,min:60,fn:playEmily,imp:S.st.str>=60?snapEmily:null});
+  add('놀이','그림을 함께 그린다',{done:d.eDraw,min:30,fn:()=>{d.eDraw=1;pass(30);rel('emily',4);st('str',-4);skUp('craft',0.5);S.flags.emilyDraw=(S.flags.emilyDraw||0)+1;
+    say(pick(['에밀리가 보라색 크레용으로 기린을 그리고, 당신은 그 옆에 정비소를 그립니다. 에밀리가 기린을 정비소에 데려다 놓습니다. “기린 목 고쳐 주세요!”','에밀리가 가족 그림을 그립니다. 안대를 한 큰 사람, 긴 머리 사람, 그리고 토끼 귀가 달린 작은 사람. “이건 우리 집이야.”']));}});
+  add('놀이','숫자·글자 놀이를 한다',{done:d.eLearn,min:30,fn:()=>{d.eLearn=1;pass(30);rel('emily',3);skUp('know',0.5);st('str',-2);
+    S.flags.emilyLearn=(S.flags.emilyLearn||0)+1;
+    say('냉장고 자석 글자로 단어를 만듭니다. 에밀리가 혀를 내밀고 집중하며 글자를 하나씩 맞춥니다.');
+    if(S.flags.emilyLearn===5){rel('emily',5);rel('maria',4);note('에밀리가 혼자서 자기 이름을 쓸 수 있게 되었습니다!');}}});
+  if(HS.yard&&!rain&&h>=8&&h<19)add('놀이','마당에서 공놀이를 한다',{done:d.eYard,min:45,fn:()=>{d.eYard=1;pass(45);rel('emily',5);st('str',-6);atUp('stam',1);say('잔디 마당에서 고무공을 굴립니다. 에밀리가 공을 쫓다 넘어지고도 깔깔 웃으며 다시 일어납니다. 이웃집 개가 울타리 너머에서 꼬리를 흔듭니다.');}});
+  if(!rain&&h>=9&&h<17)add('놀이','공원에 데려간다',{done:d.eOuting,min:120,fn:()=>{d.eOuting=1;pass(120);rel('emily',7);rel('maria',2);st('str',-8);
+    say('시립 공원 놀이터. 에밀리가 미끄럼틀을 열 번째 타고 내려옵니다. 연못가에서 오리에게 빵 부스러기를 던져 주고, 돌아오는 길엔 당신 등에 업혀 잠이 듭니다.');}});
+  add('돌봄','안아 준다',{done:d.eHug,min:5,fn:()=>{d.eHug=1;pass(5);
+    if(S.alc>0){rel('emily',-1);say('에밀리가 코를 막으며 몸을 뺍니다. “아빠한테서 이상한 냄새 나.”');return;}
+    rel('emily',2);st('str',-3);say('에밀리를 번쩍 안아 올립니다. 작은 팔이 당신 목을 꼭 감쌉니다.');}});
+  add('돌봄','간식을 만들어 준다 ($3)',{done:d.eSnack,min:15,fn:()=>{if(!pay(3))return;d.eSnack=1;pass(15);rel('emily',3);say('사과를 토끼 모양으로 깎아 땅콩버터를 곁들여 줍니다. 에밀리가 사과 토끼를 버니에게 먼저 먹이는 시늉을 합니다.');}});
+  if(h>=18&&h<21)add('돌봄','목욕을 시킨다',{done:d.eBath,min:30,fn:()=>{d.eBath=1;pass(30);rel('emily',3);rel('maria',2);st('fat',2);say('욕조에 거품을 잔뜩 풀어 줍니다. 에밀리가 거품 수염을 붙이고 “나도 해적이다!” 하고 외칩니다. 욕실 바닥이 물바다가 됩니다.');}});
+  if(h>=19&&h<21)add('돌봄','동화책을 읽어 준다',{done:d.book,min:30,fn:()=>{d.book=1;pass(30);rel('emily',5);st('ctl',2);st('str',-5);
+    say('“아기 곰이 집으로 돌아가는 이야기”를 세 번째 읽어줍니다. 에밀리는 마지막 장에서 늘 그렇듯 잠들어 있습니다.');}});
+  if(h>=20&&h<21)add('돌봄','재운다',{done:d.emilyBed,min:30,fn:()=>{d.emilyBed=1;pass(30);rel('emily',4);rel('maria',3);st('ctl',1);st('str',-3);
+    say('불을 끄고 침대 맡에 앉아 자장가를 흥얼거립니다. 음정이 엉망이지만 에밀리는 개의치 않습니다. “아빠, 내일도 있어?” “그럼.” 작은 숨소리가 고르게 바뀝니다.');}});
+  if(S.inv.toy)add('선물','곰 인형을 준다',{fn:()=>{S.inv.toy--;rel('emily',12);rel('maria',2);say('“아빠 최고!” 에밀리가 포장지를 찢으며 소리칩니다. 버니에게 새 친구가 생겼다고 한참을 떠듭니다.');}});
+  if(S.inv.bookset)add('선물','그림책 세트를 준다',{fn:()=>{S.inv.bookset--;rel('emily',10);rel('maria',3);st('ctl',1);say('알록달록한 그림책 세 권을 받아 든 에밀리가 무릎 위에 책을 펼칩니다. “아빠, 이거 다 읽어줘!”');}});
+  return A;
+}
+function charPage(k,msg){
+  const F=FAMILY[k],w=famWhere(k),r=S.rel[k],other=k==='maria'?'emily':'maria';
+  pageTitle=`가족 · ${F.short}`;
+  let n=0;const N=t=>`(${++n}) ${t}`;
+  const H=['<div class="wd">'];
+  H.push(`<p>${famIntro(k,w)}</p><p class="wd-links">${lkRow([lk(N('집 안으로 돌아간다'),()=>{}),lk(N(`${FAMILY[other].short}에게 간다`),()=>charPage(other))],false)}</p>`);
+  H.push('<hr class="wd-hr">');
+  H.push(`<div class="fam-profile"><div class="fam-avatar" style="background:${F.color}">${F.short[0]}</div><div class="wd-item-info"><b>${F.name} <em class="lp-badge">${F.role} · ${F.age}세</em></b><span>${F.job}</span><span class="${w.state==='home'?'wd-ok':'wd-dim'}" style="font-size:13px">현재: ${w.txt}</span></div></div>`);
+  H.push(`<p class="wd-lbl">호감도 <span class="wd-num">${r}</span> · 기분: ${famMood(k)}</p><div class="dol-bar fam-bar"><i style="width:${r}%;background:${F.color}"></i></div>`);
+  H.push(`<p class="wd-dim">좋아하는 것: ${F.likes}<br>싫어하는 것: ${F.dislikes}</p>`);
+  H.push('<hr class="wd-hr">');
+  if(msg)H.push(`<div class="wd-msgbox">${msg}</div>`);
+  H.push(fxInline());
+  const acts=k==='maria'?mariaActs(w):emilyActs(w);
+  if(!acts.length)H.push(`<p class="wd-dim">${k==='emily'?'지금은 에밀리와 함께할 수 있는 일이 없습니다. 평일 오후 학교 부속 유치원으로 데리러 가 보세요.':'지금은 마리아와 함께할 수 있는 일이 없습니다.'}</p>`);
+  const groups=[];acts.forEach(a=>{if(!groups.includes(a.g))groups.push(a.g);});
+  groups.forEach(g=>{
+    const items=acts.filter(a=>a.g===g).map(a=>{
+      const label=a.label+(a.min?` ${fmtDur(a.min).trim()}`:'');
+      if(a.done)return `<span class="wd-na">${a.label} (오늘 완료)</span>`;
+      if(a.na)return `<span class="wd-na">${a.label} (${a.na})</span>`;
+      return lk(label,famAct(k,a.fn),{imp:a.imp?famAct(k,a.imp):null,cls:a.cls});
+    });
+    H.push(`<p class="wd-sec"><span class="wd-title">${g}</span></p><p class="wd-links">${items.join(SEP)}${SEP}</p>`);
+  });
+  H.push('</div>');
+  buf.push(H.join(''));
+}
+function famProfileHtml(k){
+  const F=FAMILY[k],w=famWhere(k),r=S.rel[k];
+  return `<div class="fam-profile"><div class="fam-avatar" style="background:${F.color}">${F.short[0]}</div><div><b style="font-size:16px">${F.name}</b> <span style="color:#999">${F.role} · ${F.age}세</span><br><span style="color:#aaa;font-size:13px">${F.job}</span></div></div>
+  <table><tr><td>현재 위치</td><td>${w.txt}</td></tr><tr><td>호감도</td><td>${r} · ${famMood(k)}</td></tr><tr><td>좋아하는 것</td><td>${F.likes}</td></tr><tr><td>싫어하는 것</td><td>${F.dislikes}</td></tr></table>
+  <p style="color:#bbb">${F.bio}</p>`;
+}
+function showFamily(k){
+  modal(`<h3>가족</h3><div style="margin-bottom:10px">${['maria','emily'].map(x=>`<button data-fam="${x}" style="${x===k?'border-color:#6ea8fe;color:#6ea8fe':''}">${FAMILY[x].short}</button>`).join('')}</div>${famProfileHtml(k)}<p style="color:#8a8a8a;font-size:13px">집에서 [가족] 카드의 인물을 선택하면 대화·애정 표현·함께하기·돌봄·선물 등 다양한 상호작용을 할 수 있습니다.</p>`);
+  document.querySelectorAll('[data-fam]').forEach(b=>b.onclick=()=>showFamily(b.dataset.fam));
+}
+
+/* ============ 부동산 중개소 ============ */
+let reState={filter:'all'};
+function houseFeatures(H){
+  const f=[`수면 회복 ${REST_N[H.rest]||'보통'}`];
+  if(H.str>0)f.push('매일 스트레스 소폭 증가');
+  if(H.str<0)f.push(`매일 스트레스 감소 (${-H.str})`);
+  if(H.relM)f.push('마리아 호감 점진 상승');
+  if(H.relE)f.push('에밀리 호감 점진 상승');
+  if(H.damp)f.push('습기·곰팡이');
+  if(H.garden)f.push('공용 정원');
+  if(H.yard)f.push('마당·차고 작업대');
+  if(H.view)f.push('바다 전망 발코니·피트니스 센터');
+  if(H.safe)f.push('24시간 보안 (빈집털이 없음)');
+  return f.join(' · ');
+}
+function moveCalc(id,mode){
+  const cur=HOUSES[S.house],H=HOUSES[id];
+  const refund=S.houseOwned?0:Math.max(0,(S.deposit||0)-(S.flags.rentExtra||0));
+  const sale=S.houseOwned?Math.round((cur.buy||0)*0.85):0;
+  const cost=(mode==='buy'?H.buy:H.deposit)+MOVE_FEE;
+  return {refund,sale,cost,net:cost-refund-sale};
+}
+function realtyPage(msg){
+  pageTitle=PL.realty.n;
+  let n=0;const N=t=>`(${++n}) ${t}`;
+  const cur=HOUSES[S.house];
+  const H=['<div class="wd">'];
+  H.push(`<p>벽면 코르크 보드에 매물 사진이 빼곡히 꽂혀 있습니다. 중개인 <b>데니스</b>가 안경을 고쳐 쓰며 고개를 듭니다. “이사 생각 있으세요?”</p><p class="wd-links">${lk(N('중개소를 나온다'),()=>{say('중개소 문을 닫고 거리로 나옵니다.');})}</p>`);
+  H.push(`<p class="wd-dim">현재 거주지: ${cur.n} (${S.houseOwned?'자가':'임대'}) · 매주 ${S.houseOwned?'관리비·재산세':'집세'} $${S.rent}${S.houseOwned?'':` · 맡긴 보증금 $${S.deposit||0}`} · 현금 $${S.money}</p>`);
+  H.push('<hr class="wd-hr">');
+  if(msg)H.push(`<div class="wd-msgbox">${msg}</div>`);
+  H.push(fxInline());
+  H.push(`<p class="wd-sec"><span class="wd-title">매물 목록</span> <i class="wd-cnt">${HOUSE_ORDER.length}건</i></p>`);
+  H.push(`<p class="wd-radios">${[['all','전체'],['rent','임대 가능'],['buy','매매 가능']].map(([f,t])=>rd(t,reState.filter===f,()=>{reState.filter=f;realtyPage();})).join(SEP)}</p>`);
+  H.push(`<p class="wd-dim">이사 비용(이삿짐 트럭) $${MOVE_FEE} · 이사에 4시간이 걸립니다. 임대 중인 집의 보증금은 이사 때 돌려받고, 소유한 집은 매입가의 85%에 되팝니다.</p>`);
+  HOUSE_ORDER.filter(id=>reState.filter==='buy'?!!HOUSES[id].buy:true).forEach(id=>{
+    const Hh=HOUSES[id],here=S.house===id;
+    const badge=here?(S.houseOwned?'소유 중':'현재 거주 중'):Hh.buy?'임대·매매':'임대';
+    let acts;
+    if(here)acts='<span class="wd-dim">지금 살고 있는 집입니다.</span>';
+    else{
+      const L=[lk('집을 보러 간다 (1:00)',()=>{pass(60);realtyPage(`<p>${Hh.tour}</p>`);})];
+      L.push(lk(`임대 계약 (보증금 $${Hh.deposit})`,()=>moveConfirm(id,'rent')));
+      if(Hh.buy)L.push(lk(`매입 ($${Hh.buy.toLocaleString()})`,()=>moveConfirm(id,'buy')));
+      acts=L.join(SEP);
+    }
+    H.push(`<div class="wd-item wd-static${here?' worn':''}"><div class="wd-item-info"><b>${Hh.n} <em class="lp-badge ${here?'ok':''}">${badge}</em></b>
+      <span>${Hh.area} · 임대: 주당 $${Hh.rent} · 보증금 $${Hh.deposit}${Hh.buy?` · 매매가 $${Hh.buy.toLocaleString()} (소유 시 주당 관리비·재산세 $${Hh.upkeep})`:''}</span>
+      <span>${houseFeatures(Hh)}</span><span class="wd-desc">${Hh.desc}</span><p class="wd-links">${acts}</p></div></div>`);
+  });
+  H.push('</div>');
+  buf.push(H.join(''));
+}
+function moveConfirm(id,mode){
+  const Hh=HOUSES[id],c=moveCalc(id,mode);
+  pageTitle=PL.realty.n+' · 계약';
+  const H=['<div class="wd">'];
+  H.push(`<p>데니스가 계약서 두 장을 책상 위에 펼칩니다. “<b>${Hh.n}</b>, ${mode==='buy'?'매매':'임대'} 계약입니다.”</p>`);
+  H.push('<hr class="wd-hr">');
+  H.push(`<p class="wd-sec"><span class="wd-title">비용 내역</span></p><p>${mode==='buy'?`매입가 $${Hh.buy.toLocaleString()}`:`보증금 $${Hh.deposit}`} + 이사 비용 $${MOVE_FEE}${c.refund?`<br>현재 집 보증금 환급 −$${c.refund}`:''}${c.sale?`<br>현재 집 매각 대금 −$${c.sale.toLocaleString()}`:''}<br><b>실제 필요한 현금: ${c.net>=0?'$'+c.net.toLocaleString():`없음 ($${(-c.net).toLocaleString()} 환급)`}</b></p>`);
+  H.push(`<p>이사 후 매주 월요일 ${mode==='buy'?`관리비·재산세 $${Hh.upkeep}`:`집세 $${Hh.rent}`}가 빠져나갑니다.</p>`);
+  const block=S.missedRent>0?'밀린 주거비가 있어 신용 조회를 통과하지 못했습니다. 먼저 미납금을 정리해야 합니다.':S.money<c.net?`현금이 $${(c.net-S.money).toLocaleString()} 부족합니다.`:'';
+  const tierDiff=Hh.tier-HOUSES[S.house].tier;
+  if(tierDiff<0)H.push('<p class="wd-hot">지금보다 형편없는 집입니다. 마리아와 에밀리가 실망할 것입니다.</p>');
+  if(id==='penthouse'&&!S.job&&S.gangRank===0)H.push('<p class="wd-hot">직업 없이 펜트하우스에 들어가면 사람들의 시선이 곱지 않을 것입니다.</p>');
+  if(block)H.push(`<p class="wd-hot">${block}</p>`);
+  const L=[];
+  if(!block)L.push(lk('계약서에 서명하고 이사한다 (4:00)',()=>doMove(id,mode)));
+  L.push(lk('다시 생각한다',()=>realtyPage()));
+  H.push(`<p class="wd-links">${L.join(SEP)}</p>`);
+  H.push('</div>');
+  buf.push(H.join(''));
+}
+function doMove(id,mode){
+  const c=moveCalc(id,mode),oldT=HOUSES[S.house].tier,Hh=HOUSES[id];
+  cash(-c.net);
+  S.house=id;S.houseOwned=mode==='buy';S.deposit=mode==='rent'?Hh.deposit:0;
+  S.rent=S.houseOwned?Hh.upkeep:Hh.rent;S.flags.rentExtra=0;
+  pass(240);S.loc='home';
+  const diff=Hh.tier-oldT;
+  if(diff>0){rel('maria',4+diff*3);rel('emily',2+diff*2);st('str',-4*diff);}
+  else if(diff<0){rel('maria',diff*5);rel('emily',diff*2);st('str',-diff*4);}
+  if(id==='penthouse'&&!S.job&&S.gangRank===0)S.heat+=8;
+  say('빌린 트럭에 상자와 가구를 싣습니다. 에밀리는 버니를 꼭 안고 조수석에 앉아 “새집! 새집!” 하고 노래를 부릅니다.');
+  say(diff>0?`<b>${Hh.n}</b>. 마리아가 빈 거실 한가운데 서서 천천히 한 바퀴 돕니다. “우리… 정말 여기 사는 거야?” 그녀의 목소리가 떨립니다.`:diff<0?`<b>${Hh.n}</b>. 마리아가 축축한 벽을 말없이 바라봅니다. “…당분간이지, 스콧?” 에밀리가 엄마 다리 뒤에 숨습니다.`:`<b>${Hh.n}</b>. 새 열쇠가 손바닥 위에서 차갑게 반짝입니다.`);
+  if(S.furniture.length)say('사 두었던 가구들도 새집에 하나씩 자리를 잡습니다.');
+  note(`이사 완료: ${Hh.n} · ${S.houseOwned?'자가':'임대'} · 매주 월요일 ${S.houseOwned?'관리비·재산세':'집세'} $${S.rent}`);
+}
+LOC.realty=()=>{
+  opt('매물 목록을 살펴본다',()=>realtyPage());
+  opt('돌아가기',()=>go('westbrook',15),{sec:'travel',min:15,tag:'웨스트 브룩'});
+};
+
+/* ============ 윌로우 크릭 초등학교 & 부속 유치원 ============ */
+function claireTalk(){
+  S.daily.kgTeacher=1;pass(30);
+  if(!S.met.claire){rel('claire',10);say('해바라기반 교실 앞에서 앞치마를 두른 젊은 여성이 인사합니다. “에밀리 아버님이시죠? 담임 클레어예요. 에밀리가 아빠 얘기를 정말 많이 해요.” 그녀는 당신의 의안에 잠깐 시선을 두지만 이내 자연스럽게 웃습니다.');return;}
+  rel('claire',4);
+  const r=S.rel.emily;
+  if(r>=75){rel('emily',2);st('str',-5);say('“요즘 에밀리 그림엔 늘 안대 쓴 해적 아빠가 있어요. 친구들한테 우리 아빠는 차를 고칠 줄 안다고 자랑하더라고요.” 클레어 선생님이 스케치북을 펼쳐 보여 줍니다.');}
+  else if(r>=45){st('str',-2);say('“에밀리는 밝은 아이예요. 다만 낮잠 시간에 가끔 버니를 꼭 끌어안고 엄마 아빠가 싸우지 않았으면 좋겠다고 말해요.” 선생님이 조심스럽게 덧붙입니다. “집에서 조금만 더 다정하게 대해 주세요.”');}
+  else{st('str',6);st('tra',1);say('클레어 선생님의 표정이 진지해집니다. “에밀리가 요즘 큰 소리만 나면 몸을 움츠려요. 혹시 집에 무슨 일이 있나요? 필요하시면 가족 상담 프로그램을 안내해 드릴게요.” 목구멍이 꽉 막힌 듯합니다.');}
+}
+LOC.school=()=>{
+  const h=hh(),d=S.daily,w=wd(),wk=w<5;
+  if(wk&&h>=15&&h<18&&!d.picked)opt('부속 유치원 해바라기반에서 에밀리를 데려온다',pickEmily,{min:30});
+  if(wk&&h>=9&&h<15&&!d.kgTeacher)opt(S.met.claire?'클레어 선생님과 에밀리에 대해 상담한다':'유치원 담임 선생님을 만나 본다',claireTalk,{min:30});
+  if(w===3&&h>=10&&h<12&&S.flags.openClass!==S.day)opt('유치원 학부모 참관 수업에 참석한다',()=>{
+    S.flags.openClass=S.day;pass(90);rel('claire',4);
+    if(S.alc>0){rel('emily',-6);rel('maria',-4);st('str',8);say('술 냄새를 풍기며 교실 뒤편에 섰습니다. 다른 학부모들이 수군거리고, 에밀리는 고개를 푹 숙입니다.');return;}
+    rel('emily',10);rel('maria',3);st('str',-6);
+    say('작은 의자들 사이로 학부모들이 줄지어 섭니다. 율동을 하던 에밀리가 당신을 발견하고 손을 흔듭니다. 발표 시간, 에밀리가 “우리 아빠는 해적 정비공이에요!” 하고 외치자 교실이 웃음바다가 됩니다.');
+  },{min:90});
+  if(wk&&h>=9&&h<14&&!d.kgVolunteer)opt('유치원 놀이 시간 자원봉사를 한다',()=>{
+    d.kgVolunteer=1;pass(120);rel('emily',4);rel('claire',5);st('str',-5);st('cha',1);st('fat',6);
+    say('고장 난 세발자전거 두 대와 삐걱거리는 그네를 고칩니다. 아이들이 줄줄이 따라다니며 “아저씨 눈 진짜 해적 눈이에요?” 하고 묻습니다. 에밀리가 친구들 앞에서 의기양양하게 당신 손을 잡습니다.');
+  },{min:120});
+  if([0,2,4].includes(w)&&h>=18&&h<21&&!d.nightClass)opt('초등학교 야간 성인 강좌를 듣는다 ($10)',()=>{
+    if(!pay(10))return;d.nightClass=1;pass(120);skUp('know',5);atUp('calm',2);st('str',-2);st('fat',4);
+    say('낮에는 아이들이 앉던 교실에 일용직 노동자, 이민자, 늦깎이 학생들이 모입니다. 오늘은 실용 영작문과 근로 계약서 읽는 법을 배웁니다.');
+    note('생활 지식과 침착성이 향상되었습니다.');
+  },{min:120});
+  if(!wk&&h>=9&&h<17&&!d.schoolGym&&S.weather!=='폭풍우')opt('주말 개방 운동장에서 운동한다',()=>{
+    d.schoolGym=1;pass(60);atUp('strg',3);atUp('stam',2);st('fat',10);st('str',-6);
+    say('텅 빈 운동장 트랙을 돌고 철봉에 매달립니다. 농구 골대 아래에서 동네 아이들이 공을 튕깁니다.');
+    note('근력과 지구력이 향상되었습니다.');
+  },{min:60});
+  if(!d.schoolBoard)opt('행정실 앞 게시판을 살핀다',()=>{
+    d.schoolBoard=1;pass(10);
+    if(!S.leads.school){S.leads.school=1;note('새 구인 정보: 학교 시설 관리인');say('「학교 시설 관리인 채용 · 월~금 07:00~15:00 · 시설 보수 경험자 우대 · 행정실 문의」 공고가 붙어 있습니다.');}
+    else say('급식 메뉴표와 학부모회 안내문, 분실물 목록이 붙어 있습니다.');
+  },{min:10});
+  jobOptions('school','school');
+  opt('돌아가기',()=>go('street',15),{sec:'travel',min:15,tag:'윌로우 크릭'});
+};
+
 function roadLinks(L,sec='poi'){
   L.forEach(([k,n,tag])=>{
     const op=isOpen(k);
@@ -694,10 +1125,10 @@ function roadLinks(L,sec='poi'){
 LOC.street=()=>{
   const h=hh();
   opt('집으로 돌아간다',()=>go('home',5),{imp:S.crave>=50?buyBeerImpulse:null,sec:'poi',min:5});
-  if(!weekend()&&h>=16&&h<18&&!S.daily.picked)opt('어린이집에서 에밀리를 데려온다',pickEmily,{sec:'poi',min:30});
   roadLinks([
     ['hospital','세인트 메리 병원'],
-    ['park','시립 공원']
+    ['park','시립 공원'],
+    ['school','윌로우 크릭 초등학교 & 부속 유치원',(!weekend()&&h>=15&&h<18&&!S.daily.picked)?'에밀리 하원 시간':'']
   ],'poi');
   opt('시빅 센터 드라이브',()=>go('civic',10),{sec:'travel',min:10,tag:'도서관·주민센터·경찰서'});
   opt('웨스트 브룩 에비뉴',()=>go('westbrook',10),{sec:'travel',min:10,tag:'상점가·주유소'});
@@ -726,8 +1157,10 @@ LOC.westbrook=()=>{
   const h=hh();
   roadLinks([
     ['mall','웨스트게이트 쇼핑몰'],
-    ['gas','주유소 & 정비소']
+    ['gas','주유소 & 정비소'],
+    ['realty','「키스톤」 부동산 중개소']
   ],'poi');
+  opt('어두운 뒷골목',()=>go('alley',10),{sec:'travel',min:10,tag:'클럽·마약상·조직 본거지'});
   if(h>=8&&h<24)opt('주류 판매점에서 맥주를 산다 ($8, 3캔)',buyBeer,{cls:'risk',sec:'poi',min:10});
   opt('돌아가기',()=>go('street',10),{sec:'travel',min:10,tag:'윌로우 크릭'});
   opt('상점가 거리를 배회한다',()=>{pass(30);weatherExposure('westbrook');if(R()<0.6)streetEncounter();else say(pick(['상점가 쇼윈도에 진열된 물건들을 물끄러미 바라봅니다.','주유소 앞을 지나는 트럭들의 엔진 소리에 귀를 기울입니다.']));},{sec:'travel',min:30});
@@ -893,7 +1326,8 @@ LOC.community=()=>{
 
 /* ============ 뒷골목 (클럽 · 마약상 · 조직 본거지) ============ */
 LOC.alley=()=>{
-  const d=S.daily;
+  const d=S.daily,h=hh();
+  if((h>=20||h<5)&&!d.alleyMug&&R()<0.22){d.alleyMug=1;mugging();return;}
   roadLinks([
     ['club','클럽 「벨벳 스모크」','18:00~04:00'],
     ['dealer','마약상 구역','위험'],
@@ -919,6 +1353,20 @@ LOC.club=()=>{
     say('어두운 플로어에서 몸을 움직이며 쌓였던 분노와 긴장을 땀으로 흘려보냅니다.');
   },{min:60});
   if(S.st.cha>=45&&!S.met.jess&&R()<0.45)opt('부스 쪽에서 낯익은 여자와 눈이 마주친다',meetJess,{min:30});
+  if(!d.bartender)opt('바텐더 레이와 이야기를 나눈다',()=>{
+    d.bartender=1;pass(20);st('str',-3);skUp('street',1);
+    say(S.heat>=60?'레이가 잔을 닦으며 목소리를 낮춥니다. “형씨, 요즘 사복 경찰들이 형씨 사진을 들고 이 골목을 돌아. 당분간 몸 사려.”':S.heat>=30?'“형씨 이름이 경찰 쪽에서 몇 번 오르내리더군.” 레이가 얼음을 잔에 떨어뜨립니다. “조심해서 나쁠 건 없지.”':'“요즘 이 골목은 조용해.” 레이가 어깨를 으쓱합니다. “빅 살바토레 쪽 애들이 정리를 잘하거든.”');
+    if(S.gangRank===0&&!S.met.tony)say('“조직 일에 관심 있으면 해변 비치 바에 자주 나타나는 토니 레예스를 찾아봐.”');
+  },{min:20});
+  if(!d.poker)opt('뒷방 포커 테이블에 앉는다 (판돈 $50)',()=>{
+    if(!pay(50))return;d.poker=1;pass(90);
+    if(R()<0.32+S.skills.street*0.004+S.attrs.calm*0.002){const win=100+Math.floor(R()*80);cash(win);st('str',-4);skUp('street',1);say(`담배 연기 자욱한 뒷방. 마지막 판에서 상대의 허세를 읽어 냅니다. 테이블 위의 지폐 $${win}가 당신 쪽으로 밀려옵니다.`);}
+    else{st('str',8);st('ctl',-1);say('스트레이트를 쥐고 올인했지만 상대가 풀하우스를 내려놓습니다. 판돈은 사라지고 입 안이 씁니다.');}
+  },{cls:'risk',min:90});
+  if(S.gangRank>=1&&!d.vip)opt('조직 전용 VIP 라운지에서 쉰다',()=>{
+    d.vip=1;pass(60);st('str',-12);st('fat',-4);rel('don',2);S.gangRep+=2;
+    say('검은 커튼 뒤의 VIP 라운지. 웨이터가 말없이 잔을 채웁니다. 조직원들이 당신에게 고개를 숙이고, 구석 자리에서 다른 패밀리의 소식이 오갑니다.');
+  },{min:60});
   opt('돌아가기',()=>go('alley',10),{sec:'travel',min:10,tag:'뒷골목'});
 };
 
@@ -931,6 +1379,11 @@ LOC.dealer=()=>{
     say('숨을 고르자 심장이 빠르게 뛰며 피로가 씻겨 나가지만, 손끝이 미세하게 떨리고 신경이 거칠어집니다.');
     note('약물 사용으로 수배도가 조금 올랐습니다.');
   },{cls:'risk',min:15});
+  if(!d.dealerInfo&&S.heat>0)opt('경찰 순찰 동선 정보를 산다 ($60 · 수배도 감소)',()=>{
+    if(!pay(60))return;d.dealerInfo=1;pass(20);S.heat=Math.max(0,S.heat-15);
+    say('마약상이 구겨진 쪽지를 건넵니다. 순찰차 교대 시간과 잠복 지점이 적혀 있습니다. “이 골목에서 살아남으려면 눈이 두 개 필요하지. 넌 하나뿐이니까 더더욱.”');
+    note('수배도가 줄었습니다.');
+  },{min:20});
   if(!d.drugRun)opt('마약상의 위험한 심부름을 대신 뛴다 (+$220)',()=>{
     d.drugRun=1;pass(120);S.heat+=16;S.crimes++;S.crimeMoney+=220;
     const caughtProb=Math.max(10,Math.min(75,28+S.heat*0.35-(S.skills.street*0.25)));
@@ -1131,7 +1584,7 @@ function clothesShopPage(msg){
     const it=clothOf(e.id);if(S.wardrobe.includes(e.id))return;
     opt(`${it.n}을(를) 산다 ($${e.p})`,()=>{
       if(S.money<e.p){clothesShopPage('현금이 부족합니다.');return;}
-      cash(-e.p);pass(5);S.wardrobe.push(e.id);
+      cash(-e.p);pass(5);S.wardrobe.push(e.id);if(S.clothInteg)delete S.clothInteg[e.id];
       if(e.id==='umbrella_blk')S.inv.umbrella++;
       if(it.cha>0&&!S.flags['chaBuy_'+e.id]){S.flags['chaBuy_'+e.id]=1;st('cha',Math.min(2,it.cha));}
       flushFx();
@@ -1179,78 +1632,207 @@ function tattooPage(msg){
   opt('타투샵을 나온다',()=>{say('작업실 문에 달린 종이 딸랑 울립니다. 쇼핑몰 통로로 돌아옵니다.');},{grp:'나가기'});
 }
 
-/* ----- 옷장 ----- */
-let wdState={order:'name',inv:false};
-const ORDER_N={name:'이름',colour:'색상',integrity:'내구도',warmth:'보온성'};
+/* ----- 옷장 (참고 이미지 디자인: 링크 행 · 라디오 · 세트 격자) ----- */
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SEP='<span class="wd-sep">|</span>';
+/* 본문 안에 그려지는 인라인 선택지 (하단 선택지 목록에는 표시되지 않음) */
+function ia(label,fn,o={}){opt(label,fn,Object.assign({},o,{inline:true}));return choices.length-1;}
+function lk(text,fn,o={}){const i=ia(text.replace(/<[^>]+>/g,''),fn,o);return `<a class="wd-link${o.cls?' '+o.cls:''}${o.active?' active':''}" data-ch="${i}">${text}</a>`;}
+function fxInline(){const save=buf;buf=[];flushFx();const out=buf.join('');buf=save;return out;}
+function lkRow(arr,trail=true){return arr.join(SEP)+(trail?SEP:'');}
+function rd(text,on,fn){const i=ia(text,fn);return `<span class="wd-radio${on?' on':''}" data-ch="${i}" role="radio" aria-checked="${on}"><i></i>${text}</span>`;}
+function ck(text,on,fn){const i=ia(text,fn);return `<span class="wd-radio wd-check${on?' on':''}" data-ch="${i}" role="checkbox" aria-checked="${on}"><i></i>${text}</span>`;}
+function bt(html,fn,cls){const i=ia(html.replace(/<[^>]+>/g,' '),fn);return `<button type="button" class="${cls||'wd-setbtn'}" data-ch="${i}">${html}</button>`;}
+
+let wdState={slot:'head',mode:'wear',setMode:'wear',repeat:false,order:'name',inv:false,showOpt:false,showRand:false,showDesc:true,wornFirst:true,rand:null};
+const ORDER_N={name:'이름',colour:'색상',cha:'매력',integrity:'내구도',warmth:'보온성'};
+const WD_MODES={wear:'입기',discard:'버리기',repair:'수선하기 (0:10)'};
+const SET_MODES={wear:'입기',del:'삭제',over:'현재 복장으로 덮어쓰기'};
+const integOf=it=>(S.clothInteg&&S.clothInteg[it.id]!=null)?S.clothInteg[it.id]:it.integ;
+function totalWarmth(){return CLOTH_SLOTS.reduce((a,s)=>{const it=clothOf(S.worn[s.k]);return a+(it?it.warmth:0);},0);}
+function comfortRange(){const lo=Math.max(0,Math.round((20-S.temp)*0.9));return [lo,lo+15];}
+function outsideFeel(){
+  const t=S.temp;
+  if(t>=25)return ['바깥은 덥습니다.','wd-hot'];
+  if(t>=19)return ['바깥은 따뜻합니다.','wd-warm'];
+  if(t>=13)return ['바깥은 선선합니다.','wd-cold'];
+  if(t>=7)return ['바깥은 춥습니다.','wd-cold'];
+  return ['바깥은 매우 춥습니다.','wd-cold'];
+}
+function randCfg(){if(!wdState.rand)wdState.rand=Object.fromEntries(CLOTH_SLOTS.map(s=>[s.k,s.k!=='handheld']));return wdState.rand;}
+function currentSetItems(){const o={};Object.keys(S.worn).forEach(k=>{if(S.worn[k])o[k]=S.worn[k];});return o;}
+function newSetName(){let i=S.outfitSets.length+1;while(S.outfitSets.some(s=>s.name===`맞춤 세트 ${i}`))i++;return `맞춤 세트 ${i}`;}
 function wornLines(){
   const L=CLOTH_SLOTS.map(s=>{const c=clothOf(S.worn[s.k]);return c?`${s.n}: ${c.n}`:null;}).filter(Boolean);
   return L.length?L.join(' · '):'아무것도 걸치지 않은 상태입니다.';
 }
+function createSetFromWorn(back){
+  if(S.outfitSets.length>=12){back('의상 세트는 최대 12개까지 저장할 수 있습니다.');return;}
+  const name=newSetName();
+  S.outfitSets.push({name,items:currentSetItems()});
+  back(`현재 차림을 「${name}」 세트로 저장했습니다.`);
+}
+function applySet(set){
+  const m=wdState.setMode;
+  if(m==='del'){
+    S.outfitSets.splice(S.outfitSets.indexOf(set),1);wdState.setMode='wear';
+    wardrobePage(`「${set.name}」 세트를 삭제했습니다.`);return;
+  }
+  if(m==='over'){
+    set.items=currentSetItems();wdState.setMode='wear';
+    wardrobePage(`「${set.name}」 세트를 현재 복장으로 덮어썼습니다.`);return;
+  }
+  let missing=0;
+  Object.keys(S.worn).forEach(k=>S.worn[k]=null);
+  Object.keys(set.items).forEach(k=>{const cid=set.items[k];if(!cid)return;if(S.wardrobe.includes(cid))S.worn[k]=cid;else missing++;});
+  pass(5);
+  wardrobePage(`「${set.name}」 세트로 갈아입었습니다.${missing?` (옷장에 없는 의류 ${missing}벌은 제외되었습니다.)`:''}`);
+}
+function wdItemAct(id){
+  const it=clothOf(id);
+  if(!it||!S.wardrobe.includes(id)){wardrobePage();return;}
+  const k=it.slot,m=wdState.mode;let msg;
+  if(m==='wear'){
+    if(S.worn[k]===id){S.worn[k]=null;pass(1);msg=`「${it.n}」을(를) 벗었습니다.`;}
+    else{S.worn[k]=id;pass(2);msg=`「${it.n}」을(를) 착용했습니다.`;}
+  }else if(m==='discard'){
+    if(S.worn[k]===id)S.worn[k]=null;
+    S.wardrobe=S.wardrobe.filter(x=>x!==id);
+    if(S.clothInteg)delete S.clothInteg[id];
+    if(id==='umbrella_blk')S.inv.umbrella=Math.max(0,S.inv.umbrella-1);
+    msg=`「${it.n}」을(를) 처분했습니다.`;
+  }else{
+    const ig=integOf(it);
+    if(ig>=100)msg=`「${it.n}」은(는) 수선할 곳이 없습니다.`;
+    else{
+      pass(10);
+      if(!S.clothInteg)S.clothInteg={};
+      S.clothInteg[id]=Math.min(100,ig+Math.round(15+(S.skills.craft||0)*0.5));
+      skUp('craft',0.5);
+      msg=`바늘과 실로 「${it.n}」의 해진 곳을 꿰맸습니다. (내구도 ${ig}% → ${S.clothInteg[id]}%)`;
+    }
+  }
+  if(!wdState.repeat)wdState.mode='wear';
+  wardrobePage(msg);
+}
 function wardrobePage(msg){
   pageTitle='옷장';
-  if(msg)note(msg);
-  say('삐걱거리는 나무 옷장 문을 엽니다. 좀약 냄새와 함께 몇 벌 안 되는 옷이 걸려 있습니다.');
-  sys('현재 복장 — '+wornLines());
-  S.outfitSets.forEach(set=>opt(`「${set.name}」 세트로 갈아입는다`,()=>{
-    Object.keys(S.worn).forEach(k=>S.worn[k]=null);
-    Object.keys(set.items).forEach(k=>{const cid=set.items[k];if(cid&&S.wardrobe.includes(cid))S.worn[k]=cid;});
-    pass(5);wardrobePage(`「${set.name}」 의상 세트를 착용했습니다.`);
-  },{grp:'의상 세트'}));
-  opt('현재 복장을 새 세트로 저장한다',()=>{
-    const name=`맞춤 세트 ${S.outfitSets.length+1}`;
-    S.outfitSets.push({name,items:Object.assign({},S.worn)});
-    wardrobePage(`현재 차림을 「${name}」 세트로 저장했습니다.`);
-  },{grp:'의상 세트'});
-  if(S.outfitSets.length)opt('의상 세트를 정리한다 (덮어쓰기 · 삭제)',()=>setManagePage(),{grp:'의상 세트'});
-  CLOTH_SLOTS.forEach(s=>{
-    const cnt=S.wardrobe.filter(id=>{const c=clothOf(id);return c&&c.slot===s.k;}).length;
-    opt(`${s.n} 칸을 연다 (${cnt}벌${S.worn[s.k]?' · 착용 중':''})`,()=>slotPage(s.k),{grp:'의류'});
-  });
-  opt('전부 벗는다',()=>{Object.keys(S.worn).forEach(k=>S.worn[k]=null);wardrobePage('착용 중인 모든 의류를 벗어 옷장에 넣었습니다.');},{grp:'기타'});
-  opt('거울을 본다',()=>mirrorPage(),{grp:'기타'});
-  opt('옷장 문을 닫는다',()=>{say('옷장 문을 닫습니다. 경첩이 삐걱 소리를 냅니다.');},{grp:'기타'});
-}
-function slotPage(k,msg){
-  const sl=CLOTH_SLOTS.find(s=>s.k===k);
-  pageTitle='옷장 · '+sl.n;
-  if(msg)note(msg);
-  const items=S.wardrobe.map(clothOf).filter(c=>c&&c.slot===k);
-  items.sort((a,b)=>{
-    let cmp=0;
-    if(wdState.order==='name')cmp=a.n.localeCompare(b.n,'ko');
-    else if(wdState.order==='colour')cmp=a.col.localeCompare(b.col,'ko');
-    else if(wdState.order==='integrity')cmp=a.integ-b.integ;
-    else cmp=a.warmth-b.warmth;
-    return wdState.inv?-cmp:cmp;
-  });
-  say(`<b>${sl.n}</b> 칸에 보관된 의류 ${items.length}/20벌 · 정렬: ${ORDER_N[wdState.order]}${wdState.inv?' (역순)':''}`);
-  if(!items.length)sys('이 부위에 보관된 의류가 없습니다.');
-  else say(items.map(it=>`${S.worn[k]===it.id?'<b style="color:#e0c040">[착용 중]</b> ':''}<b>${it.n}</b><br><span class="sys">색상 ${it.col} · 보온 ${it.warmth} · 내구도 ${it.integ}% · 매력 ${it.cha>=0?'+':''}${it.cha} — ${it.desc}</span>`).join('<br>'));
-  items.forEach(it=>{
-    if(S.worn[k]===it.id)opt(`${it.n}을(를) 벗는다`,()=>{S.worn[k]=null;slotPage(k,`「${it.n}」을(를) 벗었습니다.`);},{grp:'입기 / 벗기'});
-    else opt(`${it.n}을(를) 입는다`,()=>{S.worn[k]=it.id;pass(2);slotPage(k,`「${it.n}」을(를) 착용했습니다.`);},{grp:'입기 / 벗기'});
-  });
-  items.forEach(it=>opt(`${it.n}을(를) 버린다`,()=>{
-    if(S.worn[k]===it.id)S.worn[k]=null;
-    S.wardrobe=S.wardrobe.filter(x=>x!==it.id);
-    if(it.id==='umbrella_blk')S.inv.umbrella=Math.max(0,S.inv.umbrella-1);
-    slotPage(k,`「${it.n}」을(를) 처분했습니다.`);
-  },{grp:'버리기',cls:'risk'}));
-  if(items.length>1){
-    const keys=Object.keys(ORDER_N);const nx=keys[(keys.indexOf(wdState.order)+1)%keys.length];
-    opt(`정렬 기준을 「${ORDER_N[nx]}」(으)로 바꾼다`,()=>{wdState.order=nx;slotPage(k);},{grp:'정렬'});
-    opt(wdState.inv?'정순으로 되돌린다':'역순으로 뒤집는다',()=>{wdState.inv=!wdState.inv;slotPage(k);},{grp:'정렬'});
+  let n=0;const N=t=>`(${++n}) ${t}`;
+  const pct=v=>Math.max(0,Math.min(100,v/40*100));
+  const H=['<div class="wd">'];
+
+  /* 머리말: 닫기 + 옵션 */
+  H.push(`<div class="wd-head"><div class="wd-head-l"><p>삐걱거리는 나무 옷장 문을 엽니다.</p><p>${lk(N('옷장을 닫는다'),()=>{say('옷장 문을 닫습니다. 경첩이 삐걱 소리를 냅니다.');})}</p></div>${bt('옵션',()=>{wdState.showOpt=!wdState.showOpt;wardrobePage();},'wd-optbtn'+(wdState.showOpt?' on':''))}</div>`);
+  if(wdState.showOpt)H.push(`<div class="wd-panel"><p><span class="wd-title">옷장 표시 옵션</span></p><p class="wd-radios">${lkRow([
+    ck('의류 설명 표시',wdState.showDesc,()=>{wdState.showDesc=!wdState.showDesc;wardrobePage();}),
+    ck('착용 중인 의류를 맨 위에',wdState.wornFirst,()=>{wdState.wornFirst=!wdState.wornFirst;wardrobePage();})
+  ],false)}</p></div>`);
+  H.push('<hr class="wd-hr">');
+
+  /* 보온성 */
+  const tw=totalWarmth(),[lo,hi]=comfortRange(),[feel,fc]=outsideFeel();
+  H.push(`<p class="wd-lbl">보온성:</p>
+    <div class="wd-gauge" aria-label="보온성 ${tw}"><span class="rng" style="left:${pct(lo)}%;width:${pct(hi)-pct(lo)}%"></span><span class="mk" style="left:${pct(tw)}%"></span></div>
+    <div class="wd-helpwrap"><button type="button" class="wd-help" data-help="warmth" aria-label="보온성 도움말"><span>?</span></button></div>
+    <p class="${fc}">${feel} <span class="wd-dim">(${S.weather} · ${S.temp}°C)</span></p>
+    <p>현재 복장의 보온성은 <span class="wd-num">${tw}</span>입니다.</p>
+    <p>쾌적하게 지내려면 보온성이 <span class="wd-num">${lo}</span>에서 <span class="wd-num">${hi}</span> 사이여야 합니다.</p>`);
+  if(tw<lo)H.push('<p class="wd-cold">지금 차림으로는 몸이 떨릴 만큼 춥습니다.</p>');
+  else if(tw>hi)H.push('<p class="wd-hot">지금 차림은 땀이 날 만큼 덥습니다.</p>');
+  H.push('<hr class="wd-hr">');
+
+  /* 옷매무새 · 빠른 동작 */
+  H.push(`<p class="wd-msg">${msg||'옷매무새를 정돈합니다.'}</p>`);
+  H.push(fxInline());
+  H.push(`<p class="wd-links">${lkRow([
+    lk(N('전부 벗는다'),()=>{Object.keys(S.worn).forEach(k=>S.worn[k]=null);pass(3);wardrobePage('착용 중인 모든 의류를 벗어 옷장에 넣었습니다.');}),
+    lk(N('무작위로 입는다'),()=>{
+      const rc=randCfg();
+      CLOTH_SLOTS.forEach(s=>{if(!rc[s.k])return;const pool=S.wardrobe.filter(id=>{const c=clothOf(id);return c&&c.slot===s.k;});S.worn[s.k]=pool.length?pick(pool):null;});
+      pass(5);wardrobePage('옷장에서 손에 잡히는 대로 꺼내 입었습니다. — '+wornLines());
+    }),
+    lk(N('무작위 설정'),()=>{wdState.showRand=!wdState.showRand;wardrobePage();},{active:wdState.showRand}),
+    lk(N('거울을 본다'),()=>mirrorPage())
+  ])}</p>`);
+  if(wdState.showRand){
+    const rc=randCfg();
+    H.push(`<div class="wd-panel"><p><span class="wd-title">무작위로 입을 부위</span></p>
+      <p class="wd-radios">${CLOTH_SLOTS.map(s=>ck(s.n,rc[s.k],()=>{rc[s.k]=!rc[s.k];wardrobePage();})).join(SEP)}</p>
+      <p class="wd-links">${lkRow([lk('모두 선택',()=>{CLOTH_SLOTS.forEach(s=>rc[s.k]=true);wardrobePage();}),lk('모두 해제',()=>{CLOTH_SLOTS.forEach(s=>rc[s.k]=false);wardrobePage();})],false)}</p></div>`);
   }
-  opt('옷장 첫 화면으로 돌아간다',()=>wardrobePage(),{grp:'나가기'});
+
+  /* 의상 세트 */
+  H.push('<p class="wd-sec"><span class="wd-title">의상 세트</span></p>');
+  H.push(`<p class="wd-links">${lkRow([
+    lk('현재 복장으로 새 세트 만들기',()=>createSetFromWorn(wardrobePage)),
+    lk('모든 세트 편집',()=>setManagePage())
+  ],false)}</p>`);
+  H.push(`<p class="wd-radios">${Object.keys(SET_MODES).map(m=>rd(SET_MODES[m],wdState.setMode===m,()=>{wdState.setMode=m;wardrobePage();})).join(SEP)}</p>`);
+  if(S.outfitSets.length)H.push(`<div class="wd-sets">${S.outfitSets.map(set=>bt(esc(set.name),()=>applySet(set),'wd-setbtn'+(wdState.setMode==='del'?' del':''))).join('')}</div>`);
+  else H.push('<p class="wd-dim">저장된 의상 세트가 없습니다.</p>');
+  H.push('<hr class="wd-hr">');
+
+  /* 의류 */
+  const sl=CLOTH_SLOTS.find(s=>s.k===wdState.slot)||CLOTH_SLOTS[0];
+  H.push('<p class="wd-sec"><span class="wd-title">의류</span></p>');
+  H.push(`<p class="wd-links">${CLOTH_SLOTS.map(s=>lk(s.n,()=>{wdState.slot=s.k;wardrobePage();},{active:s.k===sl.k})).join(SEP)}</p>`);
+  H.push(`<p class="wd-radios">${[
+    ...Object.keys(WD_MODES).map(m=>rd(WD_MODES[m],wdState.mode===m,()=>{wdState.mode=m;wardrobePage();})),
+    ck('동작 반복',wdState.repeat,()=>{wdState.repeat=!wdState.repeat;wardrobePage();})
+  ].join(SEP)}</p>`);
+
+  const items=S.wardrobe.map(clothOf).filter(c=>c&&c.slot===sl.k);
+  items.sort((a,b)=>{
+    if(wdState.wornFirst){const wa=S.worn[sl.k]===a.id,wb=S.worn[sl.k]===b.id;if(wa!==wb)return wa?-1:1;}
+    let c=0;const o=wdState.order;
+    if(o==='name')c=a.n.localeCompare(b.n,'ko');
+    else if(o==='colour')c=a.col.localeCompare(b.col,'ko');
+    else if(o==='cha')c=a.cha-b.cha;
+    else if(o==='integrity')c=integOf(a)-integOf(b);
+    else c=a.warmth-b.warmth;
+    return wdState.inv?-c:c;
+  });
+  H.push(`<p class="wd-sec"><span class="wd-title">${sl.n}</span> <i class="wd-cnt">${items.length} / 20</i></p>`);
+  const orderRow=inv=>Object.keys(ORDER_N).map(o=>lk(ORDER_N[o],()=>{wdState.order=o;wdState.inv=inv;wardrobePage();},{active:wdState.order===o&&wdState.inv===inv})).join(SEP)+SEP;
+  H.push(`<p class="wd-links">정렬 기준: ${orderRow(false)}</p><p class="wd-links">역순 정렬: ${orderRow(true)}</p>`);
+  const cur=clothOf(S.worn[sl.k]);
+  H.push(`<p class="wd-dim">현재 착용: ${cur?esc(cur.n):'없음'}</p>`);
+  if(!items.length)H.push('<p class="wd-dim">이 부위에 보관된 의류가 없습니다.</p>');
+  items.forEach(it=>{
+    const worn=S.worn[sl.k]===it.id,ig=integOf(it);
+    let act,ac='';
+    if(wdState.mode==='wear')act=worn?'벗기':'입기';
+    else if(wdState.mode==='discard'){act='버리기';ac=' risk';}
+    else if(ig>=100){act='수선 불필요';ac=' dim';}
+    else act='수선';
+    const i=ia(it.n,()=>wdItemAct(it.id));
+    H.push(`<div class="wd-item${worn?' worn':''}" data-ch="${i}" role="button"><div class="wd-item-info"><b>${worn?'<em class="wd-tag">착용 중</em>':''}${esc(it.n)}</b><span>색상 ${it.col} · 보온 ${it.warmth} · 내구도 ${ig}% · 매력 ${it.cha>=0?'+':''}${it.cha}</span>${wdState.showDesc?`<span class="wd-desc">${it.desc}</span>`:''}</div><span class="wd-act${ac}">${act}</span></div>`);
+  });
+  H.push('</div>');
+  buf.push(H.join(''));
 }
 function setManagePage(msg){
-  pageTitle='옷장 · 의상 세트 정리';
-  if(msg)note(msg);
-  say('저장된 의상 세트 목록입니다.');
-  say(S.outfitSets.map(set=>`<b>${set.name}</b><br><span class="sys">${Object.keys(set.items).map(k=>clothOf(set.items[k])?.n).filter(Boolean).join(', ')||'비어 있음'}</span>`).join('<br>')||'저장된 세트가 없습니다.');
-  S.outfitSets.forEach(set=>opt(`「${set.name}」을(를) 현재 복장으로 덮어쓴다`,()=>{set.items=Object.assign({},S.worn);setManagePage(`「${set.name}」 세트를 현재 복장으로 덮어썼습니다.`);},{grp:'덮어쓰기'}));
-  S.outfitSets.forEach(set=>opt(`「${set.name}」을(를) 삭제한다`,()=>{S.outfitSets.splice(S.outfitSets.indexOf(set),1);setManagePage(`「${set.name}」 세트를 삭제했습니다.`);},{grp:'삭제',cls:'risk'}));
-  opt('옷장 첫 화면으로 돌아간다',()=>wardrobePage(),{grp:'나가기'});
+  pageTitle='옷장 · 의상 세트 편집';
+  let n=0;const N=t=>`(${++n}) ${t}`;
+  const H=['<div class="wd">'];
+  H.push(`<p>저장된 의상 세트의 이름을 바꾸거나 순서를 정리합니다.</p><p>${lk(N('옷장으로 돌아간다'),()=>wardrobePage())}</p>`);
+  H.push('<hr class="wd-hr">');
+  if(msg)H.push(`<p class="wd-msg">${msg}</p>`);
+  H.push(`<p class="wd-sec"><span class="wd-title">의상 세트</span> <i class="wd-cnt">${S.outfitSets.length} / 12</i></p>`);
+  if(!S.outfitSets.length)H.push('<p class="wd-dim">저장된 의상 세트가 없습니다.</p>');
+  S.outfitSets.forEach((set,idx)=>{
+    const names=Object.keys(set.items).map(k=>clothOf(set.items[k])?.n).filter(Boolean).join(', ')||'비어 있음';
+    const acts=[
+      lk('이름 저장',()=>{const el=document.getElementById('wdname-'+idx);const v=(el?el.value:'').trim().slice(0,16);if(!v){setManagePage('세트 이름을 입력하세요.');return;}const old=set.name;set.name=v;setManagePage(`「${old}」 세트의 이름을 「${v}」(으)로 바꿨습니다.`);}),
+      lk('현재 복장으로 덮어쓰기',()=>{set.items=currentSetItems();setManagePage(`「${set.name}」 세트를 현재 복장으로 덮어썼습니다.`);})
+    ];
+    if(idx>0)acts.push(lk('위로',()=>{const a=S.outfitSets;[a[idx-1],a[idx]]=[a[idx],a[idx-1]];setManagePage();}));
+    acts.push(lk('삭제',()=>{S.outfitSets.splice(S.outfitSets.indexOf(set),1);setManagePage(`「${set.name}」 세트를 삭제했습니다.`);},{cls:'risk'}));
+    H.push(`<div class="wd-item wd-static"><div class="wd-item-info"><input class="wd-input" id="wdname-${idx}" maxlength="16" value="${esc(set.name)}" aria-label="세트 이름"><span>${esc(names)}</span><p class="wd-links">${acts.join(SEP)}</p></div></div>`);
+  });
+  H.push(`<p class="wd-links">${lk('현재 복장으로 새 세트 만들기',()=>createSetFromWorn(setManagePage))}</p>`);
+  H.push('</div>');
+  buf.push(H.join(''));
 }
 function mirrorPage(){
   pageTitle='낡은 거울';
@@ -1281,17 +1863,17 @@ function talkMaria(){
   if(S.missedRent>0){say('“고든 씨가 또 왔었어. 이번 주는 꼭 내야 돼, 스콧.”');st('str',4);}
 }
 function argue(){
-  S.daily.talkM=1;pass(30);
+  S.daily.talkM=1;S.daily.fought=1;S.flags.lastFight=S.day;pass(30);
   say('마리아가 “일자리는…” 하고 운을 떼는 순간, 머릿속에서 무언가가 튕겨 나갑니다. “그 얘기 좀 그만해! 내가 놀고 싶어서 노는 줄 알아?!” 당신의 고함에 그릇이 바닥에 떨어져 깨집니다.');
   say(emilyHome()?'방문 틈으로 에밀리가 버니를 끌어안고 떨고 있습니다.':'마리아는 아무 말 없이 깨진 그릇 조각을 줍습니다.');
   rel('maria',-12);if(emilyHome())rel('emily',-8);st('str',5);st('tra',2);st('ctl',-3);
 }
 function playEmily(){S.daily.play=1;pass(60);rel('emily',6);rel('maria',2);st('str',-10);
   say(pick(['에밀리가 당신의 머리에 종이 왕관을 씌우고 “해적 왕”이라고 부릅니다. 당신은 과장된 목소리로 “아르르!” 하고 소리칩니다.','거실 바닥에 블록으로 탑을 쌓습니다. 에밀리가 무너뜨릴 때마다 까르르 웃습니다.','에밀리와 함께 버니 인형의 소꿉 파티를 엽니다. 보이지 않는 차가 정말 맛있다고 해야 합니다.']));}
-function snapEmily(){S.daily.play=1;pass(20);rel('emily',-10);rel('maria',-5);st('str',3);st('ctl',-2);
+function snapEmily(){S.daily.play=1;S.daily.snapped=1;pass(20);rel('emily',-10);rel('maria',-5);st('str',3);st('ctl',-2);
   say('에밀리가 장난감을 당신 발등에 떨어뜨립니다. “조용히 좀 해!” 당신의 목소리가 생각보다 크게 터져 나옵니다. 에밀리의 눈에 눈물이 고이고, 아이는 엄마 품으로 달려갑니다.');}
 function pickEmily(){S.daily.picked=1;S.daily.mariaOff=0;pass(30);rel('emily',7);rel('maria',4);st('str',-6);S.loc='home';
-  say('어린이집 선생님이 놀란 얼굴로 에밀리를 건네줍니다. “오늘은 아빠가 오셨네!” 에밀리가 당신의 손을 꼭 잡고 집까지 쉴 새 없이 떠듭니다.');}
+  say((S.met.claire?'클레어 선생님이':'유치원 선생님이')+' 놀란 얼굴로 에밀리를 건네줍니다. “오늘은 아빠가 오셨네!” 에밀리가 당신의 손을 꼭 잡고 집까지 쉴 새 없이 떠듭니다.');}
 function mariaSuspicion(){
   say('마리아가 서랍 속 지폐 뭉치를 들고 서 있습니다. “스콧. 이 돈 어디서 났어?”');
   opt('“일용직 몇 번 뛰었어.” (거짓말)',()=>{const ok=R()<(0.3+S.st.cha/150);if(ok){say('마리아는 한참 당신의 얼굴을 보다가 고개를 끄덕입니다. 믿고 싶은 얼굴입니다.');st('str',6);st('tra',2);}else{say('“거짓말하지 마. 당신 눈 보면 알아.” 마리아의 목소리가 떨립니다.');rel('maria',-15);st('str',8);}});
@@ -1324,11 +1906,11 @@ function sleepNight(){let m=(7*60-S.t+1440)%1440;doSleep(m||480);}
 function doSleep(mins){
   const nightmare=R()<S.st.tra/110;
   if(mins>=240)say(S.loc==='home'?'얇은 이불을 끌어당깁니다.':'아무 데나 몸을 누입니다.');
-  pass(mins,{sleep:true,rest:nightmare?6:12});
+  pass(mins,{sleep:true,rest:nightmare?6:(S.loc==='home'?HOUSES[S.house].rest:11)});
   if(nightmare){say(pick(NIGHTMARES));st('str',12);st('ctl',-2);}
   else if(mins>=240){say('오랜만에 꿈 없이 잤습니다.');st('str',-10);st('ctl',1);}
   else{st('str',-3);say('잠깐 눈을 붙였습니다.');}
-  if(S.loc==='home'&&!weekend()&&hh()===7)say('현관문 닫히는 소리. 마리아가 에밀리를 어린이집에 데려다주고 출근했습니다.');
+  if(S.loc==='home'&&!weekend()&&hh()===7)say('현관문 닫히는 소리. 마리아가 에밀리를 유치원에 데려다주고 출근했습니다.');
 }
 function collapse(){
   say('<b>시야가 기울어집니다.</b> 한계까지 몰아붙인 몸이 더는 버티지 못합니다.');
@@ -1355,72 +1937,123 @@ const RANKS={
   cafe:{t:['아르바이트','정규 바리스타','시프트 리더','부점장'],sk:'know',req:[0,22,30,42]},
   clean:{t:['청소부','선임 미화원','미화 반장','시설관리 주임'],sk:'craft',req:[0,25,33,45]},
   police:{t:['순경','경장','경사','형사'],sk:'know',req:[0,37,46,56]},
-  army:{t:['일병 정비병','상병 정비병','병장 정비조장','하사 정비 분대장'],sk:'mech',req:[0,48,56,66]}
+  army:{t:['일병 정비병','상병 정비병','병장 정비조장','하사 정비 분대장'],sk:'mech',req:[0,48,56,66]},
+  school:{t:['보조 관리인','시설 관리인','선임 관리인','시설 관리 주임'],sk:'craft',req:[0,27,35,46]}
 };
 const PROMO_DAYS=[0,4,9,15],PROMO_PERF=[0,28,70,130],PROMO_MULT=[1,1.2,1.45,1.75];
-const BOSS={mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'시설관리 과장',police:'제4지구 서장',army:'정비 중대장'};
+const BOSS={school:'행정실장',mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'시설관리 과장',police:'제4지구 서장',army:'정비 중대장'};
 const jobRank=()=>S.job?(S.job.rank||0):0;
 const jobTitle=(id,r)=>RANKS[id].t[r==null?jobRank():r];
 const jobPay=()=>S.job?Math.round(JOBS[S.job.id].pay*PROMO_MULT[jobRank()]):0;
 const banUntil=id=>{const b=S.flags['ban_'+id];return b&&b>S.day?b:0;};
 
-/* ----- 노트북 (텍스트 페이지) ----- */
+/* ----- 노트북 (참고 이미지 디자인: 링크 행 · 라디오 · 카드) ----- */
 let laptopTab='portal';
+let lpState={filter:'all',sort:'base',inv:false};
+const LP_TABS={portal:'구인구직 「워크파인드」',daylabor:'단기 일용직 게시판',video:'영상 스트리밍'};
+const LP_FILTER={all:'전체',open:'지원 가능',booked:'예약·재직',unknown:'미확인'};
+const LP_SORT={base:'기본',pay:'일당',start:'출근 시각',days:'근무 일수'};
+const LP_KEYS=['mech','guard','cafe','clean','school','police','army'];
+function lpJobState(k){
+  if(S.job&&S.job.id===k)return 'cur';
+  if(S.interviews[k])return 'booked';
+  if(!S.leads[k])return 'unknown';
+  if(banUntil(k))return 'ban';
+  return 'open';
+}
 function laptopPage(tab,msg){
   if(tab)laptopTab=tab;
   if(!S.interviews)S.interviews={};
   pageTitle='낡은 중고 노트북';
-  if(msg)note(msg);
+  let n=0;const N=t=>`(${++n}) ${t}`;
   const h=hh(),isNight=h>=22||h<6;
-  sys(`Wi-Fi 연결됨 · ${DAYS[wd()]} ${tstr()} · 현금 $${S.money}`);
-  if(laptopTab==='portal'){
-    say('지역 구인구직 포털 <b>「워크파인드(WorkFind)」</b>에 접속했습니다. 공고를 찾아보고 원하는 날짜로 현장 면접 일정을 잡을 수 있습니다.');
-    const keys=['mech','guard','cafe','clean','police','army'];
-    const lines=keys.map(k=>{
-      const J=JOBS[k],known=!!S.leads[k],cur=S.job&&S.job.id===k,sched=S.interviews[k],ban=banUntil(k);
-      const badge=cur?'현재 재직 중':sched?(sched.day===S.day?'오늘 면접 예약':`${sched.day}일차 면접 예약`):ban?`재지원 제한 (${ban}일차부터)`:known?'지원 가능':'미확인 공고';
-      const req=k==='police'?'조건: 무전과 · 생활 지식 32+ · 거리의 요령 22+':k==='army'?'조건: 무전과 · 정비 기술 45+ · 트라우마 55 이하':k==='mech'?'우대: 정비 기술 · 프랭크와 친분 또는 월터 추천서':'조건: 특별 자격 제한 없음 (면접 통과 필요)';
-      return `<b>${J.n}</b> <span class="sys">[${badge}]</span><br><span class="sys">${known?`근무지 ${PL[J.loc].n} · ${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00 (${J.hours}시간) · 초봉 일당 $${J.pay} · 승진 시 최대 $${Math.round(J.pay*PROMO_MULT[3])}<br>${req}`:'세부 공고를 검색해야 채용 조건과 면접 일정을 확인할 수 있습니다.'}</span>`;
-    });
-    say(lines.join('<br>'));
-    keys.forEach(k=>{
-      const J=JOBS[k],known=!!S.leads[k],cur=S.job&&S.job.id===k,sched=S.interviews[k];
-      if(cur)return;
-      if(!known){opt(`「${J.n}」 공고를 검색한다`,()=>{pass(30);S.leads[k]=1;st('str',1);flushFx();laptopPage('portal',`「${J.n}」 채용 공고의 상세 정보와 지원 양식을 확보했습니다.`);},{grp:'공고 검색',min:30});return;}
-      if(banUntil(k))return;
-      if(sched){opt(`「${J.n}」 면접 예약을 취소한다`,()=>{delete S.interviews[k];laptopPage('portal',`「${J.n}」 면접 예약을 취소했습니다.`);},{grp:'면접 예약'});return;}
-      if(S.job)return;
-      [S.day,S.day+1].forEach(dd=>opt(`「${J.n}」 면접을 ${dd===S.day?'오늘':'내일'}(${DAYS[(dd-1)%7]})로 잡는다`,()=>{
-        if((k==='police'||k==='army')&&(S.crimes>0||S.gangRank>0)){laptopPage('portal','온라인 사전 결격사유 조회에서 범죄·조직 이력이 확인되어 면접 예약이 거부되었습니다.');return;}
-        pass(15);S.interviews[k]={day:dd};flushFx();
-        laptopPage('portal',`「${J.n}」 면접을 ${dd===S.day?'오늘':'내일'}로 예약했습니다. 영업시간 내에 ${PL[J.loc].n}을(를) 방문하세요.`);
-      },{grp:'면접 예약',min:15}));
-    });
-    if(S.job)opt('현재 직장에 사직서를 이메일로 보낸다',quitConfirm,{grp:'재직 중',cls:'risk'});
-  }else if(laptopTab==='daylabor'){
-    const done=!!S.daily.dayLabor;
-    say('당일 급전이 필요할 때 온라인으로 신청해 즉시 파견 나가는 <b>단기 일용직 게시판</b>입니다. 하루 1회, 06:00~22:00에만 지원할 수 있습니다. 근무는 현장에서 한 시간씩 직접 진행됩니다.');
-    say(DAY_LABOR_LIST.map(dl=>{
-      const cur=dl.reqAttr?S.attrs[dl.reqAttr]:S.skills[dl.reqSkill];
-      const nm=dl.reqAttr?ATTRN[dl.reqAttr]:SKILLN[dl.reqSkill];
-      return `<b>${dl.n}</b> · 일당 $${dl.pay}<br><span class="sys">${dl.desc} · ${dl.hours}시간 · 권장 ${nm} ${dl.reqVal} (현재 ${fl(cur)})</span>`;
-    }).join('<br>'));
-    if(done)sys('오늘은 이미 일용직을 다녀왔습니다.');
-    else if(isNight)sys('심야 시간에는 당일 파견을 신청할 수 없습니다.');
-    else DAY_LABOR_LIST.forEach((dl,i)=>opt(`「${dl.n}」에 지원하고 바로 출근한다`,()=>startDayLabor(i),{grp:'지원하기'}));
-  }else{
-    say('동영상 스트리밍 사이트를 열어 무료한 시간을 보냅니다.');
-    VIDS.forEach(v=>opt(v.t,()=>{
-      pass(v.m);st('str',v.str);if(v.fat)st('fat',v.fat);if(v.ctl)st('ctl',v.ctl);if(v.mech)skUp('mech',v.mech);
-      say(v.txt);
-      if(S.st.fat>=100||S.st.str>=100)return;
-      flushFx();laptopPage('video');
-    },{grp:'영상',min:v.m}));
+  const H=['<div class="wd">'];
+  H.push(`<div class="wd-head"><div class="wd-head-l"><p>팬 소리와 함께 낡은 중고 노트북 화면이 깜빡이며 켜집니다.</p><p>${lk(N('노트북을 덮는다'),()=>{say('노트북 화면을 덮습니다. 팬 소리가 잦아듭니다.');})}</p></div><button type="button" class="wd-optbtn" data-help="laptop">도움말</button></div>`);
+  H.push(`<p class="wd-dim">Wi-Fi 연결됨 · ${DAYS[wd()]} ${tstr()} · 현금 $${S.money}</p>`);
+  H.push('<hr class="wd-hr">');
+  H.push(`<p class="wd-sec"><span class="wd-title">즐겨찾기</span></p><p class="wd-links">${lkRow(Object.keys(LP_TABS).map(t=>lk(LP_TABS[t],()=>laptopPage(t),{active:laptopTab===t})))}</p>`);
+  H.push('<hr class="wd-hr">');
+  if(msg)H.push(`<p class="wd-msg">${msg}</p>`);
+  H.push(fxInline());
+  if(laptopTab==='portal')lpPortal(H);
+  else if(laptopTab==='daylabor')lpDayLabor(H,isNight);
+  else lpVideo(H);
+  H.push('</div>');
+  buf.push(H.join(''));
+}
+function lpPortal(H){
+  const known=LP_KEYS.filter(k=>S.leads[k]).length;
+  H.push(`<p class="wd-sec"><span class="wd-title">채용 공고</span> <i class="wd-cnt">확인 ${known} / ${LP_KEYS.length}</i></p>`);
+  H.push('<p>지역 구인구직 포털 <b>「워크파인드(WorkFind)」</b>에 접속했습니다. 공고를 찾아보고 원하는 날짜로 현장 면접 일정을 잡을 수 있습니다.</p>');
+  H.push(`<p class="wd-radios">${Object.keys(LP_FILTER).map(f=>rd(LP_FILTER[f],lpState.filter===f,()=>{lpState.filter=f;laptopPage('portal');})).join(SEP)}</p>`);
+  const sortRow=inv=>Object.keys(LP_SORT).map(o=>lk(LP_SORT[o],()=>{lpState.sort=o;lpState.inv=inv;laptopPage('portal');},{active:lpState.sort===o&&lpState.inv===inv})).join(SEP)+SEP;
+  H.push(`<p class="wd-links">정렬 기준: ${sortRow(false)}</p><p class="wd-links">역순 정렬: ${sortRow(true)}</p>`);
+
+  let list=LP_KEYS.filter(k=>{
+    const s=lpJobState(k),f=lpState.filter;
+    if(f==='open')return s==='open';
+    if(f==='booked')return s==='cur'||s==='booked';
+    if(f==='unknown')return s==='unknown';
+    return true;
+  });
+  const sv=k=>{const J=JOBS[k];return lpState.sort==='pay'?J.pay:lpState.sort==='start'?J.start:lpState.sort==='days'?J.days.length:LP_KEYS.indexOf(k);};
+  list.sort((a,b)=>(sv(a)-sv(b))*(lpState.inv?-1:1));
+  if(!list.length)H.push('<p class="wd-dim">조건에 맞는 공고가 없습니다.</p>');
+
+  list.forEach(k=>{
+    const J=JOBS[k],known=!!S.leads[k],cur=S.job&&S.job.id===k,sched=S.interviews[k],ban=banUntil(k);
+    const badge=cur?'현재 재직 중':sched?(sched.day===S.day?'오늘 면접 예약':`${sched.day}일차 면접 예약`):ban?`재지원 제한 (${ban}일차부터)`:known?'지원 가능':'미확인 공고';
+    const bc=cur||sched?'ok':ban?'warn':known?'':'dim';
+    const req=k==='police'?'조건: 무전과 · 생활 지식 32+ · 거리의 요령 22+':k==='army'?'조건: 무전과 · 정비 기술 45+ · 트라우마 55 이하':k==='mech'?'우대: 정비 기술 · 프랭크와 친분 또는 월터 추천서':'조건: 특별 자격 제한 없음 (면접 통과 필요)';
+    const info=known
+      ?`<span>근무지 ${PL[J.loc].n} · ${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00 (${J.hours}시간)</span><span>초봉 일당 $${J.pay} · 승진 시 최대 $${Math.round(J.pay*PROMO_MULT[3])}</span><span class="wd-desc">${req}</span>`
+      :'<span>세부 공고를 검색해야 채용 조건과 면접 일정을 확인할 수 있습니다.</span>';
+    let acts;
+    if(cur)acts=`<span class="wd-dim">현재 「${jobTitle(k)}」(으)로 근무 중입니다.</span>`;
+    else if(!known)acts=lk('공고 검색 (0:30)',()=>{pass(30);S.leads[k]=1;st('str',1);laptopPage('portal',`「${J.n}」 채용 공고의 상세 정보와 지원 양식을 확보했습니다.`);});
+    else if(ban)acts=`<span class="wd-dim">${ban}일차부터 다시 지원할 수 있습니다.</span>`;
+    else if(sched)acts=lk('면접 예약 취소',()=>{delete S.interviews[k];laptopPage('portal',`「${J.n}」 면접 예약을 취소했습니다.`);},{cls:'risk'});
+    else if(S.job)acts='<span class="wd-dim">재직 중에는 새 면접을 잡을 수 없습니다.</span>';
+    else acts=[S.day,S.day+1].map(dd=>lk(`${dd===S.day?'오늘':'내일'}(${DAYS[(dd-1)%7]}) 면접 예약 (0:15)`,()=>{
+      if((k==='police'||k==='army')&&(S.crimes>0||S.gangRank>0)){laptopPage('portal','온라인 사전 결격사유 조회에서 범죄·조직 이력이 확인되어 면접 예약이 거부되었습니다.');return;}
+      pass(15);S.interviews[k]={day:dd};
+      laptopPage('portal',`「${J.n}」 면접을 ${dd===S.day?'오늘':'내일'}로 예약했습니다. 영업시간 내에 ${PL[J.loc].n}을(를) 방문하세요.`);
+    })).join(SEP);
+    H.push(`<div class="wd-item wd-static${cur?' worn':''}"><div class="wd-item-info"><b>${J.n} <em class="lp-badge ${bc}">${badge}</em></b>${info}<p class="wd-links">${acts}</p></div></div>`);
+  });
+
+  if(S.job){
+    H.push('<hr class="wd-hr">');
+    H.push(`<p class="wd-sec"><span class="wd-title">재직 중</span></p><p>${JOBS[S.job.id].n} · ${jobTitle(S.job.id)} · 일당 $${jobPay()}</p>`);
+    H.push(`<p class="wd-links">${lk('현재 직장에 사직서를 이메일로 보낸다',quitConfirm,{cls:'risk'})}</p>`);
   }
-  if(laptopTab!=='portal')opt('구인구직 사이트로 이동한다',()=>laptopPage('portal'),{grp:'노트북'});
-  if(laptopTab!=='daylabor')opt('일용직 게시판으로 이동한다',()=>laptopPage('daylabor'),{grp:'노트북'});
-  if(laptopTab!=='video')opt('영상 사이트로 이동한다 (시간 때우기)',()=>laptopPage('video'),{grp:'노트북'});
-  opt('노트북을 덮는다',()=>{say('노트북 화면을 덮습니다. 팬 소리가 잦아듭니다.');},{grp:'노트북'});
+}
+function lpDayLabor(H,isNight){
+  const done=!!S.daily.dayLabor;
+  H.push(`<p class="wd-sec"><span class="wd-title">오늘의 파견 공고</span> <i class="wd-cnt">오늘 지원 ${done?1:0} / 1</i></p>`);
+  H.push('<p>당일 급전이 필요할 때 온라인으로 신청해 즉시 파견 나가는 <b>단기 일용직 게시판</b>입니다. 하루 1회, 06:00~22:00에만 지원할 수 있습니다. 근무는 현장에서 한 시간씩 직접 진행됩니다.</p>');
+  if(done)H.push('<p class="wd-hot">오늘은 이미 일용직을 다녀왔습니다.</p>');
+  else if(isNight)H.push('<p class="wd-hot">심야 시간에는 당일 파견을 신청할 수 없습니다.</p>');
+  DAY_LABOR_LIST.forEach((dl,i)=>{
+    const cur=dl.reqAttr?S.attrs[dl.reqAttr]:S.skills[dl.reqSkill];
+    const nm=dl.reqAttr?ATTRN[dl.reqAttr]:SKILLN[dl.reqSkill];
+    const ok=cur>=dl.reqVal;
+    const act=(!done&&!isNight)?`<p class="wd-links">${lk('지원하고 바로 출근한다 (0:30)',()=>startDayLabor(i))}</p>`:'';
+    H.push(`<div class="wd-item wd-static"><div class="wd-item-info"><b>${dl.n}</b><span>${dl.desc}</span><span>${dl.hours}시간 · 권장 ${nm} ${dl.reqVal} <em class="${ok?'wd-ok':'wd-hot'}" style="font-style:normal">(현재 ${fl(cur)})</em></span>${act}</div><span class="wd-act">$${dl.pay}</span></div>`);
+  });
+}
+function lpVideo(H){
+  H.push(`<p class="wd-sec"><span class="wd-title">추천 영상</span> <i class="wd-cnt">${VIDS.length}편</i></p>`);
+  H.push('<p>동영상 스트리밍 사이트를 열어 무료한 시간을 보냅니다.</p>');
+  H.push(`<div class="wd-sets">${VIDS.map(v=>bt(`${v.t}<small>${fmtDur(v.m).trim()}</small>`,()=>{
+    pass(v.m);st('str',v.str);if(v.fat)st('fat',v.fat);if(v.ctl)st('ctl',v.ctl);if(v.mech)skUp('mech',v.mech);
+    if(S.st.fat>=100||S.st.str>=100){say(v.txt);return;}
+    laptopPage('video',v.txt);
+  },'wd-setbtn')).join('')}</div>`);
+}
+function showHelp(k){
+  if(k==='warmth')modal(`<h3>보온성</h3><p>착용한 의류의 보온 수치를 모두 더한 값입니다. 바깥 기온이 낮을수록 쾌적하게 지내는 데 필요한 보온성 범위가 높아집니다.</p><p>막대의 흰 표시는 현재 복장의 보온성, 테두리로 감싼 구간은 쾌적한 범위입니다. 왼쪽(파란색)으로 갈수록 춥고, 오른쪽(빨간색)으로 갈수록 덥습니다.</p>`);
+  else if(k==='laptop')modal(`<h3>노트북 사용법</h3><p><b>구인구직 「워크파인드」</b> — 공고를 검색해 채용 조건을 확인하고 면접을 예약합니다. 예약한 날 면접을 보면 가산점이 붙습니다.</p><p><b>단기 일용직 게시판</b> — 하루 1회, 06:00~22:00 사이에 지원하면 곧바로 현장으로 출근합니다.</p><p><b>영상 스트리밍</b> — 시간을 보내며 스트레스를 덜 수 있습니다.</p>`);
 }
 const VIDS=[
   {t:'엔진 수리 다큐멘터리를 본다',m:60,str:-6,fat:1,mech:1,txt:'엔진 분해와 조립 영상을 보며 시간을 보냈습니다. 기름때 냄새가 나는 듯해 마음이 조금 놓입니다.'},
@@ -1474,7 +2107,7 @@ function interview(id){
     if(S.crimes>0||S.gangRank>0){say('모병관이 신원 조회 결과를 보고 인상을 찌푸립니다. “규율 위반 이력이 있는 인원은 기지 출입 허가가 나지 않소.”');st('str',8);return;}
     if(S.skills.mech<45||S.st.tra>55){say('모병관이 서류를 돌려줍니다. “군용 장비 정비 기준(정비 기술 45 이상)과 심리 안정 기준(트라우마 55 이하)을 충족해야 합니다.”');st('str',5);return;}
   }
-  const who={mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'원무과 직원',police:'제4지구 경찰서 인사 담당 경사',army:'포트 밀러 기지 모병관'}[id];
+  const who={school:'행정실장',mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'원무과 직원',police:'제4지구 경찰서 인사 담당 경사',army:'포트 밀러 기지 모병관'}[id];
   say(`${who}이(가) 당신의 이력서와 얼굴을 번갈아 봅니다. 시선이 왼쪽 눈에서 멈춥니다. “그 눈은… 어쩌다 그런 겁니까? 그리고 전 직장은 왜 그만두셨죠?”`);
   const skillBonus=id==='mech'?S.skills.mech*0.35:id==='guard'?S.skills.street*0.18:id==='police'?(S.skills.know+S.skills.street)*0.22:id==='army'?S.skills.mech*0.3:S.skills.know*0.12;
   const attrBonus=id==='police'?(S.attrs.strg+S.attrs.calm)*0.12:id==='army'?(S.attrs.strg+S.attrs.stam)*0.14:id==='guard'?S.attrs.strg*0.12:S.attrs.dex*0.08;
@@ -1552,6 +2185,7 @@ const WORK_LINES={
   clean:['소독약 냄새가 진동하는 복도를 대걸레로 길게 밀고 나갑니다.','병실 쓰레기통을 비우고 의료 폐기물 봉투를 따로 묶습니다.','화장실 거울과 세면대를 닦습니다. 거울 속 의안이 형광등에 번들거립니다.','대기실 의자를 하나하나 소독 티슈로 닦아 나갑니다.'],
   police:['순찰차를 몰고 담당 구역의 골목을 천천히 돕니다. 무전기가 쉴 새 없이 지직거립니다.','교차로에서 교통 정리를 하며 수신호를 보냅니다.','상점가를 도보 순찰하며 상인들과 짧게 인사를 나눕니다.','지구대 책상에서 민원 접수 서류를 정리합니다.'],
   army:['군용 트럭의 디젤 엔진 연료 필터를 교체합니다.','장갑차 궤도 장력을 점검하고 정비 일지에 기록합니다.','병기고에서 소총 부품을 분해·세척하고 다시 조립합니다.','발전기 부하 시험을 하며 계기판 수치를 받아 적습니다.'],
+  school:['복도 형광등을 갈아 끼우고 교실 문 경첩에 기름을 칩니다.','급식실 배수구를 뚫고 밀린 의자 다리를 고칩니다.','운동장 그네 사슬을 점검하고 녹슨 볼트를 교체합니다.','쉬는 시간마다 몰려드는 아이들 사이로 대걸레를 밀며 복도를 닦습니다.'],
   day:['무거운 자재를 어깨에 메고 계단을 오르내립니다.','반장의 고함 속에서 묵묵히 짐을 나르고 정리합니다.','먼지를 뒤집어쓴 채 같은 동작을 수백 번 반복합니다.','허리를 펼 틈도 없이 다음 짐이 밀려옵니다.']
 };
 const SLACK_OK=['창고 구석에 숨어 휴대폰을 만지작거리며 시간을 보냅니다.','바쁜 척 서류를 들고 이리저리 걸어 다니며 한숨을 돌립니다.','화장실 칸에 앉아 눈을 감고 잠깐 숨을 돌립니다.'];
@@ -1647,7 +2281,7 @@ function leaveEarly(family){
   endShift();
   if(family&&!S.shift){
     pass(40);S.loc='home';S.daily.picked=1;lose(12);
-    say('어린이집에서 열에 들뜬 에밀리를 안고 약국에 들렀다 집으로 돌아왔습니다. 해열제 값 $12. 에밀리가 당신 목에 뜨거운 이마를 기댑니다.');
+    say('유치원에서 열에 들뜬 에밀리를 안고 약국에 들렀다 집으로 돌아왔습니다. 해열제 값 $12. 에밀리가 당신 목에 뜨거운 이마를 기댑니다.');
   }
 }
 function endShift(){
@@ -1722,7 +2356,7 @@ function shiftBreakdown(){
 }
 
 /* ----- 근무 중 돌발 이벤트 ----- */
-const BREAK_ITEM={mech:'토크 렌치',guard:'무전기',cafe:'에스프레소 머신의 포터필터',clean:'전동 바닥 광택기',police:'순찰차 사이드미러',army:'정비창 유압 잭',day:'현장 자재 상자'};
+const BREAK_ITEM={school:'교실용 접이식 사다리',mech:'토크 렌치',guard:'무전기',cafe:'에스프레소 머신의 포터필터',clean:'전동 바닥 광택기',police:'순찰차 사이드미러',army:'정비창 유압 잭',day:'현장 자재 상자'};
 const MOCK_TXT={
   mech:'고객 하나가 수리비 영수증을 집어던집니다. “외눈박이가 고친 차를 어떻게 믿어?”',
   guard:'술 취한 10대 무리가 당신을 둘러싸고 의안을 흉내 내며 낄낄댑니다.',
@@ -1730,6 +2364,7 @@ const MOCK_TXT={
   clean:'술 취한 환자 보호자가 방금 닦은 바닥에 침을 뱉고 비웃습니다.',
   police:'순찰 구역에서 난동을 부리던 취객이 당신의 의안을 가리키며 욕설을 퍼붓습니다.',
   army:'신참 병사가 정비 지시를 어기고 장비를 망가뜨린 뒤 당신 탓으로 돌립니다.',
+  school:'하교하던 고학년 아이들이 당신의 의안을 가리키며 “해적이다! 외눈박이 해적!” 하고 낄낄대며 도망칩니다.',
   day:'현장 인부 하나가 당신의 의안을 가리키며 “외눈박이가 줄은 제대로 맞추겠냐”고 비웃습니다.'
 };
 function shiftSkill(sh){
@@ -1783,7 +2418,7 @@ const SHIFT_EVENTS=[
   }},
   {id:'mariaCall',when:sh=>sh.kind==='job'&&!S.daily.mariaCall,run:sh=>{
     S.daily.mariaCall=1;
-    say('주머니 속 휴대폰이 계속 진동합니다. 마리아입니다. “스콧, 어린이집에서 전화 왔는데 에밀리가 열이 난대. 난 지금 식당에서 도저히 못 빠져…”');
+    say('주머니 속 휴대폰이 계속 진동합니다. 마리아입니다. “스콧, 유치원에서 전화 왔는데 에밀리가 열이 난대. 난 지금 식당에서 도저히 못 빠져…”');
     eo('조퇴하고 에밀리를 데리러 간다',()=>{rel('maria',8);rel('emily',6);st('str',3);leaveEarly(true);});
     eo('“근무 중이라 못 가. 어떻게든 해 봐.”',()=>{rel('maria',-8);rel('emily',-3);st('str',6);sh.perf+=1;say('전화 너머로 긴 침묵이 흐릅니다. “…알았어.” 뚝 끊기는 소리가 유난히 크게 들립니다.');});
   }},
@@ -2209,7 +2844,7 @@ function streetEncounter(){
 function beggar(){say('담요를 두른 노숙인이 종이컵을 내밉니다. “1달러면 돼요, 형씨.”');
   opt('1달러를 준다',()=>{if(S.money>=1){cash(-1);st('str',-2);say('“신의 축복을.” 당신은 신을 믿지 않지만, 고개를 끄덕입니다.');}});
   opt('지나친다',()=>{say('그의 눈을 피해 걸음을 재촉합니다. 어머니도 저렇게 앉아 있던 적이 있었습니다.');st('tra',1);});}
-function neighbor(){say(pick(['아래층 로페즈 부인이 장바구니를 들고 지나가며 인사합니다. “에밀리 엄마 고생 많더라.” 말에 가시가 있습니다.','집주인 고든 씨가 맞은편에서 걸어옵니다. “월요일이야, 카터. 잊지 말라고.”']));st('str',3);}
+function neighbor(){const L=['아래층 로페즈 부인이 장바구니를 들고 지나가며 인사합니다. “에밀리 엄마 고생 많더라.” 말에 가시가 있습니다.'];if(S.house==='oldApt')L.push('집주인 고든 씨가 맞은편에서 걸어옵니다. “월요일이야, 카터. 잊지 말라고.”');else if(!S.houseOwned)L.push(`${HOUSES[S.house].landlord} 쪽 사람이 맞은편에서 걸어오며 고개를 끄덕입니다. “월요일 잊지 마세요, 카터 씨.”`);say(pick(L));st('str',3);}
 function liquorTempt(){say('주류 판매점 쇼윈도에 위스키 병들이 반짝입니다. 목이 바싹 마릅니다.');
   opt('발걸음을 돌린다',()=>{st('ctl',2);st('str',5);S.crave=Math.max(0,S.crave-10);say('주먹을 쥐고 걸음을 옮깁니다. 열까지 셉니다.');},{imp:buyBeerImpulse});
   opt('한 병만 산다',buyBeer,{cls:'risk'});}
@@ -2253,7 +2888,7 @@ const LIFE={
     opt('수리점에서 액정을 간다 ($55)',()=>{if(!pay(55))return;pass(40);say('새 액정이 반짝입니다. 지갑이 그만큼 가벼워졌습니다.');},{min:40});
     opt('테이프를 붙여 그냥 쓴다',()=>{S.flags.phoneBroken=1;st('cha',-1);st('str',3);say('투명 테이프를 덕지덕지 붙입니다. 화면 반쪽이 잘 눌리지 않습니다.');});
   }},
-  leak:{home:true,w:()=>!S.flags.leakDone,run:()=>{
+  leak:{home:true,w:()=>!S.flags.leakDone&&S.house==='oldApt',run:()=>{
     S.flags.leakDone=1;
     say('천장에서 물방울이 똑똑 떨어집니다. 윗집 배관이 터졌습니다. 집주인 고든 씨가 올라와 혀를 찹니다. “당신네 천장 수리비 절반, $90은 내야 해.”');
     opt('수리비를 낸다 ($90)',()=>{const p=lose(90);if(p<90){S.flags.rentExtra=(S.flags.rentExtra||0)+(90-p);say(`가진 돈 $${p}만 건넵니다. 고든 씨가 나머지 $${90-p}는 다음 집세에 얹겠다고 합니다.`);}else say('고든 씨가 지폐를 세어 주머니에 넣습니다.');st('str',6);});
@@ -2279,7 +2914,7 @@ const LIFE={
   }},
   daycare:{home:true,w:()=>!S.flags.daycareDone,run:()=>{
     S.flags.daycareDone=1;
-    say('에밀리가 어린이집 가정통신문을 내밉니다. 「동물원 현장학습 — 참가비 $35, 이번 주 금요일까지」 에밀리의 눈이 반짝입니다. “아빠, 기린 보러 간대!”');
+    say('에밀리가 유치원 가정통신문을 내밉니다. 「동물원 현장학습 — 참가비 $35, 이번 주 금요일까지」 에밀리의 눈이 반짝입니다. “아빠, 기린 보러 간대!”');
     opt('참가비를 낸다 ($35)',()=>{const p=lose(35);if(p<35){rel('emily',-3);say('돈이 모자랍니다. 에밀리에게 미안하다고 말하자 아이가 입술을 삐죽입니다.');return;}rel('emily',7);rel('maria',2);say('“진짜? 아빠 최고!” 에밀리가 통신문을 들고 방 안을 뛰어다닙니다.');});
     opt('이번엔 어렵다고 말한다',()=>{rel('emily',-6);rel('maria',-3);st('str',5);say('에밀리가 아무 말 없이 통신문을 접어 가방에 넣습니다. 그 작은 등이 오늘따라 더 작아 보입니다.');});
   }},
@@ -2289,7 +2924,7 @@ const LIFE={
     opt('살충제를 사다 직접 뿌린다 ($8)',()=>{lose(8);if(R()<0.5){S.flags.pestDone=1;say('구석구석 살충제를 뿌리고 틈새를 테이프로 막습니다. 한동안은 조용할 것입니다.');}else{st('str',6);say('며칠 뒤, 바퀴벌레가 다시 나타났습니다.');}});
     opt('신경 쓰지 않는다',()=>{rel('maria',-5);st('str',5);say('“이런 집에서 애를 키워야 해?” 마리아가 이를 악뭅니다.');});
   }},
-  rentUp:{home:false,w:()=>!S.flags.rentUp&&S.day>=8,run:()=>{
+  rentUp:{home:false,w:()=>!S.flags.rentUp&&S.day>=8&&S.house==='oldApt',run:()=>{
     S.flags.rentUp=1;
     say('현관문에 집주인 고든 씨의 공지문이 붙어 있습니다. 「건물 관리비 상승으로 다음 주부터 월세를 주당 $25 인상합니다.」');
     opt('고든 씨를 찾아가 항의한다',()=>{pass(30);if(R()*100<20+S.st.cha*0.3+S.skills.know*0.4){S.rent+=10;say(`곰팡이와 누수 사진을 들이밀자 고든 씨가 한발 물러섭니다. 인상 폭이 $10로 줄었습니다. (주당 $${S.rent})`);}else{S.rent+=25;st('str',8);say(`“싫으면 나가든가.” 고든 씨가 문을 닫습니다. (주당 집세 $${S.rent})`);}},{min:30});
@@ -2302,11 +2937,11 @@ const LIFE={
     opt('우리도 빠듯하다며 거절한다',()=>{rel('maria',-6);st('str',4);say('마리아는 고개를 끄덕이지만, 그날 밤 내내 말이 없습니다.');});
   }},
   scam:{home:false,w:()=>S.money>=60,run:()=>{
-    say('모르는 번호로 전화가 옵니다. 다급한 목소리. “스콧 카터 씨죠? 따님이 어린이집 앞에서 사고를 당했습니다. 수술 동의 보증금 150달러를 지금 바로 이 계좌로…”');
-    opt('당황해서 바로 송금한다',()=>{const p=lose(150);st('str',14);st('tra',1);say(`떨리는 손으로 $${p}를 보냅니다. 어린이집에 전화하자 에밀리는 낮잠을 자고 있다고 합니다. 보이스피싱이었습니다.`);},{cls:'risk'});
-    opt('일단 끊고 어린이집에 직접 확인한다',()=>{st('str',3);skUp('know',1);say('어린이집 선생님이 웃으며 말합니다. “에밀리요? 지금 블록 놀이 중인데요.” 식은땀이 등줄기를 타고 흐릅니다.');});
+    say('모르는 번호로 전화가 옵니다. 다급한 목소리. “스콧 카터 씨죠? 따님이 유치원 앞에서 사고를 당했습니다. 수술 동의 보증금 150달러를 지금 바로 이 계좌로…”');
+    opt('당황해서 바로 송금한다',()=>{const p=lose(150);st('str',14);st('tra',1);say(`떨리는 손으로 $${p}를 보냅니다. 유치원에 전화하자 에밀리는 낮잠을 자고 있다고 합니다. 보이스피싱이었습니다.`);},{cls:'risk'});
+    opt('일단 끊고 유치원에 직접 확인한다',()=>{st('str',3);skUp('know',1);say('유치원 선생님이 웃으며 말합니다. “에밀리요? 지금 블록 놀이 중인데요.” 식은땀이 등줄기를 타고 흐릅니다.');});
   }},
-  burglary:{home:true,w:()=>S.money>=150&&S.day>=5&&!S.flags.burgled,run:()=>{
+  burglary:{home:true,w:()=>S.money>=150&&S.day>=5&&!S.flags.burgled&&!HOUSES[S.house].safe,run:()=>{
     S.flags.burgled=1;
     const amt=lose(Math.min(250,Math.round(S.money*0.3)));
     say(`현관 자물쇠가 비틀려 있습니다. 서랍장이 모조리 열려 있고, 비상금으로 숨겨 둔 현금 $${amt}가 사라졌습니다.`);
@@ -2377,8 +3012,8 @@ function counseling(){
 
 /* ============ 엔딩 ============ */
 const ENDINGS={
-  good:['버텨낸 한 달','4주째 월요일. 집세는 제때 빠져나갔고, 당신은 내일도 출근합니다. 에밀리가 어린이집에서 그린 그림엔 커다란 해적 눈을 한 아빠가 웃고 있습니다. 완벽한 삶은 아니지만, 무너지지 않은 한 달이었습니다.',true],
-  evict:['퇴거','집주인 고든 씨와 보안관이 문 앞에 서 있습니다. 두 번째 집세 미납. 마리아는 에밀리와 함께 언니 집으로 떠나고, 당신은 쓰레기 봉투 세 개에 담긴 짐을 들고 도로변에 섭니다.'],
+  good:['버텨낸 한 달','4주째 월요일. 집세는 제때 빠져나갔고, 당신은 내일도 출근합니다. 에밀리가 유치원에서 그린 그림엔 커다란 해적 눈을 한 아빠가 웃고 있습니다. 완벽한 삶은 아니지만, 무너지지 않은 한 달이었습니다.',true],
+  evict:['퇴거','보안관이 퇴거 명령서를 들고 문 앞에 서 있습니다. 두 번째 주거비 미납. 마리아는 에밀리와 함께 언니 집으로 떠나고, 당신은 쓰레기 봉투 세 개에 담긴 짐을 들고 도로변에 섭니다.'],
   leave:['떠나간 사람들','식탁 위에 쪽지 한 장. “에밀리를 데리고 엄마 집에 가 있을게. 찾지 마.” 마리아의 글씨는 마지막 줄에서 번져 있습니다. 텅 빈 아파트에 냉장고 소리만 남았습니다.'],
   lost:['통제 상실','그날의 일은 기억나지 않습니다. 깨진 창문, 비명, 손등의 피. 그리고 당신을 겨누던 경찰의 총구. 당신은 결국, 당신을 만든 것들로부터 도망치지 못했습니다.'],
   arrest:['체포','차가운 수갑이 손목을 조입니다. 순찰차 뒷좌석 창밖으로 아파트 4층 불빛이 멀어집니다. 면회실 유리 너머로 에밀리를 다시 볼 수 있는 건, 몇 년 뒤의 일이 될 것입니다.'],
@@ -2510,7 +3145,10 @@ function render(){
   const C=$('choices');C.innerHTML='';
   const secOrder=[['poi','주요 장소'],['travel','이동'],['alt','우회 경로']];
   let idxCounter=1;
-  const indexed=choices.map((c,origIdx)=>({c,origIdx}));
+  const indexed=choices.map((c,origIdx)=>({c,origIdx})).filter(x=>!x.c.inline);
+  const onlyInline=!indexed.length&&choices.length>0;
+  C.style.display=onlyInline?'none':'';
+  $('ch-hr').style.display=onlyInline?'none':'';
 
   if(!S.ended && isMenu && S.loc!=='home'){
     secOrder.forEach(([secKey,secTitle])=>{
@@ -2530,7 +3168,7 @@ function render(){
     indexed.forEach(({c,origIdx},i)=>{
       if(c.grp&&c.grp!==lastGrp){lastGrp=c.grp;const h=document.createElement('div');h.className='ch-sec';h.textContent=c.grp;C.appendChild(h);}
       const b=document.createElement('button');
-      b.innerHTML=`(${i+1}) ${c.label}`;
+      b.innerHTML=`(${idxCounter++}) ${c.label}`;
       if(c.cls)b.className=c.cls;
       b.onclick=()=>choose(origIdx);
       C.appendChild(b);
@@ -2555,7 +3193,8 @@ function showJournal(){
   <tr><td>경과 일수</td><td>${S.day}일차 (${DAYS[wd()]}) · ${tstr()}</td></tr>
   <tr><td>날씨 및 기온</td><td>${S.weather} (${S.temp}°C)</td></tr>
   <tr><td>보유 현금</td><td>$${S.money}</td></tr>
-  <tr><td>월세 현황</td><td>매주 월요일 $${S.rent}${S.flags.rentExtra?` (+추가 청구 $${S.flags.rentExtra})`:''} · 납부 ${S.rentPaid}회 · 미납 ${S.missedRent}회</td></tr>
+  <tr><td>거주지</td><td>${HOUSES[S.house].n} (${S.houseOwned?'자가':`임대 · 보증금 $${S.deposit||0}`})</td></tr>
+  <tr><td>주거비 현황</td><td>매주 월요일 $${S.rent}${S.flags.rentExtra?` (+추가 청구 $${S.flags.rentExtra})`:''} · 납부 ${S.rentPaid}회 · 미납 ${S.missedRent}회</td></tr>
   <tr><td>현재 직업</td><td>${J?`${J.n} · ${jobTitle(S.job.id)} (일당 $${jobPay()}, 근무 ${S.job.worked}일, 평가 ${S.job.perf||0}점, 경고 ${S.job.strikes}/3)`:'무직'}${S.flags.firedCount?`<br><span style="color:#e08a5a">해고 이력 ${S.flags.firedCount}회</span>`:''}</td></tr>
   <tr><td>조직 지위</td><td>${GANG_RANKS[S.gangRank]}${S.gangRank>0?` (공헌도 ${S.gangRep})`:''}</td></tr>
   <tr><td>구인 정보</td><td>${Object.keys(S.leads).map(k=>JOBS[k].n+(banUntil(k)?` (재지원 ${banUntil(k)}일차부터)`:'')).join('<br>')||'확보된 공고 없음'}</td></tr>
@@ -2611,7 +3250,8 @@ function showStatus(){
   <tr><td>직업</td><td>${J?`${J.n} · <b>${jobTitle(S.job.id)}</b><br>${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00부터 ${J.hours}시간 · 일당 $${jobPay()} · 근무 ${S.job.worked}일 · 평가 ${S.job.perf||0}점 · 경고 ${S.job.strikes}/3`:'무직'}</td></tr>
   <tr><td>조직 지위</td><td>${GANG_RANKS[S.gangRank]}${S.gangRank>0?` (공헌도 ${S.gangRep})`:''}</td></tr>
   <tr><td>음주·금주</td><td>${S.alc>0?`<span style="color:#d48cf7">음주 중 (수치 ${Math.round(S.alc)} · 시간이 지나면 감소)</span>`:`맨정신 · 금주 ${S.sober}일째`}</td></tr>
-  <tr><td>집세</td><td>매주 월요일 $${S.rent}${S.flags.rentExtra?` (+추가 청구 $${S.flags.rentExtra})`:''} · 미납 ${S.missedRent}회</td></tr>
+  <tr><td>거주지</td><td>${HOUSES[S.house].n} (${S.houseOwned?'자가':'임대'})</td></tr>
+  <tr><td>${S.houseOwned?'관리비':'집세'}</td><td>매주 월요일 $${S.rent}${S.flags.rentExtra?` (+추가 청구 $${S.flags.rentExtra})`:''} · 미납 ${S.missedRent}회</td></tr>
   <tr><td>소지품</td><td>${invList.join(' · ')||'없음'}</td></tr>
   <tr><td>보유 가구</td><td>${furnNames.join('<br>')||'기본 가구만 있음'}</td></tr>
   <tr><td>문신 (타투)</td><td>${tatNames.join('<br>')||'없음'}</td></tr>
@@ -2695,9 +3335,16 @@ applyOptions(readOptions());
 function setPanel(o){$('panel').classList.toggle('open',o);$('tog').classList.toggle('open',o);$('tog').textContent=o?'‹':'›';document.body.classList.toggle('po',o);}
 $('tog').onclick=()=>setPanel(!$('panel').classList.contains('open'));
 document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>({
-  status:showStatus,rel:showRel,traits:showTraits,journal:showJournal,tech:showTech,wardrobe:showInventoryModal,options:showOptions,save:showSave
+  status:showStatus,rel:showRel,traits:showTraits,journal:showJournal,tech:showTech,wardrobe:showInventoryModal,family:()=>showFamily('maria'),options:showOptions,save:showSave
 })[b.dataset.m]());
 $('modal').onclick=e=>{if(e.target.id==='modal')$('modal').hidden=true;};
+/* 옷장·노트북 본문 안의 인라인 링크·버튼 처리 */
+$('story').addEventListener('click',e=>{
+  const hp=e.target.closest('[data-help]');if(hp){showHelp(hp.dataset.help);return;}
+  const a=e.target.closest('[data-ch]');if(!a)return;
+  e.preventDefault();
+  const i=+a.dataset.ch;if(choices[i])choose(i);
+});
 setPanel(window.innerWidth>=1000);
 start();
 </script>
