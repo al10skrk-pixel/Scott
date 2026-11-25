@@ -1488,7 +1488,7 @@ LOC.hideout=()=>{
       say('문지기가 토니의 연락을 확인한 뒤 안쪽으로 들여보냅니다. 빅 살바토레가 당신을 내려다봅니다.');
       opt('살바토레 조직 행동대원으로 입단한다',()=>{
         S.gangRank=1;S.gangRep=15;rel('tony',10);rel('don',25);st('tra',3);
-        if(S.job&&(S.job.id==='police'||S.job.id==='army')){
+        if(S.job&&(S.job.id==='police'||S.job.id==='army'||S.job.id==='deployed')){
           note(`조직 합류 사실이 적발되어 「${JOBS[S.job.id].n}」에서 즉시 파면되었습니다.`);
           S.job=null;
         }
@@ -2349,6 +2349,25 @@ const LP_TABS={portal:'구인구직 「워크파인드」',daylabor:'단기 일�
 const LP_FILTER={all:'전체',open:'지원 가능',booked:'예약·재직',unknown:'미확인'};
 const LP_SORT={base:'기본',pay:'일당',start:'출근 시각',days:'근무 일수'};
 const LP_KEYS=['mech','guard','cafe','clean','school','police','army'];
+/* 직업별 지원 조건 문구 */
+function lpReq(k){
+  return ({
+    police:'조건: 무전과 · 생활 지식 32+ · 거리의 요령 22+',
+    army:'조건: 무전과 · 정비 기술 45+ · 트라우마 55 이하',
+    mech:'우대: 정비 기술 · 프랭크와 친분 또는 월터 추천서',
+    deployed:'조건: 주방위군 정비병 「병장 정비조장」 이상 경력 (기지에서 선발 공고 확인) · 무전과 · 정비 기술 54+ · 트라우마 60 이하 · 현재 직장 정리 후 지원',
+    mercenary:'조건: 살바토레 조직원 이상 (본거지에서 계약 제안 확인) · 거리의 요령 48+ · 트라우마 75 이하 · 현재 직장 정리 후 지원',
+    delivery:'조건: 면접 없음 · 쇼핑몰 현장 간단 심사 (매력·거리의 요령·손놀림 반영)',
+    casino:'조건: 면접 없음 · 클럽/카지노 현장 간단 심사 (매력·생활 지식·손놀림 반영)'
+  })[k]||'조건: 특별 자격 제한 없음 (면접 통과 필요)';
+}
+/* 선행 경력이 필요한 공고: 충족 전엔 검색·예약 불가 (사유 반환) */
+function lpGate(k){
+  if(k==='deployed'&&!S.flags.deploymentLead)return '주방위군 정비병으로 「병장 정비조장」 이상 진급한 뒤, 포트 밀러 기지에서 파견 선발 공고를 확인해야 합니다.';
+  if(k==='mercenary'&&!S.flags.mercenaryLead)return '살바토레 조직에 들어간 뒤, 조직 본거지에서 민간 보안업체의 계약 제안을 들어야 합니다.';
+  return '';
+}
+const LP_WALKIN=['delivery','casino'];
 function lpJobState(k){
   if(S.job&&S.job.id===k)return 'cur';
   if(S.interviews[k])return 'booked';
@@ -2399,18 +2418,21 @@ function lpPortal(H){
     const J=JOBS[k],known=!!S.leads[k],cur=S.job&&S.job.id===k,sched=S.interviews[k],ban=banUntil(k);
     const badge=cur?'현재 재직 중':sched?(sched.day===S.day?'오늘 면접 예약':`${sched.day}일차 면접 예약`):ban?`재지원 제한 (${ban}일차부터)`:known?'지원 가능':'미확인 공고';
     const bc=cur||sched?'ok':ban?'warn':known?'':'dim';
-    const req=k==='police'?'조건: 무전과 · 생활 지식 32+ · 거리의 요령 22+':k==='army'?'조건: 무전과 · 정비 기술 45+ · 트라우마 55 이하':k==='mech'?'우대: 정비 기술 · 프랭크와 친분 또는 월터 추천서':'조건: 특별 자격 제한 없음 (면접 통과 필요)';
+    const req=lpReq(k),gate=lpGate(k);
     const info=known
       ?`<span>근무지 ${PL[J.loc].n} · ${J.days.map(x=>DAYS[x][0]).join('·')} ${J.start}:00 (${J.hours}시간)</span><span>초봉 일당 $${J.pay} · 승진 시 최대 $${Math.round(J.pay*PROMO_MULT[3])}</span><span class="wd-desc">${req}</span>`
-      :'<span>세부 공고를 검색해야 채용 조건과 면접 일정을 확인할 수 있습니다.</span>';
+      :`<span>세부 공고를 검색해야 근무 일정과 면접 일정을 확인할 수 있습니다.</span><span class="wd-desc">${req}</span>`;
     let acts;
     if(cur)acts=`<span class="wd-dim">현재 「${jobTitle(k)}」(으)로 근무 중입니다.</span>`;
+    else if(!known&&gate)acts=`<span class="wd-dim">${gate}</span>`;
     else if(!known)acts=lk('공고 검색 (0:30)',()=>{pass(30);S.leads[k]=1;st('str',1);laptopPage('portal',`「${J.n}」 채용 공고의 상세 정보와 지원 양식을 확보했습니다.`);});
     else if(ban)acts=`<span class="wd-dim">${ban}일차부터 다시 지원할 수 있습니다.</span>`;
     else if(sched)acts=lk('면접 예약 취소',()=>{delete S.interviews[k];laptopPage('portal',`「${J.n}」 면접 예약을 취소했습니다.`);},{cls:'risk'});
+    else if(gate)acts=`<span class="wd-dim">${gate}</span>`;
+    else if(LP_WALKIN.includes(k))acts=`<span class="wd-dim">면접 예약 없이 ${k==='delivery'?'웨스트게이트 쇼핑몰':'클럽 「벨벳 스모크」나 카지노 「레드 룸」'}에서 바로 지원합니다.${S.job?' (현재 직장을 정리해야 지원 가능)':''}</span>`;
     else if(S.job)acts='<span class="wd-dim">재직 중에는 새 면접을 잡을 수 없습니다.</span>';
     else acts=[S.day,S.day+1].map(dd=>lk(`${dd===S.day?'오늘':'내일'}(${DAYS[(dd-1)%7]}) 면접 예약 (0:15)`,()=>{
-      if((k==='police'||k==='army')&&(S.crimes>0||S.gangRank>0)){laptopPage('portal','온라인 사전 결격사유 조회에서 범죄·조직 이력이 확인되어 면접 예약이 거부되었습니다.');return;}
+      if((k==='police'||k==='army'||k==='deployed')&&(S.crimes>0||S.gangRank>0)){laptopPage('portal','온라인 사전 결격사유 조회에서 범죄·조직 이력이 확인되어 면접 예약이 거부되었습니다.');return;}
       pass(15);S.interviews[k]={day:dd};
       laptopPage('portal',`「${J.n}」 면접을 ${dd===S.day?'오늘':'내일'}로 예약했습니다. 영업시간 내에 ${PL[J.loc].n}을(를) 방문하세요.`);
     })).join(SEP);
@@ -2503,10 +2525,10 @@ function interview(id){
     if(S.crimes>0||S.gangRank>0){say('모병관이 신원 조회 결과를 보고 인상을 찌푸립니다. “규율 위반 이력이 있는 인원은 기지 출입 허가가 나지 않소.”');st('str',8);return;}
     if(S.skills.mech<45||S.st.tra>55){say('모병관이 서류를 돌려줍니다. “군용 장비 정비 기준(정비 기술 45 이상)과 심리 안정 기준(트라우마 55 이하)을 충족해야 합니다.”');st('str',5);return;}
   }
-  const who={school:'행정실장',mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'원무과 직원',police:'제4지구 경찰서 인사 담당 경사',army:'포트 밀러 기지 모병관'}[id];
+  const who={school:'행정실장',mech:'프랭크',guard:'경비 업체 매니저',cafe:'카페 점장',clean:'원무과 직원',police:'제4지구 경찰서 인사 담당 경사',army:'포트 밀러 기지 모병관',deployed:'파견대 선발관',mercenary:'민간 보안업체 계약 담당자'}[id]||'채용 담당자';
   say(`${who}이(가) 당신의 이력서와 얼굴을 번갈아 봅니다. 시선이 왼쪽 눈에서 멈춥니다. “그 눈은… 어쩌다 그런 겁니까? 그리고 전 직장은 왜 그만두셨죠?”`);
-  const skillBonus=id==='mech'?S.skills.mech*0.35:id==='guard'?S.skills.street*0.18:id==='police'?(S.skills.know+S.skills.street)*0.22:id==='army'?S.skills.mech*0.3:S.skills.know*0.12;
-  const attrBonus=id==='police'?(S.attrs.strg+S.attrs.calm)*0.12:id==='army'?(S.attrs.strg+S.attrs.stam)*0.14:id==='guard'?S.attrs.strg*0.12:S.attrs.dex*0.08;
+  const skillBonus=id==='deployed'?S.skills.mech*0.3:id==='mercenary'?S.skills.street*0.3:id==='mech'?S.skills.mech*0.35:id==='guard'?S.skills.street*0.18:id==='police'?(S.skills.know+S.skills.street)*0.22:id==='army'?S.skills.mech*0.3:S.skills.know*0.12;
+  const attrBonus=(id==='deployed'||id==='mercenary')?(S.attrs.strg+S.attrs.stam)*0.14:id==='police'?(S.attrs.strg+S.attrs.calm)*0.12:id==='army'?(S.attrs.strg+S.attrs.stam)*0.14:id==='guard'?S.attrs.strg*0.12:S.attrs.dex*0.08;
   const base=22+S.st.cha*0.5-S.st.fat*0.25-(S.st.str>=70?15:0)+skillBonus+attrBonus
     +(onTime?14:(sched?5:0))
     +(id==='mech'?(S.rel.frank||0)*0.4+(S.flags.walterRec?25:0):0)
@@ -3082,7 +3104,7 @@ function tonyTalk(){
     say('토니가 담배를 비벼 끄며 주변을 살핍니다. “스콧, 우리 보스 <b>빅 살바토레</b>가 네 얘기를 들었어. 손도 빠르고 입도 무겁다고. 동네 잔챙이 짓은 그만하고 정식으로 조직에 들어오라는군. 어떡할래?”');
     opt('조직에 정식으로 합류한다 (행동대원 입단)',()=>{
       S.gangRank=1;S.gangRep=15;rel('tony',10);rel('don',25);st('tra',3);
-      if(S.job&&(S.job.id==='police'||S.job.id==='army')){
+      if(S.job&&(S.job.id==='police'||S.job.id==='army'||S.job.id==='deployed')){
         note(`조직 합류 사실이 알려져 「${JOBS[S.job.id].n}」에서 즉시 파면되었습니다.`);
         S.job=null;
       }
@@ -3136,7 +3158,7 @@ const CR={
 function crime(k){
   const C=CR[k];pass(C.time);
   if(k==='pkg')S.pendingTony=null;
-  if(S.job&&(S.job.id==='police'||S.job.id==='army')){
+  if(S.job&&(S.job.id==='police'||S.job.id==='army'||S.job.id==='deployed')){
     note(`범죄 가담 사실이 적발되어 「${JOBS[S.job.id].n}」에서 파면되었습니다.`);
     S.job=null;
   }
@@ -3759,6 +3781,273 @@ $('story').addEventListener('keydown',e=>{
   if(t.id==='cs-search'&&e.key==='Enter'){e.preventDefault();csState.q=t.value.trim();csState.page=0;const i=+t.dataset.sch;if(choices[i])choose(i);}
   else if(t.id==='gr-search'&&e.key==='Enter'){e.preventDefault();t.blur();}
 });
+
+/* ===== 추가 확장: 자동 저장 · 파트타임 · 카지노 · 가족 사건 · 기술 감쇠 ===== */
+(function(){
+  const AUTO_SLOT = SKEY + '4';
+  const oldSleep = doSleep;
+  doSleep = function(mins){
+    oldSleep(mins);
+    try{
+      if(S && !S.ended) localStorage.setItem(AUTO_SLOT, snapshot());
+    }catch(e){}
+  };
+
+  /* 저장 메뉴에 자동 저장 슬롯을 표시 */
+  const oldShowSave = showSave;
+  showSave = function(){
+    oldShowSave();
+    const box = $('mbox');
+    if(!box) return;
+    const raw = lsGet(AUTO_SLOT);
+    let info = '비어 있음';
+    if(raw){
+      try{const d=JSON.parse(raw).S;info=`${d.day}일차 ${DAYS[(d.day-1)%7]} · $${d.money}`;}catch(e){}
+    }
+    const p=document.createElement('p');
+    p.innerHTML=`자동 저장 슬롯: <span style="color:#8a8a8a">${info}</span><br><button id="autoLoad" ${raw?'':'disabled'}>자동 저장 불러오기</button>`;
+    box.insertBefore(p,box.children[1]||null);
+    const b=$('autoLoad'); if(b&&raw)b.onclick=()=>load(lsGet(AUTO_SLOT));
+  };
+
+  /* 새 직업: 시간제 배달원과 고소득 카지노 딜러 */
+  JOBS.delivery={n:'시간제 배달원',loc:'mall',days:[0,1,2,3,4,5,6],start:11,hours:5,pay:105,parttime:true};
+  JOBS.casino={n:'벨벳 스모크 카지노 딜러',loc:'casino',days:[0,1,2,3,4,5,6],start:18,hours:8,pay:220,pro:true};
+  RANKS.delivery={t:['배달 보조','전담 배달원','선임 라이더','배달팀 관리자'],sk:'street',req:[0,18,28,40]};
+  RANKS.casino={t:['초보 딜러','전문 딜러','플로어 매니저','카지노 운영 책임자'],sk:'know',req:[0,28,42,58]};
+  PL.casino={n:'뒷골목 카지노 「레드 룸」',open:[18,4]};
+  WORK_LINES.delivery=[
+    '주문 봉투를 보온 가방에 넣고 낡은 오토바이에 올라탑니다. 주소를 확인하고 골목길을 빠져나갑니다.',
+    '아파트 계단을 오르내리며 음식을 배달합니다. 엘리베이터가 느려 계단을 뛰어오릅니다.',
+    '고객에게 봉투를 건네고 다음 배달지로 향합니다. 손에 익은 동선이 조금씩 빨라집니다.'
+  ];
+  WORK_LINES.casino=[
+    '칩을 정리하고 테이블의 판돈을 확인합니다. 손님들의 시선이 당신의 손끝을 따라옵니다.',
+    '카드를 능숙하게 섞어 나눠 줍니다. 실수하지 않도록 호흡을 고르고 규칙을 설명합니다.',
+    '테이블의 분위기를 살피며 칩을 교환합니다. 술 취한 손님이 시비를 걸지만 표정을 관리합니다.'
+  ];
+
+  const oldMall=LOC.mall;
+  LOC.mall=function(){oldMall();jobOptions('mall','delivery');};
+  const oldClub=LOC.club;
+  LOC.club=function(){oldClub();jobOptions('casino','casino');};
+  const oldAlley=LOC.alley;
+  LOC.alley=function(){
+    oldAlley();
+    opt('뒷골목 카지노 「레드 룸」에 들어간다',()=>go('casino',T_ROAD),{sec:'poi',min:T_ROAD,tag:'18:00~04:00'});
+  };
+  LOC.casino=function(){
+    const d=S.daily;
+    say('검은 벨벳 커튼 안쪽으로 붉은 조명이 번집니다. 룰렛과 카드 테이블이 늘어서 있고, 입구의 경비원은 손님들의 얼굴을 하나씩 확인합니다.');
+    if(S.heat>=65)sys('경찰의 감시가 심해진 탓에 직원들이 당신을 경계합니다.');
+    if(!d.casinoVisit){
+      opt('카지노 운영 책임자에게 구인 여부를 묻는다',()=>{d.casinoVisit=1;pass(15);S.leads.casino=1;S.leads.delivery=1;say('운영 책임자 마틴이 명함 두 장을 밀어 줍니다. “배달은 언제든 사람을 구하고, 딜러는 손이 빠르고 계산이 정확해야 해. 딜러 일당은 기본 $220부터 시작하지.”');},{min:15});
+    }
+    if(!d.casinoGame)opt('룰렛에 $40을 걸어 본다',()=>{
+      d.casinoGame=1;if(!pay(40))return;pass(45);
+      const chance=0.22+S.skills.street*0.002+S.attrs.calm*0.001;
+      if(R()<chance){const win=160+Math.floor(R()*140);cash(win);st('str',-3);skUp('street',1);say(`공이 붉은 칸에 멈춥니다. 딜러가 칩을 밀어 주며 $${win}을 지급합니다.`);}
+      else{st('str',7);say('공은 예상과 다른 칸에 멈춥니다. 판돈 $40이 테이블 아래로 사라집니다.');}
+    },{cls:'risk',min:45});
+    if(!S.job||S.job.id==='casino')jobOptions('casino','casino');
+    opt('카지노를 나간다',()=>go('alley',T_PLACE),{sec:'travel',min:T_PLACE});
+  };
+
+  /* 시간제 일자리는 면접 대신 현장 간단 심사로 채용 */
+  const oldJobOptions=jobOptions;
+  jobOptions=function(loc,id){
+    if((id==='delivery'||id==='casino')&&!S.job){
+      const J=JOBS[id];
+      if(S.leads[id]&&!S.daily['ap_'+id]&&isOpen(loc)){
+        opt(`「${J.n}」 시간제 근무에 지원한다`,()=>{
+          S.daily['ap_'+id]=1;pass(20);
+          const score=35+S.st.cha*0.35+(id==='delivery'?S.skills.street:S.skills.know)*0.55+S.attrs.dex*0.15-S.st.fat*0.2;
+          if(R()*100<score){
+            S.job={id,strikes:0,lastDay:0,hired:S.day,worked:0,rank:0,perf:0};
+            st('str',-5);say(id==='delivery'?'점장이 당신의 운전 경력과 동선을 확인하고 고개를 끄덕입니다. “내일부터 저녁 시간대 배달을 맡아 줘요.”':'운영 책임자가 카드 한 벌을 건넵니다. “손이 빠르군. 우선 작은 테이블부터 맡아 봐.”');
+            note(`채용 완료: ${J.n} · 기본 일당 $${J.pay}`);
+          }else{st('str',5);say('간단한 계산과 현장 대응 평가에서 좋은 점수를 받지 못했습니다. 며칠 뒤 다시 지원할 수 있습니다.');S.flags['ban_'+id]=S.day+2;}
+        },{min:20});
+      }
+      return;
+    }
+    return oldJobOptions(loc,id);
+  };
+
+  /* 직업 경력 기록과 승진 체계는 기존 공통 근무 시스템을 그대로 사용 */
+  const oldHireRoll=hireRoll;
+  hireRoll=function(id,p){return oldHireRoll(id,p);};
+
+  /* 기술·지식은 7일 이상 사용하지 않으면 매일 조금씩 감소 */
+  const oldSkUp=skUp;
+  skUp=function(k,n){
+    const v=oldSkUp(k,n);
+    if(S){S.skillUsed=S.skillUsed||{};S.skillUsed[k]=S.day;}
+    return v;
+  };
+  const oldNewDay=newDay;
+  newDay=function(){
+    oldNewDay();
+    if(!S||S.prison)return;
+    S.skillUsed=S.skillUsed||{};
+    Object.keys(SKILLN).forEach(k=>{
+      const last=S.skillUsed[k]||1;
+      const idle=S.day-last;
+      if(idle>7){
+        const before=S.skills[k];
+        S.skills[k]=Math.max(0,Math.round((before-0.45)*10)/10);
+        if(S.skills[k]<before)note(`${SKILLN[k]}을(를) 한동안 사용하지 않아 감각이 조금 무뎌졌습니다. (${S.skills[k].toFixed(1)})`);
+      }
+    });
+  };
+
+  /* 이사 후에는 예전 집주인·로페즈 부인 대신 새 이웃을 만남 */
+  const oldNeighbor=neighbor;
+  neighbor=function(){
+    if(S.house==='oldApt'){oldNeighbor();return;}
+    const people=[
+      '새 아파트 관리인 엘리엇이 우편함 앞에서 고개를 끄덕입니다. “택배가 오면 경비실에 맡겨 둘게요.”',
+      '동네 세탁소 주인 미셸이 비닐에 싼 셔츠를 건넵니다. “새로 이사 오셨죠? 수선은 언제든 맡기세요.”',
+      '자전거를 끌고 가던 대학생 노아가 길을 비켜 줍니다. “이 근처에 새로 생긴 마트가 어디인지 아세요?”',
+      '공원에서 강아지를 산책시키던 중년 남성 데이비드가 먼저 인사합니다. “좋은 저녁이네요.”'
+    ];
+    say(pick(people));st('str',-1);
+  };
+
+  /* 가족 위기: 관계 악화 시 이혼·아동보호국 개입 선택지 */
+  LIFE.custody={home:true,w:()=>!S.flags.custodyResolved,run:()=>{
+    say('현관문을 두드리는 소리가 납니다. 단정한 서류 가방을 든 아동보호국 조사관이 신분증을 보여 줍니다. “가정 내 갈등과 양육 환경에 관한 신고가 접수됐습니다. 에밀리의 안전과 생활 상태를 확인해야 합니다.”');
+    say('마리아는 에밀리를 품에 안은 채 굳은 얼굴로 서 있습니다. 에밀리는 버니 인형의 귀를 꼭 쥐고 당신의 눈치를 살핍니다.');
+    opt('조사에 협조하고 가족 상담 및 양육 지원을 신청한다',()=>{
+      S.flags.custodyResolved=S.day;S.flags.custodyPlan=1;pass(45);cash(-Math.min(S.money,35));rel('maria',8);rel('emily',5);st('str',8);
+      say('조사관은 당장 분리 조치를 내리지는 않지만 정기적인 가정 방문과 상담을 안내합니다. “아이 앞에서 다투지 않는 것부터 시작해 주세요.”');
+      note('가족 지원 계획이 시작되었습니다. 이후 생활 환경과 관계를 회복하면 보호관찰이 종료될 수 있습니다.');
+    },{min:45});
+    opt('마리아와 별거 및 이혼 절차를 밟는다',()=>{
+      S.flags.custodyResolved=S.day;S.flags.divorced=1;S.flags.wifeCut=1;rel('maria',-12);st('str',12);pass(30);
+      say('마리아는 한참 말이 없다가 작은 가방을 챙깁니다. “에밀리 앞에서는 더 이상 이렇게 살고 싶지 않아.” 두 사람은 별거를 시작하고 이혼 절차를 알아보기로 합니다.');
+      note('이혼 절차 진행 중: 마리아의 주급 지원이 중단되었습니다. 에밀리의 양육권과 면접 교섭은 별도 협의가 필요합니다.');
+    },{cls:'risk',min:30});
+    opt('상황을 부인하고 조사관을 돌려보낸다',()=>{
+      S.flags.custodyResolved=S.day;S.flags.custodyPlan=0;pass(15);rel('maria',-8);rel('emily',-8);st('str',10);
+      say('조사관은 문 앞에서 잠시 망설이다가 명함을 놓고 돌아갑니다. “아이의 안전에 우려가 계속되면 임시 보호 조치를 요청할 수 있습니다.”');
+      note('가정 상황이 개선되지 않으면 아동보호국의 재방문 및 임시 위탁 보호 이벤트가 발생할 수 있습니다.');
+    },{cls:'risk',min:15});
+  }};
+  const oldNewDay2=newDay;
+  newDay=function(){
+    oldNewDay2();
+    if(!S||S.ended||S.prison)return;
+    if(!S.flags.custodyResolved&&S.day>=4&&S.rel.maria<=18&&S.rel.emily<=35&&R()<0.45)S.pendingLife='custody';
+    if(S.flags.custodyResolved&&!S.flags.custodyPlan&&!S.flags.emilyFoster&&S.day>=S.flags.custodyResolved+3&&S.rel.emily<=20){
+      S.flags.emilyFoster=1;S.flags.emilyFosterDay=S.day;S.pendingLife='foster';
+    }
+  };
+  LIFE.foster={home:true,w:()=>S.flags.emilyFoster&&!S.flags.emilyReturned,run:()=>{
+    say('아동보호국 조사관이 다시 찾아옵니다. 이번에는 동행한 사회복지사도 있습니다. “지난 방문 이후에도 양육 환경이 충분히 개선되지 않았습니다. 법원의 임시 보호 명령에 따라 에밀리는 당분간 위탁 가정에서 지내게 됩니다.”');
+    say('에밀리는 버니를 끌어안고 울음을 참습니다. “아빠, 나 언제 집에 와?”');
+    opt('위탁 보호에 동의하고 양육 계획과 상담 일정을 확인한다',()=>{S.flags.fosterPlan=1;pass(30);rel('emily',-5);st('tra',8);say('조사관은 정기 면회와 양육 교육 일정을 안내합니다. 에밀리의 안전을 확인한 뒤 단계적으로 귀가 여부를 검토하겠다고 합니다.');});
+    opt('강하게 항의하고 면회를 요구한다',()=>{pass(20);st('str',15);rel('emily',-3);say('조사관은 차분하게 법원 명령서를 보여 줍니다. “면회는 가능하지만, 보호 조치를 즉시 취소할 수는 없습니다.”');},{cls:'risk'});
+  }};
+  const oldHome=LOC.home;
+  LOC.home=function(){
+    oldHome();
+    if(S.flags.emilyFoster&&!S.flags.emilyReturned&&S.flags.fosterPlan&&!S.daily.fosterVisit&&S.rel.emily>=45){
+      opt('사회복지사와 귀가 심사를 위한 면담을 진행한다',()=>{S.daily.fosterVisit=1;pass(40);S.flags.emilyReturned=1;S.flags.emilyFoster=0;rel('emily',15);st('str',-8);say('가정 방문과 면담이 끝난 뒤 사회복지사가 서류를 정리합니다. “생활 환경이 안정됐고 에밀리도 돌아가고 싶어 하네요. 단계적 귀가를 시작하겠습니다.”');},{min:40});
+    }
+  };
+})();
+
+
+/* ============ 추가 직업 경로 및 레드 룸 입장 문구 수정 ============ */
+(function(){
+  // 카지노 장소 진입 시 arrive()가 문장을 반환하지 않아 undefined가 출력되던 문제 수정
+  const oldArrive=arrive;
+  arrive=function(l){
+    if(l==='casino')return '검은 벨벳 커튼을 젖히고 뒷골목 카지노 「레드 룸」 안으로 들어섭니다. 붉은 조명 아래 룰렛과 카드 테이블이 빛나고, 딜러들의 손놀림이 쉴 새 없이 이어집니다.';
+    return oldArrive(l);
+  };
+  const oldDesc=desc;
+  desc=function(){
+    if(S.loc==='casino')return '낮은 천장 아래 붉은 네온이 번지는 비밀 카지노입니다. 룰렛 휠과 카드 테이블, 현금 교환 카운터가 늘어서 있고 경비원들이 출입문을 지키고 있습니다.';
+    return oldDesc();
+  };
+
+  // 군 복무 경력을 쌓은 뒤 지원할 수 있는 해외 파견 부대
+  JOBS.deployed={n:'해외 파견 군인',loc:'base',days:[0,1,2,3,4,5,6],start:7,hours:10,pay:285,pro:true};
+  RANKS.deployed={t:['파견 병장','분대 부사관','작전 부사관','선임 파견 고문관'],sk:'mech',req:[0,54,64,74]};
+  BOSS.deployed='파견대 작전장교';
+  BOSS.delivery='배달 대행점 점장';BOSS.casino='카지노 운영 책임자 마틴';
+  Object.assign(BREAK_ITEM,{delivery:'보온 배달 가방',casino:'칩 정리 트레이',deployed:'휴대용 전술 무전기',mercenary:'야간 투시경'});
+  Object.assign(MOCK_TXT,{
+    delivery:'배달을 받던 손님이 문틈으로 당신 얼굴을 보더니 “외눈으로 운전은 제대로 해?” 하고 비웃으며 동전 몇 개를 바닥에 던집니다.',
+    casino:'판돈을 잃은 손님이 칩을 집어던지며 “외눈박이 딜러가 카드를 조작했다!”고 소리칩니다.',
+    deployed:'다른 부대 병사 하나가 당신의 의안을 가리키며 “저 눈으로 경계를 서겠다고?” 하고 비아냥댑니다.',
+    mercenary:'신입 계약자 하나가 브리핑 도중 “외눈 지휘관 믿고 들어갔다가 다 죽는 거 아냐?” 하고 빈정댑니다.'
+  });
+  WORK_LINES.deployed=[
+    '새벽 점호가 끝나자 장비 점검표를 펼칩니다. 방탄 장구와 통신 장비, 차량 상태를 하나씩 확인합니다.',
+    '작전 지역 외곽의 경계 임무에 투입됩니다. 무전기에서 들려오는 지시를 확인하며 동료들과 간격을 유지합니다.',
+    '임무를 마치고 기지로 복귀합니다. 먼지와 땀으로 젖은 군복을 정리하고 장비를 반납합니다.'
+  ];
+
+  // 민간 보안업체의 고위험 해외 계약직 용병 경로
+  JOBS.mercenary={n:'민간 계약 용병',loc:'hideout',days:[0,1,2,3,4,5,6],start:20,hours:8,pay:360,pro:true};
+  RANKS.mercenary={t:['계약 경호원','전술 팀원','현장 팀 리더','독립 계약 지휘관'],sk:'street',req:[0,48,60,72]};
+  BOSS.mercenary='민간 보안업체 계약 담당자';
+  WORK_LINES.mercenary=[
+    '계약서에 적힌 임무 구역과 철수 조건을 다시 확인합니다. 장비를 점검하고 팀원들과 통신 암호를 맞춥니다.',
+    '의뢰인의 이동 경로를 확보하고 위험 구역을 우회합니다. 예상치 못한 소란이 벌어져도 계약 범위를 벗어나지 않도록 판단합니다.',
+    '임무 종료 신호가 떨어집니다. 장비를 회수하고 보고서를 작성한 뒤 계약 대금을 확인합니다.'
+  ];
+  LP_KEYS.push('deployed','mercenary');
+
+  const oldBase=LOC.base;
+  LOC.base=function(){
+    oldBase();
+    const d=S.daily;
+    if(!S.flags.deploymentLead && S.job && S.job.id==='army' && (S.job.rank||0)>=2){
+      opt('해외 파견 부대의 선발 공고를 확인한다',()=>{
+        pass(25);S.flags.deploymentLead=1;S.leads.deployed=1;
+        say('작전장교가 복무 기록을 살펴봅니다. “정비 중대에서 쌓은 경력이라면 파견대에서도 쓸모가 있겠군. 다음 순환 파견 인원을 모집 중이오. 현장 판단력과 장비 운용 능력을 다시 평가하겠소.”');
+        note('해외 파견 군인 공고가 워크파인드에 등록되었습니다. 현재 군 직장을 사직한 뒤 기지에서 지원할 수 있습니다.');
+      },{min:25});
+    }
+    if((S.leads.deployed||(S.interviews&&S.interviews.deployed))&&(!S.job||S.job.id==='deployed'))jobOptions('base','deployed');
+  };
+
+  const oldHideout=LOC.hideout;
+  LOC.hideout=function(){
+    oldHideout();
+    if(!S.flags.mercenaryLead && S.gangRank>=1){
+      opt('민간 보안업체의 해외 계약 제안을 듣는다',()=>{
+        pass(20);S.flags.mercenaryLead=1;S.leads.mercenary=1;
+        say('본거지에 찾아온 계약 담당자가 스콧의 전투 경험과 거리에서 쌓은 평판을 확인합니다. “조직 일과는 별개인 민간 계약이야. 위험 수당은 높지만, 임무 결과에 대한 책임도 전부 계약자 몫이지.”');
+        note('민간 계약 용병 공고가 등록되었습니다. 현재 직장을 정리한 뒤 본거지에서 지원할 수 있습니다.');
+      },{min:20});
+    }
+    if((S.leads.mercenary||(S.interviews&&S.interviews.mercenary))&&(!S.job||S.job.id==='mercenary'))jobOptions('hideout','mercenary');
+  };
+
+  // 파견직은 정규 군 복무 경력, 용병은 조직 또는 거리 경력을 요구
+  const oldInterview=interview;
+  interview=function(id){
+    if(id==='deployed'||id==='mercenary'){
+      const sc=S.interviews&&S.interviews[id];
+      const gate=lpGate(id);
+      if(gate){if(sc)delete S.interviews[id];S.daily['ap_'+id]=1;pass(20);say(id==='deployed'?'파견대 선발관이 서류를 넘겨 봅니다. “주방위군 정비 중대 복무 기록이 없군요. 파견대는 병장 정비조장 이상 경력자만 선발합니다.”':'계약 담당자가 팔짱을 낍니다. “조직 쪽 추천 없이 들어온 사람과는 계약하지 않아.”');sys(gate);st('str',5);return;}
+      if(id==='deployed'&&(S.crimes>0||S.gangRank>0)){if(sc)delete S.interviews[id];S.daily['ap_'+id]=1;pass(20);say('선발관이 신원 조회 결과를 보고 고개를 젓습니다. “범죄·조직 연루 이력이 있는 인원은 해외 파견 대상이 될 수 없소.”');st('str',8);return;}
+    }
+    if(id==='deployed' && (S.skills.mech<54 || S.st.tra>60)){
+      if(S.interviews)delete S.interviews[id];S.daily['ap_'+id]=1;pass(20);say('파견대 선발관이 평가표를 덮습니다. “정비 기술 54 이상, 트라우마 60 이하가 필요합니다. 현장 임무를 맡기기엔 아직 준비가 부족하오.”');st('str',5);return;
+    }
+    if(id==='mercenary' && (S.skills.street<48 || S.st.tra>75)){
+      if(S.interviews)delete S.interviews[id];S.daily['ap_'+id]=1;pass(20);say('계약 담당자가 고개를 젓습니다. “거리의 요령 48 이상과 기본적인 심리 안정성이 필요해. 위험한 현장에서 팀을 지휘할 수 있다는 걸 보여 줘야 해.”');st('str',5);return;
+    }
+    return oldInterview(id);
+  };
+})();
+
 setPanel(window.innerWidth>=1000);
 start();
 </script>
