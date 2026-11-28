@@ -239,7 +239,7 @@ p.wd-sec{margin-top:6px}
     <div class="dol-grid">
       <button class="pbtn" data-m="status">캐릭터 특성</button>
       <button class="pbtn" data-m="rel">사회관계</button>
-      <button class="pbtn" data-m="family">가족 (마리아 · 에밀리)</button>
+      <button class="pbtn" data-m="family">가족</button>
       <div class="dol-grid-row">
         <button class="pbtn" data-m="traits">성향·병력</button>
         <button class="pbtn" data-m="journal">일지·가계</button>
@@ -468,14 +468,14 @@ const effCtl=()=>S.alc>0?clamp(S.st.ctl-Math.round(S.alc*0.45)):S.st.ctl;
 function newState(){
   const startClothes=['tee_grey','jeans_old','sweats_home','undershirt_w','boxer_dark','socks_thick','boots_work'];
   return {
-    money:180,t:7*60,day:1,weather:'맑음',temp:16,wet:0,
+    money:180,kids:[],preg:null,t:7*60,day:1,weather:'맑음',temp:16,wet:0,
     st:{fat:25,str:40,tra:45,ctl:100,cha:30},
     alc:0,
     skills:Object.assign({},DEFAULT_SKILLS),
     attrs:Object.assign({},DEFAULT_ATTRS),
     rel:{maria:50,emily:75},met:{maria:1,emily:1},
     loc:'home',
-    inv:{beer:2,flower:0,toy:0,watch:0,cologne:0,bookset:0,vitamin:0,notebook:0,umbrella:0},
+    inv:{beer:2,flower:0,toy:0,watch:0,cologne:0,bookset:0,vitamin:0,notebook:0,umbrella:0,condom:0},
     furniture:[],
     pantry:{},
     wardrobe:startClothes.slice(),
@@ -558,7 +558,7 @@ function pass(min,o={}){
 }
 
 function newDay(){
-  const prevWd=wd();const prevDay=S.day;
+  const prevWd=wd();const prevDay=S.day;const prevDaily=S.daily||{};
   if(S.prison){
     S.day++;S.daily={};S.flags.nightOutWarn=0;
     S.weather=pick(['맑음','맑음','흐림','흐림','비','폭풍우']);
@@ -567,6 +567,7 @@ function newDay(){
     if(S.drank){S.sober=0}else{S.sober++}
     S.drank=false;S.crave=Math.max(0,S.crave-4);
     S.heat=Math.max(0,S.heat-5);
+    famDaily(prevDaily,true);
     injDaily();
     S.prison.daysLeft--;
     if(S.prison.daysLeft<=0){
@@ -608,7 +609,7 @@ function newDay(){
     note(S.gangRank===3?`조직 보스 상납금 $${passive}가 들어왔습니다.`:`구역 관리 몫으로 조직에서 $${passive}를 보내왔습니다.`);
   }
   const w=wd();
-  if(w===4&&!S.sep&&!S.flags.famAtLucia){const wp=WIFE_PAY-(S.flags.wifeCut?120:0);S.flags.wifeCut=0;cash(wp);note(`금요일. 마리아의 주급 $${wp}가 생활비 통장에 들어왔습니다.`);}
+  if(w===4&&!S.sep&&!S.flags.famAtLucia){const wp=Math.round((WIFE_PAY-(S.flags.wifeCut?120:0))*payMult());S.flags.wifeCut=0;cash(wp);note(`금요일. 마리아의 주급 $${wp}가 생활비 통장에 들어왔습니다.${payMult()<1?' (임신·출산으로 근무를 줄여 평소보다 적습니다)':''}`);}
   if(w===2){const bill=38+Math.floor(R()*25);const p=lose(bill);note(`수요일. 전기·수도·가스 공과금 $${p}가 빠져나갔습니다.`);if(p<bill){st('str',6);rel('maria',-3);S.flags.rentExtra=(S.flags.rentExtra||0)+(bill-p)+10;note(`잔액 부족으로 공과금 $${bill-p}가 연체되었습니다. 연체료 $10와 함께 다음 집세에 합산됩니다.`);}}
   if(w===3&&S.flags.medDebt){const p=lose(S.flags.medDebt);S.flags.medDebt-=p;if(p)note(`병원 미납 진료비 $${p}가 청구되었습니다.${S.flags.medDebt?` (남은 미납금 $${S.flags.medDebt})`:''}`);}
   if(S.flags.tooth){st('str',4);st('fat',2);note('어금니가 밤새 욱신거렸습니다. (병원에서 치과 진료 가능)');}
@@ -627,12 +628,13 @@ function newDay(){
     if(HS.relE&&R()<0.6)rel('emily',HS.relE);
     if(HS.damp&&R()<0.3){st('fat',3);note('반지하의 눅눅한 곰팡이 냄새 때문에 밤새 기침을 했습니다.');}
   }
+  famDaily(prevDaily,false);
   if(S.flags.emilyWorse&&S.day>=S.flags.emilyWorse){S.flags.emilyWorse=0;S.pendingLife='emilyWorse';}
   else if(!S.pendingLife&&S.day>=3&&R()<0.38)S.pendingLife=pickLife();
 }
 
 function isOpen(l){const o=PL[l].open;if(!o)return true;const h=hh();return o[0]<o[1]?(h>=o[0]&&h<o[1]):(h>=o[0]||h<o[1]);}
-const mariaHome=()=>{if(S.sep||S.flags.famAtLucia)return false;const h=hh();if(h>=23||h<6)return false;return weekend()?true:(h>=18||(h<7&&h>=6)||S.daily.mariaOff);};
+const mariaHome=()=>{if(S.sep||S.flags.famAtLucia)return false;const h=hh();if(h>=23||h<6)return false;if(mLeave())return true;return weekend()?true:(h>=18||(h<7&&h>=6)||S.daily.mariaOff);};
 const emilyHome=()=>{const h=hh();if(S.flags.emilyFoster||S.sep||S.flags.famAtLucia)return false;if(S.daily.emilyBed||h>=21||h<7)return false;return weekend()?true:(h>=18||(S.daily.picked&&h>=15));};
 
 /* ============ 메인 루프 ============ */
@@ -665,6 +667,7 @@ function checks(){
   if(S.day>=29&&S.job&&S.missedRent===0&&!S.flags.goodEnd){S.flags.goodEnd=1;return monthMilestone();}
   if(S.st.fat>=100){collapse();return;}
   if(S.st.str>=100){breakdown();return;}
+  if(S.flags.famEvt&&!S.shift){const id=S.flags.famEvt;if(id==='birth'||(S.loc==='home'&&mariaHome())){S.flags.famEvt=null;return FAMEVT[id]();}}
   if(S.pendingLife&&!S.shift){
     const L=LIFE[S.pendingLife];
     if(!L){S.pendingLife=null;return;}
@@ -881,6 +884,7 @@ LOC.home=()=>{
 
 /* ============ 가족: 선택 가능한 인물 (마리아 · 에밀리) ============ */
 function famWhere(k){
+  if(isKid(k))return kidWhere(k);
   const h=hh(),atHome=S.loc==='home';
   if(k==='maria'){
     if(mariaHome())return {state:'home',here:atHome,txt:'집에 있음'};
@@ -893,10 +897,13 @@ function famWhere(k){
   return {state:'away',here:false,txt:'학교 부속 유치원 해바라기반에 있음'};
 }
 function famMood(k){
+  if(isKid(k))return kidMood(k);
   const r=S.rel[k];
   if(k==='maria'){
     if(S.daily.fought)return '화가 나 있음';
     if(S.alc>0)return '실망한 기색';
+    if(S.preg&&S.preg.told)return pregMonth()<=3?'입덧 중':'배를 감싸 쥠';
+    if(mPeriod())return '예민함 (생리 중)';
     return r>=80?'애정 어림':r>=60?'다정함':r>=40?'무난함':r>=20?'지쳐 있음':'냉랭함';
   }
   if(S.daily.snapped)return '겁먹음';
@@ -905,9 +912,9 @@ function famMood(k){
 function familyCardsHtml(){
   const card=k=>{
     const F=FAMILY[k],w=famWhere(k),r=S.rel[k],i=ia(F.short,()=>charPage(k));
-    return `<div class="fam-card${w.state==='away'?' away':''}" data-ch="${i}" role="button"><div class="fam-top"><b>${F.short}</b><span class="fam-role">${F.role} · ${F.age}세</span></div><span class="fam-where ${w.state==='home'?'wd-ok':'wd-dim'}">${w.txt}</span><div class="dol-bar"><i style="width:${r}%;background:${F.color}"></i></div><span class="fam-mood">호감 ${r} · ${famMood(k)}</span></div>`;
+    return `<div class="fam-card${w.state==='away'?' away':''}" data-ch="${i}" role="button"><div class="fam-top"><b>${F.short}</b><span class="fam-role">${F.role} · ${famAge(F)}</span></div><span class="fam-where ${w.state==='home'?'wd-ok':'wd-dim'}">${w.txt}</span><div class="dol-bar"><i style="width:${r}%;background:${F.color}"></i></div><span class="fam-mood">호감 ${r} · ${famMood(k)}</span></div>`;
   };
-  return `<div class="wd fam-box"><p class="wd-sec"><span class="wd-title">가족</span> <i class="wd-cnt">인물을 선택해 상호작용하세요</i></p><div class="fam-cards">${card('maria')}${card('emily')}</div></div>`;
+  return `<div class="wd fam-box"><p class="wd-sec"><span class="wd-title">가족</span> <i class="wd-cnt">인물을 선택해 상호작용하세요</i></p><div class="fam-cards">${card('maria')}${card('emily')}${kidKeys().map(card).join('')}</div></div>`;
 }
 /* 상호작용 실행 후 같은 인물 화면으로 돌아오기 (선택지가 생기면 그대로 보여줌) */
 function famAct(k,eff){
@@ -918,11 +925,13 @@ function famAct(k,eff){
   };
 }
 function famIntro(k,w){
+  if(isKid(k))return kidIntro(k,w);
   const h=hh(),r=S.rel[k];
   if(k==='maria'){
     if(w.state==='away')return '마리아는 지금 식당에서 일하고 있습니다. 휴대폰으로 연락할 수 있습니다.';
     if(w.state==='asleep')return '마리아가 침실에서 고르게 숨을 쉬며 잠들어 있습니다.';
     if(S.daily.fought)return '마리아가 등을 돌린 채 싱크대 앞에 서 있습니다. 어깨가 굳어 있습니다.';
+    if(mPeriod())return '마리아가 소파에 웅크려 아랫배를 감싸 쥐고 있습니다. 당신이 다가가자 “오늘은 좀 내버려 둬” 하고 중얼거립니다.';
     return `마리아가 ${h<12?'부엌 식탁에서 커피를 마시고':h<18?'거실에서 빨래를 개고':'부엌에서 설거지를 하고'} 있습니다. 당신이 다가가자 ${r>=50?'옅게 웃으며 ':''}고개를 듭니다.`;
   }
   if(w.state==='away')return '에밀리는 지금 유치원에 있습니다. 평일 15:00~18:00 사이 윌로우 크릭 초등학교 부속 유치원에서 데려올 수 있습니다.';
@@ -956,21 +965,14 @@ function mariaActs(w){
     if(S.alc<=0)d.fought=0;}});
   add('애정','꼭 안아 준다',{done:d.mHug,min:5,fn:()=>{d.mHug=1;pass(5);
     if(S.alc>0){rel('maria',-2);say('마리아가 술 냄새에 얼굴을 찡그리며 당신을 밀어냅니다.');return;}
+    if(mPeriod()){rel('maria',-1);st('str',2);say('안으려 하자 마리아가 팔꿈치로 당신을 밀어냅니다. “…오늘은 건드리지 마. 배 아파.” 곧 작게 덧붙입니다. “미안, 짜증 내려던 건 아닌데.”');return;}
     if(r<25||d.fought){rel('maria',1);say('마리아는 뻣뻣하게 서 있다가, 잠시 뒤 당신의 등을 한 번 두드립니다.');return;}
     rel('maria',3);st('str',-3);say('뒤에서 마리아를 꼭 끌어안습니다. 그녀가 당신 팔에 기대며 눈을 감습니다. “…좋다.”');}});
   add('애정','고맙다고 말한다',{done:d.mThank,min:5,fn:()=>{d.mThank=1;pass(5);
     if(r<20){rel('maria',1);say('“…갑자기 왜 그래?” 마리아가 의심스러운 눈으로 당신을 봅니다.');return;}
     rel('maria',3);st('cha',0);say('“늘 고마워. 당신 없었으면 우린 진작 무너졌을 거야.” 마리아의 눈가가 살짝 붉어집니다.');}});
   if(h>=19)add('애정','발 마사지를 해 준다',{done:d.mMassage,min:20,fn:()=>{d.mMassage=1;pass(20);rel('maria',5);st('str',-2);say('하루 종일 서서 일한 마리아의 발을 무릎 위에 올려 천천히 주무릅니다. 그녀가 소파에 머리를 기대고 작게 웃습니다. “정비공 손이라 그런가, 힘이 좋네.”');}});
-  if(h>=21&&h<23&&r>=30)add('애정','둘만의 밤을 보낸다',{done:d.nightTogether,min:180,fn:()=>{
-    d.nightTogether=1;pass(180,{sleep:true,rest:8});
-    if(S.drank||S.alc>0){rel('maria',-4);st('str',3);say('마리아는 술 냄새를 느끼고 조용히 고개를 젓습니다. “오늘은 그냥 자자, 스콧.” 당신은 같은 침대에 누웠지만 한동안 잠들지 못합니다.');return;}
-    rel('maria',8);st('str',-8);st('tra',-1);
-    say(pick([
-      '에밀리가 잠든 뒤, 마리아가 당신 옆에 앉습니다. 두 사람은 오래된 농담과 처음 만났던 날의 이야기를 나눕니다. 조심스러운 입맞춤 뒤, 방문 너머에서 에밀리의 고른 숨소리가 들립니다. 그날 밤만큼은 서로의 곁을 지킵니다.',
-      '마리아가 먼저 당신의 손을 잡습니다. “요즘 우리, 이렇게 앉아 있는 시간도 없었지.” 말없이 어깨를 기대온 그녀를 당신은 꼭 안아줍니다. 밤은 천천히 깊어집니다.',
-      '두 사람은 나란히 누워 천장을 바라봅니다. 내일 걱정은 여전하지만, 마리아가 당신의 손가락을 만지작거리는 동안만큼은 아무 말도 필요하지 않습니다.'
-    ]));}});
+  famNightAct(add,h,r,d);
   add('함께하기','집안일을 나눠 한다',{done:d.chores,min:60,fn:()=>{d.chores=1;pass(60);rel('maria',5);st('str',-3);say(pick(['설거지를 하고 쓰레기를 내다 버립니다. 마리아가 등 뒤에서 작게 "고마워" 하고 말합니다.','빨래를 개다가 에밀리의 작은 양말 한 짝이 손에 걸립니다. 이상하게 마음이 편해집니다.']));}});
   if(h>=16&&h<21)add('함께하기','저녁을 차린다 (장보기 $12)',{done:d.cook,min:60,fn:()=>{
     if(!pay(12))return;d.cook=1;pass(60);rel('maria',6);st('fat',-6);st('str',-3);skUp('know',0.5);if(eh)rel('emily',3);
@@ -986,6 +988,7 @@ function mariaActs(w){
   if(eh&&S.rel.maria>=55&&S.rel.emily>=70&&!S.flags.familyPhoto&&h>=18&&h<21)add('함께하기','세 식구가 함께 사진을 찍는다',{min:20,fn:()=>{S.flags.familyPhoto=1;pass(20);rel('maria',5);rel('emily',5);st('str',-4);say('에밀리가 버니를 가운데에 앉히고 당신과 마리아를 양옆으로 끌어당깁니다. 휴대폰 타이머가 깜빡이는 동안 당신은 어색하게 웃습니다. 사진 속 세 사람은 조금 지쳐 보이지만, 분명 같은 방향을 보고 있습니다.');note('사진 한 장이 냉장고 문에 붙었습니다.');}});
   if(S.inv.flower)add('선물','프리지아 꽃다발을 건넨다',{fn:()=>{S.inv.flower--;rel('maria',8);st('str',-4);say('마리아가 놀란 눈으로 꽃다발을 받아 듭니다. “무슨 날이야?” 그녀가 웃습니다. 오랜만에 보는 웃음입니다.');}});
   if(S.inv.watch)add('선물','손목시계를 선물한다',{fn:()=>{S.inv.watch--;rel('maria',14);st('str',-5);say('작은 상자를 열어본 마리아가 말을 잇지 못합니다. “스콧, 이거 비싼 거잖아…” 그녀는 몇 번이나 손목을 매만지며 눈시울을 붉힙니다.');}});
+  famMariaActs(add,d,h,r,eh);
   return A;
 }
 function emilyActs(w){
@@ -1018,6 +1021,7 @@ function emilyActs(w){
     say('불을 끄고 침대 맡에 앉아 자장가를 흥얼거립니다. 음정이 엉망이지만 에밀리는 개의치 않습니다. “아빠, 내일도 있어?” “그럼.” 작은 숨소리가 고르게 바뀝니다.');}});
   if(S.inv.toy)add('선물','곰 인형을 준다',{fn:()=>{S.inv.toy--;rel('emily',12);rel('maria',2);say('“아빠 최고!” 에밀리가 포장지를 찢으며 소리칩니다. 버니에게 새 친구가 생겼다고 한참을 떠듭니다.');}});
   if(S.inv.bookset)add('선물','그림책 세트를 준다',{fn:()=>{S.inv.bookset--;rel('emily',10);rel('maria',3);st('ctl',1);say('알록달록한 그림책 세 권을 받아 든 에밀리가 무릎 위에 책을 펼칩니다. “아빠, 이거 다 읽어줘!”');}});
+  famEmilyActs(add,d);
   return A;
 }
 function charPage(k,msg){
@@ -1027,14 +1031,15 @@ function charPage(k,msg){
   const H=['<div class="wd">'];
   H.push(`<p>${famIntro(k,w)}</p><p class="wd-links">${lkRow([lk(N('집 안으로 돌아간다'),()=>{}),lk(N(`${FAMILY[other].short}에게 간다`),()=>charPage(other))],false)}</p>`);
   H.push('<hr class="wd-hr">');
-  H.push(`<div class="fam-profile"><div class="fam-avatar" style="background:${F.color}">${F.short[0]}</div><div class="wd-item-info"><b>${F.name} <em class="lp-badge">${F.role} · ${F.age}세</em></b><span>${F.job}</span><span class="${w.state==='home'?'wd-ok':'wd-dim'}" style="font-size:13px">현재: ${w.txt}</span></div></div>`);
+  H.push(`<div class="fam-profile"><div class="fam-avatar" style="background:${F.color}">${F.short[0]}</div><div class="wd-item-info"><b>${F.name} <em class="lp-badge">${F.role} · ${famAge(F)}</em></b><span>${F.job}</span><span class="${w.state==='home'?'wd-ok':'wd-dim'}" style="font-size:13px">현재: ${w.txt}</span></div></div>`);
   H.push(`<p class="wd-lbl">호감도 <span class="wd-num">${r}</span> · 기분: ${famMood(k)}</p><div class="dol-bar fam-bar"><i style="width:${r}%;background:${F.color}"></i></div>`);
+  if(k==='maria')H.push(famMariaInfo());
   H.push(`<p class="wd-dim">좋아하는 것: ${F.likes}<br>싫어하는 것: ${F.dislikes}</p>`);
   H.push('<hr class="wd-hr">');
   if(msg)H.push(`<div class="wd-msgbox">${msg}</div>`);
   H.push(fxInline());
-  const acts=k==='maria'?mariaActs(w):emilyActs(w);
-  if(!acts.length)H.push(`<p class="wd-dim">${k==='emily'?'지금은 에밀리와 함께할 수 있는 일이 없습니다. 평일 오후 학교 부속 유치원으로 데리러 가 보세요.':'지금은 마리아와 함께할 수 있는 일이 없습니다.'}</p>`);
+  const acts=isKid(k)?kidActs(k,w):k==='maria'?mariaActs(w):emilyActs(w);
+  if(!acts.length)H.push(`<p class="wd-dim">${k==='emily'?'지금은 에밀리와 함께할 수 있는 일이 없습니다. 평일 오후 학교 부속 유치원으로 데리러 가 보세요.':(isKid(k)?'지금은 아기와 함께할 수 있는 일이 없습니다.':'지금은 마리아와 함께할 수 있는 일이 없습니다.')}</p>`);
   const groups=[];acts.forEach(a=>{if(!groups.includes(a.g))groups.push(a.g);});
   groups.forEach(g=>{
     const items=acts.filter(a=>a.g===g).map(a=>{
@@ -1050,13 +1055,316 @@ function charPage(k,msg){
 }
 function famProfileHtml(k){
   const F=FAMILY[k],w=famWhere(k),r=S.rel[k];
-  return `<div class="fam-profile"><div class="fam-avatar" style="background:${F.color}">${F.short[0]}</div><div><b style="font-size:16px">${F.name}</b> <span style="color:#999">${F.role} · ${F.age}세</span><br><span style="color:#aaa;font-size:13px">${F.job}</span></div></div>
+  return `<div class="fam-profile"><div class="fam-avatar" style="background:${F.color}">${F.short[0]}</div><div><b style="font-size:16px">${F.name}</b> <span style="color:#999">${F.role} · ${famAge(F)}</span><br><span style="color:#aaa;font-size:13px">${F.job}</span></div></div>
   <table><tr><td>현재 위치</td><td>${w.txt}</td></tr><tr><td>호감도</td><td>${r} · ${famMood(k)}</td></tr><tr><td>좋아하는 것</td><td>${F.likes}</td></tr><tr><td>싫어하는 것</td><td>${F.dislikes}</td></tr></table>
   <p style="color:#bbb">${F.bio}</p>`;
 }
 function showFamily(k){
-  modal(`<h3>가족</h3><div style="margin-bottom:10px">${['maria','emily'].map(x=>`<button data-fam="${x}" style="${x===k?'border-color:#6ea8fe;color:#6ea8fe':''}">${FAMILY[x].short}</button>`).join('')}</div>${famProfileHtml(k)}<p style="color:#8a8a8a;font-size:13px">집에서 [가족] 카드의 인물을 선택하면 대화·애정 표현·함께하기·돌봄·선물 등 다양한 상호작용을 할 수 있습니다.</p>`);
+  modal(`<h3>가족</h3><div style="margin-bottom:10px">${['maria','emily',...kidKeys()].map(x=>`<button data-fam="${x}" style="${x===k?'border-color:#6ea8fe;color:#6ea8fe':''}">${FAMILY[x].short}</button>`).join('')}</div>${famProfileHtml(k)}<p style="color:#8a8a8a;font-size:13px">집에서 [가족] 카드의 인물을 선택하면 대화·애정 표현·함께하기·돌봄·선물 등 다양한 상호작용을 할 수 있습니다.</p>`);
   document.querySelectorAll('[data-fam]').forEach(b=>b.onclick=()=>showFamily(b.dataset.fam));
+}
+
+/* ============ 가족 확장: 마리아의 주기 · 피임 · 임신 · 출산 · 육아 (에밀리의 동생들) ============ */
+/* 이야기 속 시간은 압축되어 있습니다: 임신 기간 30일(=10개월), 아기 나이 3일 = 1개월 */
+const CYC_LEN=28, PREG_DAYS=30, DAYS_PER_MONTH=3, PP_DAYS=14, MAX_KIDS=4, BIRTH_COST=320, CONDOM_PROTECT=0.12;
+const KID_NAMES={M:['마테오','헨리','올리버','레오','잭','노아','루카스'],F:['소피아','릴리','그레이스','미아','클로이','이사벨','엘라']};
+const hasJong=t=>{const c=String(t).charCodeAt(String(t).length-1)-0xAC00;return c>=0&&c<11172&&c%28!==0;};
+const J=(t,a,b)=>t+(hasJong(t)?a:b);
+const kids=()=>S.kids||(S.kids=[]);
+const isKid=k=>kids().some(x=>x.key===k);
+const kidOf=k=>kids().find(x=>x.key===k);
+const kidDays=x=>S.day-x.born;
+const kidMonths=x=>Math.floor(kidDays(x)/DAYS_PER_MONTH);
+function kidAgeTxt(x){const m=kidMonths(x);return m<1?`신생아 ${kidDays(x)+1}일째`:m<24?`${m}개월`:`${Math.floor(m/12)}세`;}
+function famAge(F){return F.ageTxt?F.ageTxt():F.age+'세';}
+function kidStage(x){const m=kidMonths(x);return m<3?'newborn':m<12?'infant':m<24?'toddler':'child';}
+function syncKids(){
+  kids().forEach(x=>{
+    if(!FAMILY[x.key]||FAMILY[x.key]._n!==x.name){
+      const sx=x.sex==='M';
+      FAMILY[x.key]={_n:x.name,short:x.name,name:x.name+' 카터',role:sx?'아들':'딸',color:sx?'#6ec1e0':'#f0a0b8',ageTxt:()=>kidAgeTxt(x),
+        job:'카터 가족의 새 식구 · 에밀리의 동생',
+        likes:'아빠의 낮은 목소리, 따뜻한 우유, 에밀리 누나의 버니 인형, 딸랑이 소리',
+        dislikes:'젖은 기저귀, 큰 소리, 낯선 사람, 배고픈 시간',
+        bio:`${x.name}. 에밀리의 ${sx?'남동생':'여동생'}으로 태어났다. 아직 말은 못 하지만 아빠의 해적 눈을 보면 꼭 웃는다.`};
+    }
+    NPC[x.key]={n:`${x.name} (${x.sex==='M'?'아들':'딸'})`,sn:x.name,d:`에밀리의 ${x.sex==='M'?'남동생':'여동생'}. 카터 가족의 새 식구.`};
+    if(S.rel[x.key]==null)S.rel[x.key]=40;
+    S.met[x.key]=1;
+  });
+}
+function kidKeys(){syncKids();return kids().map(x=>x.key);}
+
+/* ----- 마리아의 주기 ----- */
+function mLeave(){const p=S.preg;return !!((p&&p.told&&p.due-S.day<=3)||(S.flags.ppUntil&&S.day<S.flags.ppUntil));}
+function payMult(){const p=S.preg;return ((p&&p.told&&p.due-S.day<=8)||(S.flags.ppUntil&&S.day<S.flags.ppUntil+7))?0.5:1;}
+function mCyc(){
+  const f=S.flags;
+  if(S.preg)return {ph:'preg',cd:0,chance:0,label:'임신 중'};
+  if(f.ppUntil&&S.day<f.ppUntil)return {ph:'pp',cd:0,chance:0,label:'산후 회복 중'};
+  if(f.cycOff==null)f.cycOff=Math.floor(R()*CYC_LEN);
+  const cd=((S.day-1+f.cycOff)%CYC_LEN)+1;
+  let ph,chance,label;
+  if(cd<=5){ph='menses';chance=0;label=`생리 중 (${cd}일째)`;}
+  else if(cd<=9){ph='low';chance=0.03;label='임신 가능성 낮음';}
+  else if(cd<=11){ph='rise';chance=0.10;label='배란기 접근 · 가능성 보통';}
+  else if(cd<=13){ph='fertile';chance=0.22;label='가임기 · 가능성 높음';}
+  else if(cd===14){ph='ovul';chance=0.38;label='배란일 · 가능성 매우 높음';}
+  else if(cd<=16){ph='fertile';chance=0.22;label='가임기 · 가능성 높음';}
+  else if(cd===17){ph='rise';chance=0.08;label='배란기 끝 · 가능성 보통';}
+  else{ph='low';chance=0.02;label='임신 가능성 낮음';}
+  return {ph,cd,chance,label};
+}
+const mPeriod=()=>mCyc().ph==='menses';
+function pregMonth(){const p=S.preg;if(!p)return 0;return Math.min(10,Math.floor((S.day-p.conceived)/3)+1);}
+function famMariaInfo(){
+  const c=mCyc(),p=S.preg;
+  if(p){
+    const left=Math.max(0,p.due-S.day);
+    return `<p class="wd-lbl">임신 <span class="wd-num">${pregMonth()}개월</span> · ${p.told?`출산 예정일까지 ${left}일`:'아직 확인 전'}${p.checks?` · 산전 검진 ${p.checks}회`:''}</p>`;
+  }
+  if(c.ph==='pp')return `<p class="wd-lbl">산후 회복 중 · ${S.flags.ppUntil-S.day}일 더 쉬어야 합니다</p>`;
+  const risk=c.chance>0?`무방비 시 약 ${Math.round(c.chance*100)}% · 피임기구 사용 시 약 ${Math.max(1,Math.round(c.chance*CONDOM_PROTECT*100))}%`:'임신 가능성 거의 없음';
+  return `<p class="wd-lbl">주기: <span class="wd-num">${c.label}</span></p><p class="wd-dim">냉장고 달력에 마리아가 표시해 둔 날짜를 보고 알 수 있습니다. (${risk})</p>`;
+}
+function famKidsRow(){
+  const ks=kids(),p=S.preg;let t=[];
+  if(p)t.push(`마리아 임신 ${pregMonth()}개월${p.told?'':' (아직 모름)'}`);
+  if(ks.length)t.push(ks.map(x=>`${x.name} ${kidAgeTxt(x)}`).join(' · '));
+  return t.length?`<tr><td>동생들</td><td>${t.join(' / ')}</td></tr>`:'';
+}
+
+/* ----- 둘만의 밤: 피임기구 선택 ----- */
+function famNightAct(add,h,r,d){
+  if(!(h>=21&&h<23&&r>=30))return;
+  const c=mCyc();
+  if(c.ph==='pp'){add('애정','둘만의 밤을 보낸다',{na:'산후 회복 중'});return;}
+  add('애정','둘만의 밤을 보낸다',{done:d.nightTogether,min:180,fn:nightStart});
+}
+function nightStart(){
+  const d=S.daily,c=mCyc();
+  if(S.drank||S.alc>0){
+    d.nightTogether=1;pass(180,{sleep:true,rest:8});
+    rel('maria',-4);st('str',3);say('마리아는 술 냄새를 느끼고 조용히 고개를 젓습니다. “오늘은 그냥 자자, 스콧.” 당신은 같은 침대에 누웠지만 한동안 잠들지 못합니다.');return;
+  }
+  if(c.ph==='menses'){
+    d.nightTogether=1;pass(15);rel('maria',-1);st('str',3);
+    say(pick([
+      '당신이 어깨에 손을 올리자 마리아가 몸을 틀어 손을 밀어냅니다. “…오늘은 건드리지 마. 배 아파 죽겠어.” 그녀는 이불을 끌어당겨 등을 돌립니다. 당신은 한숨을 삼키고 불을 끕니다.',
+      '“스콧, 오늘 그런 날 아니야.” 마리아가 날카롭게 말하며 당신의 손을 뿌리칩니다. 곧 미안한 듯 덧붙입니다. “…짜증 내려던 건 아니야. 그냥 오늘은 혼자 있고 싶어.” 당신은 말없이 침대 끝에 눕습니다.'
+    ]));
+    note('생리 중에는 마리아가 스콧을 밀어냅니다. 따뜻한 차를 챙겨 주는 쪽이 훨씬 환영받습니다.');return;
+  }
+  if(c.ph==='preg'){
+    nightFinish(false,c);return;
+  }
+  const have=S.inv.condom||0;
+  say(pick([
+    '에밀리가 잠든 뒤, 마리아가 당신 옆에 앉습니다. 오래된 농담과 처음 만났던 날의 이야기 끝에 조심스러운 입맞춤이 이어집니다.',
+    '마리아가 먼저 당신의 손을 잡습니다. “요즘 우리, 이렇게 앉아 있는 시간도 없었지.” 말없이 어깨를 기대온 그녀를 당신은 꼭 안아줍니다.'
+  ]));
+  if(c.ph==='ovul')say('마리아가 서랍 위 달력을 힐끗 봅니다. 오늘 날짜에 동그라미가 쳐져 있습니다. “…오늘, 그날이야.”');
+  else if(c.ph==='fertile')say('마리아가 달력을 힐끗 보고 작게 중얼거립니다. “요즘 좀 위험한 시기긴 한데…”');
+  say(have>0?`협탁 서랍에는 피임기구가 ${have}개 남아 있습니다.`:'협탁 서랍을 뒤져 보지만 피임기구가 없습니다.');
+  if(have>0)opt('피임기구를 사용한다',famAct('maria',()=>nightDo(true,c)));
+  opt('피임기구 없이 밤을 보낸다',famAct('maria',()=>nightDo(false,c)));
+  opt('오늘은 이야기만 나누고 잔다',famAct('maria',()=>{
+    S.daily.nightTogether=1;pass(120,{sleep:true,rest:10});rel('maria',3);st('str',-4);
+    say('“그래, 그것도 좋아.” 마리아가 웃으며 당신의 팔을 베고 눕습니다. 두 사람은 천장을 보며 한참 이야기를 나누다 잠이 듭니다.');
+  }));
+}
+function nightDo(protect,c){
+  if(protect)S.inv.condom=Math.max(0,(S.inv.condom||0)-1);
+  nightFinish(protect,c);
+}
+function nightFinish(protect,c){
+  const preg=c.ph==='preg';
+  S.daily.nightTogether=1;
+  pass(180,{sleep:true,rest:8});
+  rel('maria',8);st('str',-8);st('tra',-1);
+  if(preg){
+    say(pick([
+      '마리아가 부른 배를 감싸 쥔 채 당신 품에 기댑니다. “조심조심, 알지?” 두 사람은 조용히 서로의 체온을 나누며 밤을 보냅니다.',
+      '불을 끄고 나란히 누워 있다가, 마리아가 당신의 손을 자기 배 위에 올립니다. 안에서 작은 발길질이 느껴집니다. 두 사람은 소리 죽여 웃습니다.'
+    ]));
+    return;
+  }
+  say(pick([
+    '촛불처럼 낮은 스탠드 불빛 아래, 두 사람은 오랜만에 서로에게만 집중합니다. 방문 너머 에밀리의 고른 숨소리가 들립니다. 밤이 천천히 깊어집니다.',
+    '서로의 이름을 부르는 낮은 목소리, 이불 속에서 겹쳐지는 체온. 오랜만에 두 사람은 아무 걱정도 하지 않고 밤을 보냅니다.'
+  ]));
+  if(protect)say('모든 것이 끝난 뒤 마리아가 당신의 가슴에 귀를 댑니다. “…챙겨 줘서 고마워. 지금은 그게 마음이 편해.”');
+  else if(c.chance>=0.2)say('마리아가 천장을 보며 작게 속삭입니다. “오늘은 좀 위험한 날이었는데… 뭐, 어떻게든 되겠지?” 당신은 대답 대신 그녀의 손을 꼭 잡습니다.');
+  if(kids().length>=MAX_KIDS)return;
+  const p=c.chance*(protect?CONDOM_PROTECT:1);
+  if(p>0&&R()<p){
+    S.preg={conceived:S.day,due:S.day+PREG_DAYS,told:0,checks:0,emily:0,lastCheck:-99};
+    S.flags.cycOff=null;
+  }
+}
+
+/* ----- 마리아·에밀리 추가 행동 ----- */
+function famMariaActs(add,d,h,r,eh){
+  const c=mCyc(),p=S.preg;
+  if(c.ph==='menses'){
+    add('애정','따뜻한 차와 핫팩을 챙겨 준다 ($3)',{done:d.mTea,min:10,fn:()=>{if(!pay(3))return;d.mTea=1;pass(10);rel('maria',5);st('str',-2);
+      say('캐모마일 차와 핫팩을 건네자 마리아가 놀란 얼굴로 당신을 봅니다. “…기억하고 있었어?” 그녀는 배에 핫팩을 대고 소파에 몸을 묻으며 한결 부드러운 표정이 됩니다.');}});
+  }
+  if(p&&p.told){
+    add('돌봄','배에 귀를 대고 태담을 한다',{done:d.mTalk,min:10,fn:()=>{d.mTalk=1;pass(10);rel('maria',4);st('str',-3);
+      say(pregMonth()>=4?'마리아의 배에 귀를 대고 “아빠야” 하고 속삭입니다. 안에서 작은 움직임이 느껴집니다. 마리아가 당신의 머리를 쓰다듬습니다.':'아직은 아무 움직임도 느껴지지 않지만, 마리아의 배에 손을 얹고 가만히 있어 봅니다. 그녀가 작게 웃습니다.');}});
+    const gap=S.day-(p.lastCheck||-99);
+    add('돌봄','산부인과 검진에 동행한다 ($35)',{done:d.mCheck,min:120,na:gap<6?'최근에 다녀옴':'',fn:()=>{if(!pay(35))return;d.mCheck=1;p.lastCheck=S.day;p.checks=(p.checks||0)+1;pass(120);rel('maria',6);st('str',-3);
+      say('초음파 화면 속에서 작은 심장이 깜빡입니다. 의사가 “건강합니다”라고 말하자 마리아가 당신의 손을 꽉 쥡니다. 당신은 처음으로 이 작은 점이 진짜 사람이라는 걸 실감합니다.');}});
+    add('돌봄','입맛 당기는 간식을 사 온다 ($6)',{done:d.mSnack,min:15,fn:()=>{if(!pay(6))return;d.mSnack=1;pass(15);rel('maria',4);st('str',-1);
+      say('마리아가 먹고 싶다던 피클과 아이스크림을 사 옵니다. “이 조합 이상한 거 알아, 말하지 마.” 그녀가 웃으며 숟가락을 듭니다.');}});
+  }
+  const ks=kids();
+  if(ks.length&&eh&&h>=17&&h<21&&S.flags.kidPhotoN!==ks.length)add('함께하기','온 가족이 함께 사진을 찍는다',{min:20,fn:()=>{S.flags.kidPhotoN=ks.length;pass(20);rel('maria',6);rel('emily',5);ks.forEach(x=>rel(x.key,3));st('str',-5);
+    say(`에밀리가 버니를 ${ks[ks.length-1].name}의 손에 쥐여 주고 가운데에 앉습니다. 휴대폰 타이머가 깜빡이는 동안 마리아가 당신의 어깨에 머리를 기댑니다. 사진 속 식구는 이제 ${3+ks.length}명입니다.`);note('냉장고 문의 가족사진이 한 장 더 늘었습니다.');}});
+}
+function famEmilyActs(add,d){
+  const p=S.preg,ks=kids(),eh=emilyHome();
+  if(!eh)return;
+  if(p&&p.told&&!p.emily)add('대화','동생이 생긴다고 말해 준다',{min:20,fn:()=>{p.emily=1;pass(20);rel('emily',6);st('str',-3);
+    say('에밀리에게 마리아의 배를 가리키며 곧 동생이 생긴다고 말해 줍니다. 에밀리는 눈을 동그랗게 뜨더니 버니를 번쩍 들어 올립니다. “버니도 오빠 돼?” “…버니는 언니나 오빠 중에 뭐든 괜찮을 것 같네.” 에밀리가 마리아의 배에 귓속말을 합니다. “나는 에밀리야. 누나야.”');}});
+  if(ks.length){
+    const y=ks[ks.length-1];
+    add('돌봄',`에밀리와 함께 ${J(y.name,'을','를')} 돌본다`,{done:d.eSib,min:30,fn:()=>{d.eSib=1;pass(30);rel('emily',6);rel(y.key,3);rel('maria',3);st('str',-3);
+      say(pick([`에밀리가 버니를 ${y.name} 옆에 눕혀 주며 “내 친구 빌려줄게” 하고 속삭입니다. 당신은 기저귀를 가는 동안 에밀리에게 물티슈를 건네달라고 부탁합니다. “나도 도와줄 수 있어!”`,`에밀리가 ${y.name}에게 동화책을 읽어 줍니다. 글자는 하나도 맞지 않지만 이야기는 기가 막히게 지어냅니다. ${J(y.name,'이','가')} 소리 내어 웃습니다.`]));}});
+  }
+}
+function kidWhere(k){
+  const x=kidOf(k),h=hh(),atHome=S.loc==='home';
+  if(S.sep||S.flags.famAtLucia)return {state:'away',here:false,txt:'마리아와 함께 있음'};
+  if(h>=21||h<6)return {state:'asleep',here:atHome,txt:'아기 침대에서 잠들어 있음'};
+  if(mariaWorking()&&!mLeave())return {state:'away',here:false,txt:'로사 아주머니 댁에서 돌봄 중 (평일 17:00 이후 귀가)'};
+  return {state:'home',here:atHome,txt:'집에 있음'};
+}
+function kidMood(k){
+  const x=kidOf(k),d=S.daily,r=S.rel[k],h=hh();
+  if(!d[k+'F']&&h>=9)return '배고파 보임';
+  if(h>=19&&!d[k+'S'])return '졸려서 칭얼댐';
+  return r>=75?'방긋방긋':r>=50?'평온함':'낯을 가림';
+}
+function kidIntro(k,w){
+  const x=kidOf(k),st_=kidStage(x),n=x.name;
+  if(w.state==='away')return `${J(n,'은','는')} 지금 로사 아주머니 댁에서 지내고 있습니다. 평일 17시 이후 돌아옵니다.`;
+  if(w.state==='asleep')return `${J(n,'이','가')} 작은 주먹을 쥔 채 새근새근 잠들어 있습니다.`;
+  if(st_==='newborn')return `${J(n,'이','가')} 포대기에 싸여 가느다란 소리로 웁니다. 마리아가 달래다가 당신에게 눈짓합니다.`;
+  if(st_==='infant')return `${J(n,'이','가')} 아기 매트 위에서 버둥거리다가 당신을 보고 침을 흘리며 웃습니다.`;
+  if(st_==='toddler')return `${J(n,'이','가')} 소파를 잡고 뒤뚱뒤뚱 서서 “아…빠” 하고 옹알이를 합니다.`;
+  return `${J(n,'이','가')} 거실 바닥에서 블록을 쌓다가 당신에게 달려옵니다. 뒤에서 에밀리가 “내가 가르쳐 준 거야!” 하고 외칩니다.`;
+}
+function kidActs(k,w){
+  const x=kidOf(k),d=S.daily,h=hh(),A=[],n=x.name,m=kidMonths(x),r=S.rel[k];
+  const add=(g,label,o)=>A.push(Object.assign({g,label},o));
+  if(w.state==='away')return A;
+  if(w.state==='asleep'){
+    add('곁에서',`잠든 ${J(n,'을','를')} 바라본다`,{done:d[k+'W'],min:10,fn:()=>{d[k+'W']=1;pass(10);rel(k,1);st('str',-3);say(`아기 침대 옆에 쭈그려 앉아 ${n}의 작은 가슴이 오르내리는 모습을 바라봅니다. 이 작은 숨소리가 앞으로의 하루하루를 지탱해 줄 것 같습니다.`);}});
+    return A;
+  }
+  const care=key=>{d.kidCare=1;};
+  add('안기','품에 안아 준다',{done:d[k+'H'],min:5,fn:()=>{d[k+'H']=1;care();pass(5);rel(k,3);st('str',-3);
+    say(S.alc>0?`${J(n,'이','가')} 술 냄새에 얼굴을 찡그리며 울음을 터뜨립니다.`:pick([`${J(n,'을','를')} 조심스럽게 안아 올립니다. 작은 손이 당신의 손가락을 꼭 잡습니다.`,`${J(n,'이','가')} 당신의 가슴에 얼굴을 묻고 쌕쌕 숨을 쉽니다. 의안을 보고도 전혀 겁내지 않습니다.`]));
+    if(S.alc>0)rel(k,-4);}});
+  if(m<6)add('돌봄','젖병을 물린다',{done:d[k+'F'],min:30,fn:()=>{d[k+'F']=1;care();pass(30);rel(k,3);rel('maria',2);st('str',-2);say(`분유를 타서 온도를 손목에 확인한 뒤 ${n}에게 젖병을 물립니다. 꿀떡꿀떡 소리가 나다가, 잠시 뒤 작은 트림 소리가 납니다.`);}});
+  else if(m<24)add('돌봄','이유식을 먹인다 ($4)',{done:d[k+'F'],min:30,fn:()=>{if(!pay(4))return;d[k+'F']=1;care();pass(30);rel(k,3);rel('maria',2);st('str',-2);say(`으깬 고구마와 쌀미음을 한 숟가락씩 먹입니다. ${J(n,'이','가')} 절반은 볼에 묻히고, 절반은 에밀리의 머리카락에 날립니다.`);}});
+  else add('돌봄','식사를 챙겨 준다 ($4)',{done:d[k+'F'],min:30,fn:()=>{if(!pay(4))return;d[k+'F']=1;care();pass(30);rel(k,3);st('str',-2);say(`${J(n,'이','가')} 자기 숟가락을 고집합니다. 식탁이 엉망이 되었지만 접시는 반쯤 비었습니다.`);}});
+  if(m<30)add('돌봄','기저귀를 갈아 준다',{done:d[k+'D'],min:10,fn:()=>{d[k+'D']=1;care();pass(10);rel(k,2);st('fat',1);
+    say(pick([`찝찝한 소리와 함께 새 기저귀를 채웁니다. ${J(n,'이','가')} 발을 버둥거리다 당신의 얼굴을 걷어찹니다.`,`기저귀를 풀자마자 ${J(n,'이','가')} 분수를 쏩니다. 당신은 간발의 차로 피하고 마리아가 웃음을 터뜨립니다.`]));}});
+  if(h>=18&&h<21)add('돌봄','목욕을 시킨다',{done:d[k+'B'],min:30,fn:()=>{d[k+'B']=1;care();pass(30);rel(k,3);rel('maria',2);st('fat',2);say(`아기 욕조에 미지근한 물을 받고 ${J(n,'을','를')} 조심스럽게 눕힙니다. 거품을 묻힌 에밀리가 옆에서 “내가 비누 담당!” 하고 외칩니다.`);}});
+  if(h>=19&&h<21)add('돌봄','자장가를 불러 재운다',{done:d[k+'S'],min:30,fn:()=>{d[k+'S']=1;care();pass(30);rel(k,4);rel('maria',3);st('ctl',1);st('str',-3);say(`음정이 엉망인 자장가를 흥얼거리며 ${J(n,'을','를')} 안고 방 안을 걷습니다. 어느새 작은 몸이 무거워지며 숨소리가 느려집니다. “…내일도 있어.” 당신은 속삭입니다.`);}});
+  if(m>=1&&m<12)add('놀이','까꿍 놀이를 한다',{done:d[k+'P'],min:20,fn:()=>{d[k+'P']=1;care();pass(20);rel(k,4);st('str',-3);say(`손으로 얼굴을 가렸다가 “까꿍!” 하고 외치자 ${J(n,'이','가')} 숨이 넘어갈 듯 웃습니다. 한 번 더, 한 번 더.`);}});
+  if(m>=6&&m<24)add('놀이','딸랑이와 헝겊책을 가지고 논다',{done:d[k+'T'],min:20,fn:()=>{d[k+'T']=1;care();pass(20);rel(k,4);st('str',-3);skUp('craft',0.3);say(`${J(n,'이','가')} 딸랑이를 입에 넣었다 빼기를 반복합니다. 당신은 헝겊책 속 동물 소리를 흉내 냅니다.`);}});
+  if(m>=12&&m<30)add('놀이','걸음마를 도와준다',{done:d[k+'G'],min:20,fn:()=>{d[k+'G']=1;care();pass(20);rel(k,5);st('str',-3);say(`두 손을 잡아 주고 한 걸음, 두 걸음. 손을 놓자 ${J(n,'이','가')} 휘청거리다 기어코 당신 품에 안깁니다. “아빠!”라고 들린 것 같습니다.`);}});
+  if(m>=24)add('놀이','블록 쌓기 놀이를 한다',{done:d[k+'P'],min:30,fn:()=>{d[k+'P']=1;care();pass(30);rel(k,4);rel('emily',2);st('str',-4);say(`${J(n,'과','와')} 에밀리가 번갈아 블록을 쌓습니다. 에밀리가 “이건 기린 집이야” 하자 ${J(n,'이','가')} 무너뜨리며 깔깔 웃습니다.`);}});
+  if(m<24)add('돌봄','예방접종을 맞히러 간다 ($40)',{done:d[k+'V'],min:90,na:S.day-(x.vacc||-99)<18?'최근에 접종함':'',fn:()=>{if(!pay(40))return;d[k+'V']=1;x.vacc=S.day;care();pass(90);rel(k,-1);rel('maria',5);st('str',2);say(`소아과 대기실에서 ${J(n,'이','가')} 주삿바늘에 자지러지게 웁니다. 당신은 작은 몸을 꼭 안고 어르며 집으로 돌아옵니다. 마리아가 문자를 보냅니다. 「고마워. 잘했어.」`);}});
+  if(S.inv.toy&&m>=6)add('선물','곰 인형을 준다',{fn:()=>{S.inv.toy--;rel(k,8);rel('emily',-1);say(`${J(n,'이','가')} 곰 인형을 끌어안고 놓지 않습니다. 에밀리가 약간 샘난 얼굴로 버니를 더 꼭 끌어안습니다.`);}});
+  return A;
+}
+
+/* ----- 일일 처리: 임신 경과 · 성장 · 육아 부담 ----- */
+function famDaily(pd,away){
+  const f=S.flags,p=S.preg,ks=kids();
+  if(!p&&!away){const c=mCyc();if(c.ph==='menses'&&c.cd===1)note('마리아가 아침부터 아랫배를 움켜쥐고 있습니다. 오늘부터 며칠은 예민할 수 있습니다.');}
+  if(p){
+    const dd=S.day-p.conceived,mo=pregMonth();
+    if(!away){
+      if(!p.told&&dd>=4&&!f.famEvt)f.famEvt='pregTell';
+      if(p.told){
+        if(p.shownMonth!==mo){p.shownMonth=mo;
+          const M={2:'마리아가 아침마다 화장실에서 헛구역질을 합니다. 입덧이 시작된 모양입니다.',4:'마리아의 배가 눈에 띄게 불러 오릅니다. 에밀리가 매일 아침 배에 인사를 합니다.',6:'마리아가 처음으로 태동을 느꼈다며 당신의 손을 끌어다 배에 얹습니다.',8:'아기 침대와 작은 옷가지를 준비하느라 집 안이 분주합니다. 마리아가 둥지를 트는 중입니다.',10:'출산이 코앞입니다. 마리아가 병원 가방을 현관 옆에 챙겨 두었습니다.'};
+          if(M[mo])note(M[mo]);}
+        if(mo<=3&&R()<0.35){st('str',2);note('마리아의 입덧이 심합니다. 집안일에 신경이 쓰입니다.');}
+      }
+    }
+    if(S.day>=p.due){if(away){birthDo(false);}else{if(f.famEvt==='pregTell')p.told=1;f.famEvt='birth';}}
+  }
+  const wk=wd();
+  if(f.ppUntil&&S.day===f.ppUntil&&!away)note('마리아가 산후 회복을 마치고 일상으로 돌아옵니다. (주기 다시 시작)');
+  if(ks.length){
+    if(wk===2&&!away){
+      const n=ks.filter(x=>kidMonths(x)<24).length;
+      if(n){const cost=14*n,got=lose(cost);note(`기저귀·분유·이유식 값 $${got}가 나갔습니다.`);if(got<cost){st('str',4);rel('maria',-2);note(`아기 용품값 $${cost-got}가 모자라 마리아가 직접 이웃에게 빌렸습니다.`);}}
+    }
+    const helped=pd&&pd.kidCare;
+    if(helped&&!away)rel('maria',2);
+    ks.forEach(x=>{
+      const m=kidMonths(x);x.ms=x.ms||{};
+      const MS=[[1,'ms1','첫 배냇짓 웃음','자는 듯 눈을 감은 채 환하게 웃습니다. 마리아가 “봤어? 봤지?” 하고 속삭입니다.'],[3,'ms3','목 가누기','엎드려 놓자 고개를 번쩍 듭니다.'],[6,'ms6','뒤집기','매트 위에서 몸을 휙 뒤집었습니다! 에밀리가 “해냈다!” 하고 박수를 칩니다.'],[9,'ms9','기어 다니기','엉금엉금 기어서 당신의 신발 쪽으로 향합니다.'],[12,'ms12','돌잔치와 첫걸음','돌을 맞이해 케이크에 촛불 하나를 꽂았습니다. 케이크 앞에서 비틀비틀 첫걸음을 뗍니다.'],[15,'ms15','첫 단어','“아…빠”라고 분명히 발음합니다. 당신은 숨을 멈춥니다. 마리아는 질투 섞인 웃음을 터뜨립니다.'],[24,'ms24','두 돌','두 돌 생일입니다. 에밀리가 직접 그린 카드를 건넵니다. 카드에는 해적 아빠와 아기 해적들이 있습니다.']];
+      MS.forEach(([mm,key,ttl,txt])=>{if(m>=mm&&!x.ms[key]&&!away){x.ms[key]=1;rel(x.key,6);rel('maria',3);rel('emily',2);st('str',-4);note(`<b>${x.name}</b>의 성장: ${ttl}. ${txt}`);}});
+      if(m<12&&!away){
+        const cry=(pd&&pd[x.key+'S'])?0.2:0.55;
+        if(R()<cry){st('fat',5);st('str',3);note(`밤새 ${J(x.name,'이','가')} 두 번이나 깨서 울었습니다. 마리아와 번갈아 달래느라 거의 잠을 못 잤습니다.`);}
+      }
+      if(kidDays(x)<=15&&!away){
+        const ep=pd&&(pd.play||pd.eDraw||pd.eLearn||pd.eYard||pd.eOuting||pd.book||pd.eBath||pd.eSnack||pd.eSib);
+        if(!ep&&!S.flags.emilyFoster&&!S.sep&&!S.flags.famAtLucia){rel('emily',-2);if(R()<0.5)note('에밀리가 버니를 끌어안고 중얼거립니다. “아빠는 이제 아기만 좋아해.”');}
+      }
+    });
+  }
+}
+const FAMEVT={
+  pregTell(){
+    S.preg.told=1;pageTitle='마리아의 소식';
+    say('저녁 식탁. 마리아가 평소답지 않게 접시를 치우지도 않고 손가락을 만지작거립니다. 한참 뒤, 그녀가 작은 막대기를 식탁 위에 올려놓습니다. 두 줄. “…확인하고 싶어서 어제 병원에 다녀왔어. 맞대. 우리, 아기 생겼어.”');
+    opt('마리아를 끌어안고 고맙다고 말한다',()=>{rel('maria',12);st('str',-6);st('ctl',2);say('말이 나오지 않아 그저 마리아를 끌어안습니다. 그녀가 당신의 어깨에 얼굴을 묻고 웃음 섞인 울음을 터뜨립니다. “무섭긴 한데… 기뻐.” “나도.” 당신은 겨우 대답합니다. 방문 틈으로 에밀리가 버니와 함께 엿보고 있습니다.');});
+    opt('“돈이 문제야. 어떻게 하지” 솔직하게 걱정을 털어놓는다',()=>{rel('maria',-1);st('str',6);st('ctl',1);say('“나도 알아.” 마리아가 가만히 대답합니다. “그래도 같이 하면 되잖아. 이번엔 도망가지 마.” 당신은 고개를 끄덕이고 그녀의 손을 잡습니다. 걱정은 사라지지 않지만, 혼자는 아닙니다.');});
+    opt('“지금은 안 돼. 아이를 키울 형편이 아니잖아.”',()=>{rel('maria',-12);st('str',8);st('ctl',-2);say('마리아의 얼굴이 굳습니다. “…그게 당신이 제일 먼저 하는 말이야?” 그녀는 아무 말 없이 침실로 들어가 문을 닫습니다. 문 너머에서 작게 흐느끼는 소리가 들립니다. 한참 뒤에야 당신은 자신이 무슨 말을 했는지 실감합니다.');});
+  },
+  birth(){
+    const p=S.preg,away=S.prison||S.sep||S.flags.famAtLucia||(S.deploy&&S.deploy.phase==='service');
+    S.flags.famEvt=null;
+    if(away)return birthDo(false);
+    pageTitle='출산';
+    say('휴대폰이 울립니다. 마리아의 다급한 목소리입니다. “스콧, 양수가 터진 것 같아… 병원…!” 로사가 에밀리를 맡아 주겠다고 달려왔고, 당신은 마리아를 부축해 차로 달립니다.');
+    opt('분만실에 함께 들어가 곁을 지킨다',()=>{S.loc='hospital';pass(300);rel('maria',10);st('str',6);st('fat',8);say('땀에 젖은 마리아의 손이 당신의 손뼈를 부술 듯 쥡니다. “스콧, 가지 마!” “여기 있어.” 몇 시간이 몇 년처럼 흐릅니다. 마침내 작은 울음소리가 분만실을 가득 채웁니다.');birthDo(true,true);},{min:300});
+    opt('대기실에서 초조하게 기다린다',()=>{S.loc='hospital';pass(300);rel('maria',-2);st('str',8);st('fat',6);say('대기실 복도를 수십 번 오갑니다. 간호사가 문을 열고 나옵니다. “아버님, 건강한 아기입니다.” 당신은 다리가 풀려 의자에 주저앉습니다. 마리아는 힘든 순간 당신이 없었다는 걸 말없이 기억할 겁니다.');birthDo(true,false);},{min:300});
+  }
+};
+function birthDo(present,inRoom){
+  const p=S.preg,sex=R()<0.5?'M':'F';
+  const calm=Math.max(0,0.25-0.1*(p.checks||0));
+  let cost=BIRTH_COST;if(R()<calm){cost+=200;say('분만 도중 잠시 위험한 순간이 있었지만, 의료진의 빠른 대처로 무사히 넘어갑니다. 추가 시술비가 청구됩니다.');}
+  const paid=lose(cost);if(paid<cost){S.flags.medDebt=(S.flags.medDebt||0)+(cost-paid);if(present)note(`분만비 $${cost} 중 $${cost-paid}는 의료비 미납으로 쌓였습니다.`);}
+  else if(present)note(`분만비 $${cost}를 지불했습니다.`);
+  const names=KID_NAMES[sex].slice().sort(()=>R()-0.5).slice(0,3);
+  const fin=name=>{
+    const key='kid'+(kids().length+1);
+    kids().push({key,name,sex,born:S.day,ms:{}});
+    S.rel[key]=present?55:35;S.met[key]=1;
+    S.preg=null;S.flags.ppUntil=S.day+PP_DAYS;S.flags.cycOff=(CYC_LEN-((S.flags.ppUntil-1)%CYC_LEN))%CYC_LEN;
+    syncKids();
+    st('str',-6);rel('emily',present?4:-3);
+    say(present?`<b>${name}</b>. 에밀리의 ${sex==='M'?'남동생':'여동생'}이 태어났습니다. 간호사가 포대기에 싸인 작은 몸을 당신의 팔에 안겨 줍니다. 작은 손이 당신의 손가락을 감쌉니다. 마리아가 지친 얼굴로 웃습니다. “…안녕, ${name}.”`:`<b>${name}</b>. 에밀리의 ${sex==='M'?'남동생':'여동생'}이 태어났습니다. 마리아는 포대기에 싸인 작은 몸을 품에 안고 사진을 찍어 당신에게 보냅니다. 「건강해. 이름은 ${name}.」`);
+    if(present&&inRoom)rel(key,10);
+    say('에밀리는 로사의 손을 잡고 병원에 달려와 버니를 아기 옆에 놓아 줍니다. “이 애가 내 동생이야?” 에밀리의 목소리가 작게 떨립니다.');
+    note(`카터 가족에 새 식구 ${J(name,'이','가')} 생겼습니다! 이제 [가족] 카드에서 ${J(name,'을','를')} 돌볼 수 있습니다. 마리아는 산후 ${PP_DAYS}일간 쉽니다.`);
+  };
+  if(!present){const nm=names[0];fin(nm);note(`당신이 곁에 없던 사이 마리아 혼자 ${J(nm,'을','를')} 낳았습니다. 마리아의 마음에 응어리가 남았습니다.`);rel('maria',-10);return;}
+  say('간호사가 묻습니다. “아기 이름은 정하셨나요?”');
+  names.forEach(nm=>opt(`“${nm}.”`,()=>{fin(nm);}));
 }
 
 /* ============ 부동산 중개소 ============ */
@@ -1612,6 +1920,7 @@ const MALL_ITEMS=[
   {id:'notebook',n:'가죽 표지 노트와 만년필',p:24,d:'집에서 감정을 기록해 스트레스와 트라우마를 다스릴 수 있습니다.',buy:()=>{S.inv.notebook++;}},
   {id:'cologne',n:'우디 향 애프터셰이브 (5회분)',p:30,d:'집에서 사용하면 매력이 일시적으로 상승합니다.',buy:()=>{S.inv.cologne+=5;}},
   {id:'watch',n:'클래식 여성용 손목시계',p:95,d:'마리아를 위한 특별한 선물. 집에서 건네줄 수 있습니다.',buy:()=>{S.inv.watch++;}},
+  {id:'condom',n:'피임기구 (3개입)',p:8,d:'둘만의 밤에 사용할 수 있는 피임기구. 임신 확률을 크게 낮춥니다.',buy:()=>{S.inv.condom=(S.inv.condom||0)+3;}},
   {id:'firstaid',n:'가정용 구급상자',p:16,d:'소독약·거즈·압박 붕대가 든 구급상자. 집에서 가벼운 상처를 직접 처치할 수 있습니다.',buy:()=>{S.inv.firstaid=(S.inv.firstaid||0)+1;}}
 ];
 const CLOTH_SHOP=[
@@ -3577,7 +3886,7 @@ function showInventoryModal(){
   if(S.inv.flower)invList.push(`프리지아 꽃 ${S.inv.flower}다발`);
   if(S.inv.toy)invList.push(`곰 인형 ${S.inv.toy}개`);
   if(S.inv.bookset)invList.push(`그림책 세트 ${S.inv.bookset}개`);
-  if(S.inv.vitamin)invList.push(`종합 비타민 ${S.inv.vitamin}회분`);
+  if(S.inv.vitamin)invList.push(`종합 비타민 ${S.inv.vitamin}회분`);if(S.inv.condom)invList.push(`피임기구 ${S.inv.condom}개`);
   if(S.inv.notebook)invList.push(`가죽 노트 ${S.inv.notebook}권`);
   if(S.inv.cologne)invList.push(`애프터셰이브 ${S.inv.cologne}회분`);
   if(S.inv.watch)invList.push(`여성용 손목시계 ${S.inv.watch}개`);
@@ -3600,7 +3909,7 @@ function showStatus(){
   if(S.inv.flower)invList.push(`프리지아 꽃 ${S.inv.flower}다발`);
   if(S.inv.toy)invList.push(`곰 인형 ${S.inv.toy}개`);
   if(S.inv.bookset)invList.push(`그림책 세트 ${S.inv.bookset}개`);
-  if(S.inv.vitamin)invList.push(`종합 비타민 ${S.inv.vitamin}회분`);
+  if(S.inv.vitamin)invList.push(`종합 비타민 ${S.inv.vitamin}회분`);if(S.inv.condom)invList.push(`피임기구 ${S.inv.condom}개`);
   if(S.inv.notebook)invList.push(`가죽 노트 ${S.inv.notebook}권`);
   if(S.inv.cologne)invList.push(`애프터셰이브 ${S.inv.cologne}회분`);
   if(S.inv.watch)invList.push(`여성용 손목시계 ${S.inv.watch}개`);
@@ -4772,7 +5081,7 @@ function sepStatusRow(){
   if(S.flags.famAtLucia)return '<tr><td>가족</td><td style="color:#e08a5a">마리아와 에밀리가 루시아의 집에 머무는 중 (새집을 구하면 돌아옴)</td></tr>';
   return '';
 }
-function famStatusRow(){return sepStatusRow()||`<tr><td>가족</td><td>마리아 ${S.rel.maria} · 에밀리 ${S.rel.emily}${S.flags.emilyFoster?' (에밀리 위탁 보호 중)':''}</td></tr>`;}
+function famStatusRow(){return (sepStatusRow()||`<tr><td>가족</td><td>마리아 ${S.rel.maria} · 에밀리 ${S.rel.emily}${S.flags.emilyFoster?' (에밀리 위탁 보호 중)':''}</td></tr>`)+famKidsRow();}
 
 /* ----- 일일 · 주간 처리 ----- */
 function sepDaily(drankY){
@@ -5568,7 +5877,7 @@ const PT_BONUS={
 /* ===================================================================
    6. 루비스 다이너 · 금주 모임(AA)
    =================================================================== */
-const mariaWorking=()=>!weekend()&&hh()>=7&&hh()<17&&!S.daily.mariaOff;
+const mariaWorking=()=>!weekend()&&hh()>=7&&hh()<17&&!S.daily.mariaOff&&!mLeave();
 LOC.diner=()=>{
   const d=S.daily,h=hh(),s=S.sep;
   if(!S.met.ruby){S.met.ruby=1;S.rel.ruby=S.sep?15:30;}
